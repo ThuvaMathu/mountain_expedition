@@ -59,6 +59,12 @@ export function Navbar() {
             >
               {t("about")}
             </Link>
+            <Link
+              href="/contact"
+              className="text-gray-700 hover:text-teal-600 transition-colors"
+            >
+              {t("Contact")}
+            </Link>
 
             <Button
               variant="ghost"
@@ -147,6 +153,12 @@ export function Navbar() {
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
               >
                 {t("about")}
+              </Link>
+              <Link
+                href="/contact"
+                className="block px-3 py-2 text-gray-700 hover:text-teal-600"
+              >
+                {t("Contact")}
               </Link>
 
               <div className="px-3 py-2">
