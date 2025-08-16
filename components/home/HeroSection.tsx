@@ -64,7 +64,10 @@ export function HeroSection() {
           muted
           playsInline
         >
-          <source src="/videos/hero-video.mp4" type="video/mp4" />
+          <source
+            src="https://s3.ap-southeast-2.amazonaws.com/images.thuvarakan.info/13831626_1920_1080_60fps.mp4"
+            type="video/mp4"
+          />
           Your browser does not support the video tag.
         </video>
       </div>
