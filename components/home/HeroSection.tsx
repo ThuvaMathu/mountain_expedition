@@ -1,14 +1,21 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { useLanguage } from "@/contexts/LanguageContext"
-import { ArrowRight, Play, Mountain, Users, Award, Calendar } from "lucide-react"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  ArrowRight,
+  Play,
+  Mountain,
+  Users,
+  Award,
+  Calendar,
+} from "lucide-react";
 
 export function HeroSection() {
-  const { t } = useLanguage()
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const { t } = useLanguage();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const heroSlides = [
     {
@@ -26,16 +33,19 @@ export function HeroSection() {
       title: "Professional Expedition Support",
       subtitle: "Safety-first approach with world-class equipment and guides",
     },
-  ]
+  ];
 
   useEffect(() => {
-    const timer = setInterval(() => setCurrentSlide((prev) => (prev + 1) % heroSlides.length), 5000)
-    return () => clearInterval(timer)
-  }, [heroSlides.length])
+    const timer = setInterval(
+      () => setCurrentSlide((prev) => (prev + 1) % heroSlides.length),
+      5000
+    );
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0">
+      {/* <div className="absolute inset-0">
         {heroSlides.map((slide, index) => (
           <div
             key={index}
@@ -45,15 +55,33 @@ export function HeroSection() {
             <div className="absolute inset-0 bg-black bg-opacity-40" />
           </div>
         ))}
+      </div> */}
+      <div className="absolute inset-0">
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/videos/hero-video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
-
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">{heroSlides[currentSlide].title}</h1>
-        <p className="text-xl md:text-2xl mb-8 text-gray-200">{heroSlides[currentSlide].subtitle}</p>
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          {heroSlides[currentSlide].title}
+        </h1>
+        <p className="text-xl md:text-2xl mb-8 text-gray-200">
+          {heroSlides[currentSlide].subtitle}
+        </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Link href="/mountains">
-            <Button size="lg" className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 text-lg">
+            <Button
+              size="lg"
+              className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 text-lg"
+            >
               {t("explore_mountains")}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -105,10 +133,12 @@ export function HeroSection() {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-colors ${index === currentSlide ? "bg-white" : "bg-white bg-opacity-50"}`}
+            className={`w-3 h-3 rounded-full transition-colors ${
+              index === currentSlide ? "bg-white" : "bg-white bg-opacity-50"
+            }`}
           />
         ))}
       </div>
     </section>
-  )
+  );
 }
