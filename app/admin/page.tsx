@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useAuth } from "@/contexts/AuthContext"
-import { useRouter } from "next/navigation"
-import { Navbar } from "@/components/layout/Navbar"
-import { Footer } from "@/components/layout/Footer"
-import { AdminSidebar } from "@/components/admin/AdminSidebar"
-import { AdminDashboard } from "@/components/admin/AdminDashboard"
-import { MountainManagement } from "@/components/admin/MountainManagement"
-import { BlogManagement } from "@/components/admin/BlogManagement"
-import { GalleryManagement } from "@/components/admin/GalleryManagement"
-import { StatsManagement } from "@/components/admin/StatsManagement"
-import { ContactsManagement } from "@/components/admin/ContactsManagement"
-import { EventsManagement } from "@/components/admin/EventsManagement"
-import { AdminAccount } from "@/components/admin/AdminAccount"
+import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { MountainManagement } from "@/components/admin/MountainManagement";
+import { BlogManagement } from "@/components/admin/BlogManagement";
+import { GalleryManagement } from "@/components/admin/GalleryManagement";
+import { StatsManagement } from "@/components/admin/StatsManagement";
+import { ContactsManagement } from "@/components/admin/ContactsManagement";
+import { EventsManagement } from "@/components/admin/EventsManagement";
+import { AdminAccount } from "@/components/admin/AdminAccount";
 
 export default function AdminPage() {
-  const { user, loading } = useAuth()
-  const router = useRouter()
-  const [activeTab, setActiveTab] = useState("dashboard")
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push("/admin/login")
-      } else if (!user.isAdmin) {
-        router.push("/")
+        router.push("/admin/login");
+      } else if (!user?.isAdmin) {
+        router.push("/");
       }
     }
-  }, [user, loading, router])
+  }, [user, loading, router]);
 
   if (loading || !user || !user.isAdmin) {
     return (
@@ -38,31 +38,31 @@ export default function AdminPage() {
           <p className="mt-4 text-gray-600">Loading admin panel...</p>
         </div>
       </div>
-    )
+    );
   }
 
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <AdminDashboard />
+        return <AdminDashboard />;
       case "mountains":
-        return <MountainManagement />
+        return <MountainManagement />;
       case "blog":
-        return <BlogManagement />
+        return <BlogManagement />;
       case "gallery":
-        return <GalleryManagement />
+        return <GalleryManagement />;
       case "stats":
-        return <StatsManagement />
+        return <StatsManagement />;
       case "contacts":
-        return <ContactsManagement />
+        return <ContactsManagement />;
       case "events":
-        return <EventsManagement />
+        return <EventsManagement />;
       case "account":
-        return <AdminAccount />
+        return <AdminAccount />;
       default:
-        return <AdminDashboard />
+        return <AdminDashboard />;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,5 +75,5 @@ export default function AdminPage() {
       </div>
       <Footer />
     </div>
-  )
+  );
 }

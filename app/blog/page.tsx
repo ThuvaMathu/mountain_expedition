@@ -1,131 +1,136 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import Link from "next/link"
-import { useEffect, useState } from "react"
-import { Navbar } from "@/components/layout/Navbar"
-import { Footer } from "@/components/layout/Footer"
-import { db, isFirebaseConfigured } from "@/lib/firebase"
-import { collection, getDocs, orderBy, query } from "firebase/firestore"
-
-type Post = {
-  id: string
-  slug: string
-  title: string
-  excerpt?: string
-  date: string
-  tags?: string[]
-  mainImageUrl?: string
-}
-
-const fallbackPosts: Post[] = [
-  {
-    id: "1",
-    slug: "everest-prep-guide",
-    title: "Preparing for Everest: A Comprehensive Guide",
-    excerpt: "Training, gear, and mindset for the world’s highest peak.",
-    date: "2025-05-01",
-    tags: ["Everest", "Training"],
-    mainImageUrl: "/blog/everest.png",
-  },
-  {
-    id: "2",
-    slug: "himalayas-seasons",
-    title: "Best Seasons to Trek the Himalayas",
-    excerpt: "When to go and why it matters.",
-    date: "2025-04-12",
-    tags: ["Himalayas", "Planning"],
-    mainImageUrl: "/blog/himalaya.png",
-  },
-  {
-    id: "3",
-    slug: "acclimatization-101",
-    title: "Acclimatization 101: Stay Safe at Altitude",
-    excerpt: "Physiology, symptoms, and strategies.",
-    date: "2025-03-22",
-    tags: ["Health", "Safety"],
-    mainImageUrl: "/blog/denali.png",
-  },
-]
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { db, isFirebaseConfigured } from "@/lib/firebase";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { Calendar, User, ArrowRight } from "lucide-react";
 
 export default function BlogPage() {
-  const [posts, setPosts] = useState<Post[]>(fallbackPosts)
+  const [posts, setPosts] = useState<TBlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = async () => {
-      if (!isFirebaseConfigured || !db) return
-      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"))
-      const snap = await getDocs(q)
-      const data = snap.docs.map((d) => {
-        const v = d.data() as any
-        const item: Post = {
-          id: d.id,
-          slug: v.slug || d.id,
-          title: v.title || "Untitled",
-          excerpt: v.excerpt || (v.content ? stripHtml(v.content).slice(0, 160) + "…" : ""),
-          date: v.date || new Date().toISOString().slice(0, 10),
-          tags: v.tags || [],
-          mainImageUrl: v.mainImageUrl || undefined,
+    const loadPosts = async () => {
+      try {
+        if (isFirebaseConfigured && db) {
+          const q = query(collection(db, "posts"));
+          console.log("Firestore query:", q);
+          const snap = await getDocs(q);
+          const list: TBlogPost[] = snap.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as TBlogPost[];
+          setPosts(list);
+        } else {
+          // Demo data
+          setPosts([]);
         }
-        return item
-      })
-      if (data.length) setPosts(data)
-    }
-    load().catch(console.error)
-  }, [])
+      } catch (error) {
+        console.error("Error loading posts:", error);
+        setPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPosts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin h-12 w-12 rounded-full border-b-2 border-teal-600"></div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Blog</h1>
-          <p className="text-gray-600">Stories, guides, and insights from the mountains.</p>
-        </header>
 
-        <section aria-label="Blog posts" className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {posts.map((p) => (
-            <Link
-              key={p.id}
-              href={`/blog/${p.slug}`}
-              className="group bg-white rounded-xl shadow hover:shadow-md transition overflow-hidden"
-            >
-              <div className="relative aspect-[16/10] bg-gray-100">
-                <Image
-                  src={p.mainImageUrl || "/placeholder.svg?height=360&width=640&query=mountain main image"}
-                  alt={p.title}
-                  fill
-                  className="object-cover group-hover:scale-[1.02] transition-transform"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-              </div>
-              <div className="p-5">
-                <h2 className="text-xl font-semibold text-gray-900">{p.title}</h2>
-                {p.excerpt ? <p className="text-gray-600 mt-2">{p.excerpt}</p> : null}
-                <div className="text-sm text-gray-500 mt-3">{new Date(p.date).toLocaleDateString()}</div>
-                {p.tags && p.tags.length ? (
-                  <div className="mt-3 flex gap-2 flex-wrap">
-                    {p.tags.map((t) => (
-                      <span key={t} className="px-2 py-1 text-xs bg-teal-50 text-teal-700 rounded">
-                        {t}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Mountain Chronicles
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Stories from the peaks, insights from the journey, and inspiration
+            for your next adventure.
+          </p>
+        </div>
+
+        {posts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No blog posts available yet.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            {posts.map((post) => (
+              <article
+                key={post.id}
+                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+              >
+                {post.mainImageUrl && (
+                  <div className="aspect-video overflow-hidden">
+                    <img
+                      src={post.mainImageUrl || "/placeholder.svg"}
+                      alt={post.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+
+                <div className="p-6">
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full"
+                      >
+                        {tag}
                       </span>
                     ))}
                   </div>
-                ) : null}
-              </div>
-            </Link>
-          ))}
-        </section>
+
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                    {post.title}
+                  </h2>
+
+                  <p className="text-gray-600 mb-4 line-clamp-3">{post.desc}</p>
+
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <div className="flex items-center">
+                      <User className="h-4 w-4 mr-1" />
+                      <span>{post.author}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      <span>{new Date(post.date).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium"
+                  >
+                    Read More
+                    <ArrowRight className="h-4 w-4 ml-1" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </main>
+
       <Footer />
     </div>
-  )
-}
-
-function stripHtml(html: string) {
-  if (!html) return ""
-  if (typeof window === "undefined") return html.replace(/<[^>]*>/g, " ")
-  const el = document.createElement("div")
-  el.innerHTML = html
-  return (el.textContent || el.innerText || "").trim()
+  );
 }

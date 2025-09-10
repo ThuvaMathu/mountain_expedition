@@ -10,13 +10,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { auth, db, isFirebaseConfigured } from "@/lib/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, isFirebaseConfigured } from "@/lib/firebase";
 
-interface AuthUser extends User {
-  isAdmin?: boolean;
-  name?: string;
-}
+interface AuthUser extends User {}
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -39,31 +35,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isFirebaseConfigured || !auth) {
-      // Mock user for development
       setUser(null);
       setLoading(false);
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        try {
-          // Check if user is admin
-          const userDoc = await getDoc(doc(db!, "users", firebaseUser.uid));
-          const userData = userDoc.data();
-
-          setUser({
-            ...firebaseUser,
-            // isAdmin: userData?.isAdmin || false,
-            ...userData,
-          });
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          setUser(firebaseUser as AuthUser);
-        }
-      } else {
-        setUser(null);
-      }
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser as AuthUser);
       setLoading(false);
     });
 
@@ -72,8 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     if (!isFirebaseConfigured || !auth) {
-      // Mock login for development
-      setUser(null);
+      console.error("Login error: Firebase is not configured.");
       return;
     }
 
@@ -86,26 +63,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (email: string, password: string, name: string) => {
-    if (!isFirebaseConfigured || !auth || !db) {
-      // Mock registration for development
-      setUser(null);
+    if (!isFirebaseConfigured || !auth) {
+      console.error("Registration error: Firebase is not configured.");
       return;
     }
 
     try {
-      const { user: firebaseUser } = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      // Create user document in Firestore
-      await setDoc(doc(db, "users", firebaseUser.uid), {
-        name,
-        email,
-        isAdmin: false,
-        createdAt: new Date(),
-      });
+      await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.error("Registration error:", error);
       throw error;
@@ -113,26 +77,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const loginWithGoogle = async () => {
-    if (!isFirebaseConfigured || !auth || !db) {
-      // Mock Google login for development
-      setUser(null);
+    if (!isFirebaseConfigured || !auth) {
+      console.error("Google login error: Firebase is not configured.");
       return;
     }
 
     try {
       const provider = new GoogleAuthProvider();
-      const { user: firebaseUser } = await signInWithPopup(auth, provider);
-
-      // Check if user document exists, create if not
-      const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-      if (!userDoc.exists()) {
-        await setDoc(doc(db, "users", firebaseUser.uid), {
-          name: firebaseUser.displayName,
-          email: firebaseUser.email,
-          isAdmin: false,
-          createdAt: new Date(),
-        });
-      }
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Google login error:", error);
       throw error;
@@ -141,8 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     if (!isFirebaseConfigured || !auth) {
-      // Mock logout for development
-      setUser(null);
+      console.error("Logout error: Firebase is not configured.");
       return;
     }
 

@@ -48,7 +48,7 @@ export default function AboutPage() {
       title: "Everest",
       date: "May 2023",
       location: "Nepal/China",
-      summary: "Summited the world’s highest peak after a multi-week expedition and acclimatization rotations.",
+      summary: "Summited the world's highest peak after a multi-week expedition and acclimatization rotations.",
     },
     {
       title: "Elbrus",
@@ -66,7 +66,7 @@ export default function AboutPage() {
       title: "Aconcagua",
       date: "Feb 2024",
       location: "Argentina (Andes)",
-      summary: "South America’s highest peak via a carefully staged acclimatization plan.",
+      summary: "South America's highest peak via a carefully staged acclimatization plan.",
     },
     {
       title: "Kosciuszko",
@@ -85,6 +85,39 @@ export default function AboutPage() {
       date: "Jun 16, 2025",
       location: "USA (Alaska Range)",
       summary: "Final Seven Summits peak, completed after navigating storms and severe conditions.",
+    },
+  ]
+
+  const awards = [
+    {
+      title: "Seven Summits Completion Certificate",
+      image: "/awards/seven-summits-certificate.png",
+      description: "Official recognition for completing all Seven Summits",
+    },
+    {
+      title: "Tamil Nadu State Adventure Award",
+      image: "/awards/tn-adventure-award.png",
+      description: "State recognition for mountaineering achievements",
+    },
+    {
+      title: "National Geographic Explorer Recognition",
+      image: "/awards/natgeo-explorer.png",
+      description: "Recognition from National Geographic Society",
+    },
+    {
+      title: "Everest Summit Certificate",
+      image: "/awards/everest-certificate.png",
+      description: "Official summit certificate from Nepal Department of Tourism",
+    },
+    {
+      title: "Women in Adventure Leadership Award",
+      image: "/awards/women-leadership.png",
+      description: "Recognition for inspiring women in outdoor adventures",
+    },
+    {
+      title: "Denali Completion Medal",
+      image: "/awards/denali-medal.png",
+      description: "Medal commemorating the completion of Denali expedition",
     },
   ]
 
@@ -146,7 +179,7 @@ export default function AboutPage() {
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">Founder Story</h2>
                 <p className="mt-4 text-gray-700">
-                  From early treks in the Western Ghats to the world’s loftiest peaks, Muthamizh’s path has been shaped
+                  From early treks in the Western Ghats to the world's loftiest peaks, Muthamizh's path has been shaped
                   by discipline, mentorship, and an unwavering belief in what determined preparation can achieve. Her
                   Seven Summits pursuit was built on inclusive leadership, sustainability practices, and elevating local
                   communities along each route.
@@ -213,8 +246,8 @@ export default function AboutPage() {
                   communication—made the difference between catastrophe and survival.
                 </p>
                 <p className="mt-4 text-gray-700">
-                  The aftermath didn’t just end in a summit; it forged a deeper commitment to safety, teamwork, and
-                  leadership under pressure. Resilience isn’t the absence of fear—it’s the ability to focus and act with
+                  The aftermath didn't just end in a summit; it forged a deeper commitment to safety, teamwork, and
+                  leadership under pressure. Resilience isn't the absence of fear—it's the ability to focus and act with
                   clarity when it matters most.
                 </p>
               </div>
@@ -280,8 +313,43 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* Awards Gallery */}
+        <section className="border-t border-gray-100 bg-white">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">Awards & Recognition</h2>
+              <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+                Recognition from national and international organizations for mountaineering achievements and leadership
+                in adventure sports.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {awards.map((award, index) => (
+                <div
+                  key={index}
+                  className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                >
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={award.image || "/placeholder.svg"}
+                      alt={award.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                    <h3 className="text-lg font-semibold mb-2">{award.title}</h3>
+                    <p className="text-sm text-gray-200">{award.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Goals & Vision */}
-        <section id="goals" className="border-t border-gray-100 bg-white">
+        <section id="goals" className="border-t border-gray-100 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
             <div className="grid gap-8 lg:grid-cols-2">
               <div>
@@ -327,7 +395,7 @@ export default function AboutPage() {
         </section>
 
         {/* Media & Gallery */}
-        <section className="border-t border-gray-100 bg-gray-50">
+        <section className="border-t border-gray-100 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
             <div className="md:flex md:items-end md:justify-between">
               <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">Media & Gallery</h2>
@@ -362,7 +430,7 @@ export default function AboutPage() {
         </section>
 
         {/* Support / Get Involved */}
-        <section id="support" className="border-t border-gray-100 bg-white">
+        <section id="support" className="border-t border-gray-100 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
             <div className="rounded-2xl bg-gradient-to-br from-teal-600 to-teal-700 p-8 sm:p-10 text-white shadow-lg">
               <div className="grid gap-8 lg:grid-cols-2 lg:items-center">

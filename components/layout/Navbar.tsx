@@ -6,7 +6,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Mountain, Globe, User, LogOut } from "lucide-react";
-import AppLogo from "../ui/app-logo";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +19,6 @@ export function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <Mountain className="h-8 w-8 text-teal-600" />
-              {/* <AppLogo /> */}
               <span className="text-xl font-bold text-gray-900">
                 Summit Quest
               </span>
@@ -28,7 +26,7 @@ export function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden text-lg md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
               className="text-gray-700 hover:text-teal-600 transition-colors"
@@ -59,22 +57,11 @@ export function Navbar() {
             >
               {t("about")}
             </Link>
-            <Link
-              href="/contact"
-              className="text-gray-700 hover:text-teal-600 transition-colors"
-            >
-              {t("Contact")}
-            </Link>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleLanguage}
-              className="flex items-center space-x-1"
-            >
-              <Globe className="h-4 w-4 " />
+            {/* <Button variant="ghost" size="sm" onClick={toggleLanguage} className="flex items-center space-x-1">
+              <Globe className="h-4 w-4" />
               <span>{language === "en" ? "EN" : "TA"}</span>
-            </Button>
+            </Button> */}
 
             {user ? (
               <div className="flex items-center space-x-4">
@@ -153,12 +140,6 @@ export function Navbar() {
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
               >
                 {t("about")}
-              </Link>
-              <Link
-                href="/contact"
-                className="block px-3 py-2 text-gray-700 hover:text-teal-600"
-              >
-                {t("Contact")}
               </Link>
 
               <div className="px-3 py-2">
