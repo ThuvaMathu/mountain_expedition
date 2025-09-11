@@ -33,3 +33,19 @@ export function capitalizeName(name: string | null | undefined): string {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 }
+
+export const getAvailableSlots = (mountain: TMountainType) => {
+  return (
+    mountain.availableDates?.reduce((total, date) => {
+      return (
+        total +
+        date.slots.reduce((dateTotal, slot) => {
+          return (
+            dateTotal +
+            Math.max(0, slot.maxParticipants - slot.bookedParticipants)
+          );
+        }, 0)
+      );
+    }, 0) || 0
+  );
+};

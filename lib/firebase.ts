@@ -13,7 +13,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
 };
 
-console.log("Firebase Config:", firebaseConfig);
+//console.log("Firebase Config:", firebaseConfig);
 export const isFirebaseConfigured =
   !!firebaseConfig.apiKey &&
   !!firebaseConfig.authDomain &&

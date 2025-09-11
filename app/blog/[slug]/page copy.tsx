@@ -1,80 +1,83 @@
-import { adminDb } from "@/lib/firebase-admin";
+"use client";
+
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { db, isFirebaseConfigured } from "@/lib/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { Calendar, User, ArrowLeft, Tag } from "lucide-react";
+import { demoPosts } from "@/lib/data/demo-data";
 
-type TBlogPost = {
-  id?: string;
-  slug: string;
-  title: string;
-  desc: string;
-  author: string;
-  content: string;
-  tags: string[];
-  date: string;
-  published: boolean;
-  mainImageUrl?: string;
-  createdAt?: string;
-};
+export default function BlogPostPage() {
+  const params = useParams();
+  const slug = params.slug as string;
+  const [post, setPost] = useState<TBlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
 
-// ✅ Pre-generate all blog post pages
-export async function generateStaticParams() {
-  const snapshot = await adminDb.collection("posts").get();
-  return snapshot.docs.map((doc) => ({
-    slug: doc.data().slug,
-  }));
-}
+  useEffect(() => {
+    const loadPost = async () => {
+      try {
+        if (isFirebaseConfigured && db) {
+          const q = query(collection(db, "posts"), where("slug", "==", slug));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            const doc = snap.docs[0];
+            setPost({ id: doc.id, ...doc.data() } as TBlogPost);
+          }
+        } else {
+          // Demo data
 
-// ✅ Optionally set metadata dynamically for SEO
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const docSnap = await adminDb
-    .collection("posts")
-    .where("slug", "==", params.slug)
-    .limit(1)
-    .get();
+          const foundPost = demoPosts.find((p) => p.slug === slug);
+          setPost(foundPost || null);
+        }
+      } catch (error) {
+        console.error("Error loading post:", error);
+        setPost(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (docSnap.empty) return { title: "Post Not Found" };
+    loadPost();
+  }, [slug]);
 
-  const post = docSnap.docs[0].data() as TBlogPost;
-
-  return {
-    title: post.title,
-    description: post.desc,
-    openGraph: {
-      title: post.title,
-      description: post.desc,
-      images: post.mainImageUrl ? [post.mainImageUrl] : [],
-    },
-  };
-}
-
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
-
-  const docSnap = await adminDb
-    .collection("posts")
-    .where("slug", "==", slug)
-    .limit(1)
-    .get();
-
-  if (docSnap.empty) {
-    notFound();
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin h-12 w-12 rounded-full border-b-2 border-teal-600"></div>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
-  const post = {
-    id: docSnap.docs[0].id,
-    ...docSnap.docs[0].data(),
-  } as TBlogPost;
+  if (!post) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Post Not Found
+          </h1>
+          <p className="text-gray-600 mb-8">
+            The blog post you're looking for doesn't exist.
+          </p>
+          <Link
+            href="/blog"
+            className="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium"
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Back to Blog
+          </Link>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -125,13 +128,11 @@ export default async function BlogPostPage({
               <div className="flex items-center">
                 <Calendar className="h-5 w-5 mr-2" />
                 <span>
-                  {post.createdAt
-                    ? new Date(post.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                    : ""}
+                  {new Date(post.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </span>
               </div>
             </div>

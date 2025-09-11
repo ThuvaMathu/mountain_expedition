@@ -1,54 +1,27 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { adminDb } from "@/lib/firebase-admin"; // ✅ use Admin SDK
 import { Calendar, User, ArrowRight } from "lucide-react";
 
-export default function BlogPage() {
-  const [posts, setPosts] = useState<TBlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+export const revalidate = 60; // ✅ ISR: re-fetch data every 60s
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        if (isFirebaseConfigured && db) {
-          const q = query(collection(db, "posts"));
-          console.log("Firestore query:", q);
-          const snap = await getDocs(q);
-          const list: TBlogPost[] = snap.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as TBlogPost[];
-          setPosts(list);
-        } else {
-          // Demo data
-          setPosts([]);
-        }
-      } catch (error) {
-        console.error("Error loading posts:", error);
-        setPosts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+export default async function BlogPage() {
+  let posts: TBlogPost[] = [];
 
-    loadPosts();
-  }, []);
+  try {
+    const snap = await adminDb
+      .collection("posts")
+      .orderBy("date", "desc")
+      .get();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin h-12 w-12 rounded-full border-b-2 border-teal-600"></div>
-        </div>
-        <Footer />
-      </div>
-    );
+    posts = snap.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as TBlogPost[];
+  } catch (error) {
+    console.error("Error loading posts:", error);
+    posts = [];
   }
 
   return (
@@ -89,7 +62,7 @@ export default function BlogPage() {
 
                 <div className="p-6">
                   <div className="flex flex-wrap gap-2 mb-3">
-                    {post.tags.map((tag) => (
+                    {post.tags?.map((tag) => (
                       <span
                         key={tag}
                         className="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full"
@@ -112,7 +85,11 @@ export default function BlogPage() {
                     </div>
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-1" />
-                      <span>{new Date(post.date).toLocaleDateString()}</span>
+                      <span>
+                        {post.createdAt
+                          ? new Date(post.createdAt).toLocaleDateString()
+                          : ""}
+                      </span>
                     </div>
                   </div>
 

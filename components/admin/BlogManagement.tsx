@@ -237,7 +237,6 @@ export function BlogManagement() {
     setForm((f) => ({ ...f, mainImageUrl: localUrl }));
 
     if (!canUseStorage || !storage) {
-      // Demo mode, keep local preview only
       return;
     }
 

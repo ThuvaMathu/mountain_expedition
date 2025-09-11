@@ -1,51 +1,65 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/contexts/AuthContext"
-import { useRouter } from "next/navigation"
-import { Calendar, Users, CreditCard } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { Calendar, Users, CreditCard, Clock } from "lucide-react";
 
-interface Mountain {
-  id: string
-  name: string
-  price: number
-  availableSlots: number
-}
 interface BookingCalendarProps {
-  mountain: Mountain
+  mountain: TMountainType;
 }
 
 export function BookingCalendar({ mountain }: BookingCalendarProps) {
-  const { user } = useAuth()
-  const router = useRouter()
-  const [selectedDate, setSelectedDate] = useState<string>("")
-  const [participants, setParticipants] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
+  const { user } = useAuth();
+  const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [participants, setParticipants] = useState("Select");
+  const [isLoading, setIsLoading] = useState(false);
 
   const availableDates = [
     { date: "2025-09-01", slots: 8 },
     { date: "2025-09-15", slots: 12 },
     { date: "2025-10-01", slots: 6 },
     { date: "2025-10-15", slots: 10 },
-  ]
+  ];
 
   const handleBooking = async () => {
     if (!user) {
-      router.push("/auth/login")
-      return
+      router.push("/auth/login");
+      return;
     }
     if (!selectedDate) {
-      alert("Please select a date")
-      return
+      alert("Please select a date");
+      return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
     setTimeout(() => {
-      router.push(`/booking/checkout?mountain=${mountain.id}&date=${selectedDate}&participants=${participants}`)
-    }, 500)
-  }
+      router.push(
+        `/booking/checkout?mountain=${mountain.id}&date=${selectedDate}&participants=${participants}`
+      );
+    }, 500);
+  };
+  const getMaxParticipants = (): string[] => {
+    // Flatten all slots across all dates
+    const allSlots = mountain.availableDates.flatMap((date) => date.slots);
 
-  const totalPrice = mountain.price * participants
+    // Find the slot by ID
+    const slot = allSlots.find((s) => s.id === selectedDate) || null;
+
+    // Calculate remaining spots
+    const remaining = slot
+      ? slot.maxParticipants - slot.bookedParticipants
+      : 10;
+
+    // Return array of strings
+    return Array.from(
+      { length: remaining },
+      (_, i) => `${i + 1} ${i + 1 === 1 ? "person" : "people"}`
+    );
+  };
+  const participantCount = Number(participants.split(" ")[0]);
+  const totalPrice = mountain.price * participantCount;
 
   return (
     <div className="space-y-6">
@@ -54,29 +68,61 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
           <Calendar className="h-5 w-5 mr-2" /> Select Date
         </h3>
         <div className="space-y-2">
-          {availableDates.map((slot) => (
-            <button
+          {mountain.availableDates.map((slot) => (
+            <div
               key={slot.date}
-              onClick={() => setSelectedDate(slot.date)}
-              className={`w-full p-3 text-left rounded-lg border transition-colors ${
-                selectedDate === slot.date ? "border-teal-600 bg-teal-50" : "border-gray-200 hover:border-gray-300"
-              }`}
+              className={`w-full p-2 text-left rounded-lg border transition-colors 
+                      border-gray-200 hover:border-gray-300
+                    `}
             >
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="font-medium">
-                    {new Date(slot.date).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </div>
-                  <div className="text-sm text-gray-600">{slot.slots} slots available</div>
-                </div>
-                {selectedDate === slot.date && <div className="text-teal-600">✓</div>}
+              <div className="font-medium">
+                {new Date(slot.date).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </div>
-            </button>
+              {slot.slots.map((timeSlot) => (
+                <div key={timeSlot.id} className="my-1">
+                  <button
+                    key={slot.date}
+                    onClick={() => setSelectedDate(timeSlot.id)}
+                    className={`w-full flex justify-between items-center p-3 text-left rounded-lg border transition-colors ${
+                      selectedDate === timeSlot.id
+                        ? "border-teal-600 bg-teal-50"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <div className="flex w-full justify-between items-center">
+                      <div>
+                        <div className="text-sm w-full flex justify-between items-center text-gray-600">
+                          <Clock className="h-4 w-4  text-gray-600" />
+                          <div className="font-medium ml-2 text-gray-900">
+                            {" "}
+                            {timeSlot.time}
+                          </div>
+                        </div>
+                      </div>
+                      <div>|</div>
+                      <div>
+                        <div className="text-sm text-gray-600">
+                          {timeSlot.maxParticipants -
+                            timeSlot.bookedParticipants}{" "}
+                          spots available
+                        </div>
+                      </div>
+                    </div>
+                    <div className=" w-8 flex justify-end items-center">
+                      {" "}
+                      {selectedDate === timeSlot.id && (
+                        <div className="text-teal-600">✓</div>
+                      )}
+                    </div>
+                  </button>
+                </div>
+              ))}
+            </div>
           ))}
         </div>
       </div>
@@ -87,12 +133,12 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
         </h3>
         <select
           value={participants}
-          onChange={(e) => setParticipants(Number(e.target.value))}
+          onChange={(e) => setParticipants(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
         >
-          {[1, 2, 3, 4, 5, 6].map((num) => (
+          {getMaxParticipants().map((num) => (
             <option key={num} value={num}>
-              {num} {num === 1 ? "person" : "people"}
+              {num}
             </option>
           ))}
         </select>
@@ -100,8 +146,8 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
 
       <div className="bg-gray-50 rounded-lg p-4">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-gray-600">Base price × {participants}</span>
-          <span>${(mountain.price * participants).toLocaleString()}</span>
+          <span className="text-gray-600">Base price × {participantCount}</span>
+          <span>${(mountain.price * participantCount).toLocaleString()}</span>
         </div>
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-600">Service fee</span>
@@ -122,7 +168,8 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
       >
         {isLoading ? (
           <div className="flex items-center">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>Processing...
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+            Processing...
           </div>
         ) : (
           <div className="flex items-center justify-center">
@@ -130,7 +177,9 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
           </div>
         )}
       </Button>
-      <p className="text-xs text-gray-500 text-center">You won't be charged until your booking is confirmed</p>
+      <p className="text-xs text-gray-500 text-center">
+        You won't be charged until your booking is confirmed
+      </p>
     </div>
-  )
+  );
 }

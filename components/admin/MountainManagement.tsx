@@ -23,47 +23,38 @@ import {
   Users,
   Calendar,
   Mountain,
+  X,
 } from "lucide-react";
+import { ImageUploader } from "../global/image-uploader";
+import { CurrencyInput } from "../ui/currency-input";
+import { ArrayInput } from "../ui/array-input";
+import { ItineraryInput } from "../ui/itinerylist-adder";
+import { Select } from "../ui/select";
 
-type TimeSlot = {
-  id: string;
-  time: string;
-  maxParticipants: number;
-  bookedParticipants: number;
-  priceMultiplier: number;
-};
-
-type MountainType = {
-  id?: string;
-  name: string;
-  altitude: number;
-  location: string;
-  difficulty: "Beginner" | "Intermediate" | "Advanced" | "Expert";
-  category: "seven-summits" | "himalayas" | "indian-peaks";
-  bestSeason: string;
-  price: number;
-  availableDates: Array<{
-    date: string;
-    slots: TimeSlot[];
-  }>;
-  imageUrl?: string;
-  description?: string;
-  createdAt?: any;
-};
-
-const emptyMountain: MountainType = {
+const emptyMountain: TMountainType = {
   name: "",
   altitude: 0,
   location: "",
   difficulty: "Intermediate",
-  category: "himalayas",
   bestSeason: "",
   price: 0,
   availableDates: [],
   description: "",
+  id: "",
+  imageUrl: [],
+  safetyRating: "Good",
+  rating: 0,
+  totalReviews: 0,
+  availableSlots: 0,
+  longDescription: "",
+  duration: "",
+  groupSize: "",
+  included: [],
+  notIncluded: [],
+  itinerary: [],
 };
 
-const emptySlot: TimeSlot = {
+const emptySlot: TTimeSlot = {
   id: "",
   time: "06:00",
   maxParticipants: 10,
@@ -72,108 +63,25 @@ const emptySlot: TimeSlot = {
 };
 
 export function MountainManagement() {
-  const [mountains, setMountains] = useState<MountainType[]>([]);
-  const [form, setForm] = useState<MountainType>(emptyMountain);
+  const [mountains, setMountains] = useState<TMountainType[]>([]);
+  const [form, setForm] = useState<TMountainType>(emptyMountain);
   const [dateInput, setDateInput] = useState("");
-  const [slotInput, setSlotInput] = useState<TimeSlot>(emptySlot);
+  const [slotInput, setSlotInput] = useState<TTimeSlot>(emptySlot);
   const [file, setFile] = useState<File | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [expandedDates, setExpandedDates] = useState<Set<number>>(new Set());
+  const [initialUrls, setInitialUrls] = useState<string[]>([]);
 
   const load = async () => {
     if (!isFirebaseConfigured || !db) {
-      // Demo data for when Firebase is not configured
-      const demoMountains: MountainType[] = [
-        {
-          id: "demo_1",
-          name: "Mount Everest",
-          altitude: 8849,
-          location: "Nepal/Tibet",
-          difficulty: "Expert",
-          category: "seven-summits",
-          bestSeason: "April-May, September-October",
-          price: 65000,
-          availableDates: [
-            {
-              date: "2024-05-15",
-              slots: [
-                {
-                  id: "slot_1",
-                  time: "04:00",
-                  maxParticipants: 8,
-                  bookedParticipants: 6,
-                  priceMultiplier: 1.2,
-                },
-                {
-                  id: "slot_2",
-                  time: "06:00",
-                  maxParticipants: 10,
-                  bookedParticipants: 8,
-                  priceMultiplier: 1.0,
-                },
-              ],
-            },
-            {
-              date: "2024-05-20",
-              slots: [
-                {
-                  id: "slot_3",
-                  time: "05:00",
-                  maxParticipants: 12,
-                  bookedParticipants: 4,
-                  priceMultiplier: 1.0,
-                },
-              ],
-            },
-          ],
-          imageUrl: "/mount-everest-summit.png",
-          description:
-            "The world's highest peak, offering the ultimate mountaineering challenge.",
-        },
-        {
-          id: "demo_2",
-          name: "Kilimanjaro",
-          altitude: 5895,
-          location: "Tanzania",
-          difficulty: "Intermediate",
-          category: "seven-summits",
-          bestSeason: "June-October, December-March",
-          price: 3500,
-          availableDates: [
-            {
-              date: "2024-03-20",
-              slots: [
-                {
-                  id: "slot_4",
-                  time: "06:00",
-                  maxParticipants: 15,
-                  bookedParticipants: 12,
-                  priceMultiplier: 1.0,
-                },
-                {
-                  id: "slot_5",
-                  time: "08:00",
-                  maxParticipants: 15,
-                  bookedParticipants: 8,
-                  priceMultiplier: 0.9,
-                },
-              ],
-            },
-          ],
-          imageUrl: "/mount-kilimanjaro-acacia.png",
-          description:
-            "Africa's highest peak, accessible to climbers of various skill levels.",
-        },
-      ];
-      setMountains(demoMountains);
+      setMountains([]);
       return;
     }
-
     try {
       const snap = await getDocs(collection(db, "mountains"));
-      const list: MountainType[] = snap.docs.map((d) => ({
+      const list: TMountainType[] = snap.docs.map((d) => ({
         id: d.id,
         ...(d.data() as any),
       }));
@@ -187,15 +95,6 @@ export function MountainManagement() {
   useEffect(() => {
     load().catch(console.error);
   }, []);
-
-  const resetForm = () => {
-    setForm(emptyMountain);
-    setFile(null);
-    setDateInput("");
-    setSlotInput({ ...emptySlot, id: "" });
-    setEditingId(null);
-    setExpandedDates(new Set());
-  };
 
   const toggleDateExpansion = (dateIndex: number) => {
     const newExpanded = new Set(expandedDates);
@@ -290,20 +189,6 @@ export function MountainManagement() {
     }
   };
 
-  const updateSlot = (
-    dateIndex: number,
-    slotIndex: number,
-    field: keyof TimeSlot,
-    value: any
-  ) => {
-    const updatedDates = [...form.availableDates];
-    updatedDates[dateIndex].slots[slotIndex] = {
-      ...updatedDates[dateIndex].slots[slotIndex],
-      [field]: value,
-    };
-    setForm({ ...form, availableDates: updatedDates });
-  };
-
   const handleSave = async () => {
     if (!form.name || !form.location || form.altitude <= 0 || form.price <= 0) {
       setNotice("Please fill in all required fields.");
@@ -313,48 +198,36 @@ export function MountainManagement() {
 
     setLoading(true);
     setNotice(null);
-    try {
-      let imageUrl = form.imageUrl;
-      if (file && isFirebaseConfigured && storage) {
-        const storageRef = ref(storage, `mountains/${Date.now()}_${file.name}`);
-        await uploadBytes(storageRef, file);
-        imageUrl = await getDownloadURL(storageRef);
-      }
 
+    try {
       const payload = {
         ...form,
-        altitude: Number(form.altitude),
-        price: Number(form.price),
-        imageUrl: imageUrl || form.imageUrl || "",
         createdAt: editingId ? form.createdAt : serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
 
       if (!isFirebaseConfigured || !db) {
-        // Demo mode
-        if (editingId) {
-          setMountains((prev) =>
-            prev.map((m) =>
-              m.id === editingId ? { ...payload, id: editingId } : m
-            )
-          );
-          setNotice("Mountain updated in demo mode.");
-        } else {
-          const newMountain = { ...payload, id: `demo_${Date.now()}` };
-          setMountains((prev) => [newMountain, ...prev]);
-          setNotice("Mountain created in demo mode.");
-        }
-        resetForm();
+        setNotice("Failed to save mountain. Please try again.");
         return;
       }
 
       if (editingId) {
+        // ✅ update existing doc
         await updateDoc(doc(db, "mountains", editingId), payload as any);
         setNotice("Mountain updated successfully.");
       } else {
-        await addDoc(collection(db, "mountains"), payload as any);
+        // ✅ add new doc with auto-generated unique ID
+        const docRef = await addDoc(
+          collection(db, "mountains"),
+          payload as any
+        );
+        console.log("✅ Created document with ID:", docRef.id);
+
+        // If you want to store the generated ID inside the doc, do a follow-up update:
+        await updateDoc(docRef, { id: docRef.id });
         setNotice("Mountain created successfully.");
       }
+
       await load();
       resetForm();
     } catch (e) {
@@ -366,21 +239,10 @@ export function MountainManagement() {
     }
   };
 
-  const handleEdit = (m: MountainType) => {
+  const handleEdit = (m: TMountainType) => {
     setEditingId(m.id || null);
-    setForm({
-      name: m.name,
-      altitude: m.altitude,
-      location: m.location,
-      difficulty: m.difficulty,
-      category: m.category,
-      bestSeason: m.bestSeason,
-      price: m.price,
-      availableDates: m.availableDates || [],
-      imageUrl: m.imageUrl,
-      description: m.description || "",
-      createdAt: m.createdAt,
-    });
+    setForm(m);
+    setInitialUrls(m.imageUrl || []);
     setFile(null);
     setDateInput("");
     setSlotInput({ ...emptySlot, id: "" });
@@ -415,7 +277,7 @@ export function MountainManagement() {
     }
   };
 
-  const getTotalSlots = (mountain: MountainType) => {
+  const getTotalSlots = (mountain: TMountainType) => {
     return (
       mountain.availableDates?.reduce(
         (total, date) => total + date.slots.length,
@@ -424,7 +286,7 @@ export function MountainManagement() {
     );
   };
 
-  const getAvailableSlots = (mountain: MountainType) => {
+  const getAvailableSlots = (mountain: TMountainType) => {
     return (
       mountain.availableDates?.reduce((total, date) => {
         return (
@@ -439,7 +301,15 @@ export function MountainManagement() {
       }, 0) || 0
     );
   };
-
+  const resetForm = () => {
+    setForm(emptyMountain);
+    setInitialUrls([]);
+    setFile(null);
+    setDateInput("");
+    setSlotInput({ ...emptySlot, id: "" });
+    setEditingId(null);
+    setExpandedDates(new Set());
+  };
   return (
     <div className="space-y-8">
       <div>
@@ -509,7 +379,7 @@ export function MountainManagement() {
               onChange={(e) =>
                 setForm({
                   ...form,
-                  difficulty: e.target.value as MountainType["difficulty"],
+                  difficulty: e.target.value as TMountainType["difficulty"],
                 })
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
@@ -518,25 +388,6 @@ export function MountainManagement() {
               <option value="Intermediate">Intermediate</option>
               <option value="Advanced">Advanced</option>
               <option value="Expert">Expert</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Category
-            </label>
-            <select
-              value={form.category}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  category: e.target.value as MountainType["category"],
-                })
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-            >
-              <option value="seven-summits">Seven Summits</option>
-              <option value="himalayas">Himalayas</option>
-              <option value="indian-peaks">Indian Peaks</option>
             </select>
           </div>
           <div>
@@ -551,41 +402,92 @@ export function MountainManagement() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Base Price (USD) <span className="text-red-500">*</span>
+              Duration <span className="text-red-500">*</span>
             </label>
             <Input
               type="number"
               min="0"
-              value={form.price}
-              onChange={(e) =>
-                setForm({ ...form, price: Number(e.target.value) })
-              }
-              placeholder="e.g., 65000"
+              value={form.duration}
+              onChange={(e) => setForm({ ...form, duration: e.target.value })}
+              placeholder="e.g., 7"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Main Image
+              Group Size <span className="text-red-500">*</span>
             </label>
-            <div className="flex items-center gap-3">
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                className="flex-1"
-              />
-              {form.imageUrl && (
-                <a
-                  href={form.imageUrl}
-                  target="_blank"
-                  className="text-teal-600 hover:text-teal-700 underline text-sm whitespace-nowrap"
-                  rel="noreferrer"
-                >
-                  View Current
-                </a>
-              )}
+            <Input
+              type="number"
+              min="0"
+              value={form.groupSize}
+              onChange={(e) => setForm({ ...form, groupSize: e.target.value })}
+              placeholder="e.g., 4"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Safety Rating <span className="text-red-500">*</span>
+            </label>
+            <Select
+              options={[
+                { label: "Excellent", value: "Excellent" },
+                { label: "Good", value: "Good" },
+                { label: "Average", value: "Average" },
+                { label: "Poor", value: "Poor" },
+              ]}
+              defaultValue=""
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  safetyRating: e.target.value as TMountainType["safetyRating"],
+                })
+              }
+            />
+          </div>
+
+          <div className="mt-2 col-span-2 border border-gray-200 rounded p-4">
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+              What's Included
+            </h2>
+            <div className=" w-full flex gap-4 mb-2">
+              <div className="w-full">
+                <label className="block text-sm font-medium text-gray-700">
+                  Included
+                </label>
+                <ArrayInput
+                  value={form.included}
+                  onChange={(values) => setForm({ ...form, included: values })}
+                  placeholder="Enter included items"
+                  className="mt-2 w-full"
+                />
+              </div>
+              <div className="w-full">
+                <label className="block text-sm font-medium text-gray-700">
+                  Not Included
+                </label>
+                <ArrayInput
+                  value={form.notIncluded}
+                  onChange={(values) =>
+                    setForm({ ...form, notIncluded: values })
+                  }
+                  placeholder="Enter not included items"
+                  className="mt-2 w-full"
+                />
+              </div>
             </div>
           </div>
+          <div className="mt-2 col-span-2 border border-gray-200 rounded p-4">
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+              Expedition Itinerary
+            </h2>
+            <div className=" w-full">
+              <ItineraryInput
+                value={form.itinerary}
+                onChange={(values) => setForm({ ...form, itinerary: values })}
+              />
+            </div>
+          </div>
+
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Description
@@ -598,6 +500,16 @@ export function MountainManagement() {
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
               placeholder="Describe the mountain, climbing routes, challenges, and what makes it special..."
+            />
+          </div>
+          <div className="md:col-span-2 mt-2 ">
+            <ImageUploader
+              isMulti
+              bucketName="posts/main-images"
+              initialUrls={initialUrls}
+              onImageUpload={(urls) =>
+                setForm((prev) => ({ ...prev, imageUrl: urls }))
+              }
             />
           </div>
         </div>
@@ -858,6 +770,17 @@ export function MountainManagement() {
         </div>
 
         {/* Action Buttons */}
+        <div>
+          <label className="block text-lg font-medium text-gray-700 mb-1">
+            Base Price (USD) <span className="text-red-500">*</span>
+          </label>
+          <CurrencyInput
+            value={form.price}
+            onChange={(value) => setForm({ ...form, price: value })}
+            placeholder="e.g., 65000"
+            className="max-w-xs"
+          />
+        </div>
         <div className="flex flex-wrap gap-3 pt-4 border-t">
           <Button
             onClick={handleSave}
@@ -915,7 +838,7 @@ export function MountainManagement() {
               >
                 {m.imageUrl && (
                   <img
-                    src={m.imageUrl || "/placeholder.svg"}
+                    src={m.imageUrl[0] || "/placeholder.svg"}
                     alt={m.name}
                     className="w-full h-48 object-cover"
                   />
@@ -974,9 +897,9 @@ export function MountainManagement() {
                       </span>
                       <span className="text-gray-500"> spots available</span>
                     </div>
-                    <div className="text-xs text-gray-500 capitalize">
+                    {/* <div className="text-xs text-gray-500 capitalize">
                       {m.category.replace("-", " ")}
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex gap-2">
