@@ -49,8 +49,8 @@ export default function GalleryMain() {
   useEffect(() => {
     const loadGalleryContent = async () => {
       try {
-        // if (isFirebaseConfigured && db) {
-        if (false) {
+        if (isFirebaseConfigured && db) {
+          // if (false) {
           // Load approved experience submissions
           const experiencesQuery = query(
             collection(db, "experienceSubmissions"),

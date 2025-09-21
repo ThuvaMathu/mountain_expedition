@@ -9,7 +9,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { demoMountains } from "@/lib/data/demo-data";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { getDocs, collection } from "firebase/firestore";
 

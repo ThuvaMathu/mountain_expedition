@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Calendar, User, ArrowLeft, Tag } from "lucide-react";
+import { Metadata } from "next";
 
 type TBlogPost = {
   id?: string;
@@ -19,6 +20,11 @@ type TBlogPost = {
   createdAt?: string;
 };
 
+interface TBlogPostSEO {
+  title: string;
+  desc: string;
+  mainImageUrl?: string;
+}
 // ✅ Pre-generate all blog post pages
 export async function generateStaticParams() {
   const snapshot = await adminDb.collection("posts").get();
@@ -28,20 +34,33 @@ export async function generateStaticParams() {
 }
 
 // ✅ Optionally set metadata dynamically for SEO
+
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}) {
+  params: Promise<{ slug: string }>; // Change the type of params
+}): Promise<Metadata> {
+  const { slug } = await params; // Await the params object
+
   const docSnap = await adminDb
     .collection("posts")
-    .where("slug", "==", params.slug)
+    .where("slug", "==", slug)
     .limit(1)
     .get();
 
-  if (docSnap.empty) return { title: "Post Not Found" };
+  if (docSnap.empty) {
+    return {
+      title: "Post Not Found",
+      description: "The requested post could not be found.",
+      openGraph: {
+        title: "Post Not Found",
+        description: "The requested post could not be found.",
+        images: [],
+      },
+    };
+  }
 
-  const post = docSnap.docs[0].data() as TBlogPost;
+  const post = docSnap.docs[0].data() as TBlogPostSEO;
 
   return {
     title: post.title,
@@ -57,9 +76,9 @@ export async function generateMetadata({
 export default async function BlogPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   const docSnap = await adminDb
     .collection("posts")

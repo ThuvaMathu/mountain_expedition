@@ -1,166 +1,166 @@
-export const demoMountains: TMountainType[] = [
-  {
-    id: "demo_1",
-    name: "Mount Everest",
-    location: "Nepal/Tibet",
-    altitude: 8849,
-    difficulty: "Expert",
-    bestSeason: "April-May, September-October",
-    imageUrl: ["/images/mount-everest-summit.png"],
-    price: 65000,
-    rating: 4.9,
-    totalReviews: 234,
-    availableSlots: 30,
-    description:
-      "The world's highest peak, offering the ultimate mountaineering challenge.",
-    longDescription:
-      "Mount Everest, standing tall at 8,849 meters, is the highest mountain on Earth. Climbing Everest is a test of physical endurance and mental resilience, attracting mountaineers from all around the world.",
-    duration: "60 days (including acclimatization)",
-    groupSize: "Up to 10 climbers per expedition",
-    included: [
-      "Professional guide",
-      "Base camp accommodation",
-      "Meals during expedition",
-      "Climbing permits",
-      "Oxygen cylinders",
-    ],
-    notIncluded: [
-      "International flights",
-      "Personal climbing gear",
-      "Travel insurance",
-      "Visa fees",
-    ],
-    availableDates: [
-      {
-        date: "2024-05-15",
-        slots: [
-          {
-            id: "slot_1",
-            time: "04:00",
-            maxParticipants: 8,
-            bookedParticipants: 6,
-            priceMultiplier: 1.2,
-          },
-          {
-            id: "slot_2",
-            time: "06:00",
-            maxParticipants: 10,
-            bookedParticipants: 8,
-            priceMultiplier: 1.0,
-          },
-        ],
-      },
-      {
-        date: "2024-05-20",
-        slots: [
-          {
-            id: "slot_3",
-            time: "05:00",
-            maxParticipants: 12,
-            bookedParticipants: 4,
-            priceMultiplier: 1.0,
-          },
-        ],
-      },
-    ],
-    itinerary: [
-      {
-        day: 1,
-        title: "Arrival in Kathmandu",
-        description:
-          "Arrive in Kathmandu, transfer to hotel, and attend a pre-expedition briefing with the guide team.",
-        altitude: 1400,
-      },
-      {
-        day: 50,
-        title: "Summit Push",
-        description:
-          "Begin summit push at night, reaching the peak early morning for breathtaking views, then descend to Camp 4.",
-        altitude: 8849,
-      },
-    ],
-    safetyRating: "Good",
-  },
-  {
-    id: "demo_2",
-    name: "Mount Kilimanjaro",
-    location: "Tanzania",
-    altitude: 5895,
-    difficulty: "Intermediate",
-    bestSeason: "January-March, June-October",
-    imageUrl: ["/images/mount-kilimanjaro.png"],
-    price: 3500,
-    rating: 4.7,
-    totalReviews: 156,
-    availableSlots: 45,
-    description:
-      "Africa's highest peak, known for its breathtaking landscapes and non-technical climb.",
-    longDescription:
-      "Mount Kilimanjaro is the tallest mountain in Africa and one of the most popular trekking destinations in the world. Its routes take you through lush rainforests, alpine deserts, and up to the icy summit of Uhuru Peak.",
-    duration: "7 days",
-    groupSize: "Up to 15 trekkers per group",
-    included: [
-      "Experienced trek leader",
-      "Mountain huts/camping",
-      "Meals during trek",
-      "Park fees",
-    ],
-    notIncluded: [
-      "Flights to Tanzania",
-      "Tips for porters",
-      "Travel insurance",
-    ],
-    availableDates: [
-      {
-        date: "2024-06-10",
-        slots: [
-          {
-            id: "slot_1",
-            time: "07:00",
-            maxParticipants: 15,
-            bookedParticipants: 10,
-            priceMultiplier: 1.0,
-          },
-        ],
-      },
-      {
-        date: "2024-09-05",
-        slots: [
-          {
-            id: "slot_2",
-            time: "07:30",
-            maxParticipants: 12,
-            bookedParticipants: 5,
-            priceMultiplier: 1.1,
-          },
-        ],
-      },
-    ],
-    itinerary: [
-      {
-        day: 1,
-        title: "Arrival in Moshi",
-        description:
-          "Meet the guide team, attend briefing, and prepare for trek.",
-        altitude: 890,
-      },
-      {
-        day: 3,
-        title: "Shira Plateau",
-        description: "Trek through moorland to reach the scenic Shira Plateau.",
-        altitude: 3850,
-      },
-      {
-        day: 6,
-        title: "Summit Day",
-        description:
-          "Start early morning to reach Uhuru Peak for sunrise, then descend to base camp.",
-        altitude: 5895,
-      },
-    ],
-    safetyRating: "Good",
-  },
-];
+// export const demoMountains: TMountainType[] = [
+//   {
+//     id: "demo_1",
+//     name: "Mount Everest",
+//     location: "Nepal/Tibet",
+//     altitude: 8849,
+//     difficulty: "Expert",
+//     bestSeason: "April-May, September-October",
+//     imageUrl: ["/images/mount-everest-summit.png"],
+//     price: 65000,
+//     rating: 4.9,
+//     totalReviews: 234,
+//     availableSlots: 30,
+//     description:
+//       "The world's highest peak, offering the ultimate mountaineering challenge.",
+//     longDescription:
+//       "Mount Everest, standing tall at 8,849 meters, is the highest mountain on Earth. Climbing Everest is a test of physical endurance and mental resilience, attracting mountaineers from all around the world.",
+//     duration: "60 days (including acclimatization)",
+//     groupSize: "Up to 10 climbers per expedition",
+//     included: [
+//       "Professional guide",
+//       "Base camp accommodation",
+//       "Meals during expedition",
+//       "Climbing permits",
+//       "Oxygen cylinders",
+//     ],
+//     notIncluded: [
+//       "International flights",
+//       "Personal climbing gear",
+//       "Travel insurance",
+//       "Visa fees",
+//     ],
+//     availableDates: [
+//       {
+//         date: "2024-05-15",
+//         slots: [
+//           {
+//             id: "slot_1",
+//             time: "04:00",
+//             maxParticipants: 8,
+//             bookedParticipants: 6,
+//             priceMultiplier: 1.2,
+//           },
+//           {
+//             id: "slot_2",
+//             time: "06:00",
+//             maxParticipants: 10,
+//             bookedParticipants: 8,
+//             priceMultiplier: 1.0,
+//           },
+//         ],
+//       },
+//       {
+//         date: "2024-05-20",
+//         slots: [
+//           {
+//             id: "slot_3",
+//             time: "05:00",
+//             maxParticipants: 12,
+//             bookedParticipants: 4,
+//             priceMultiplier: 1.0,
+//           },
+//         ],
+//       },
+//     ],
+//     itinerary: [
+//       {
+//         day: 1,
+//         title: "Arrival in Kathmandu",
+//         description:
+//           "Arrive in Kathmandu, transfer to hotel, and attend a pre-expedition briefing with the guide team.",
+//         altitude: 1400,
+//       },
+//       {
+//         day: 50,
+//         title: "Summit Push",
+//         description:
+//           "Begin summit push at night, reaching the peak early morning for breathtaking views, then descend to Camp 4.",
+//         altitude: 8849,
+//       },
+//     ],
+//     safetyRating: "Good",
+//   },
+//   {
+//     id: "demo_2",
+//     name: "Mount Kilimanjaro",
+//     location: "Tanzania",
+//     altitude: 5895,
+//     difficulty: "Intermediate",
+//     bestSeason: "January-March, June-October",
+//     imageUrl: ["/images/mount-kilimanjaro.png"],
+//     price: 3500,
+//     rating: 4.7,
+//     totalReviews: 156,
+//     availableSlots: 45,
+//     description:
+//       "Africa's highest peak, known for its breathtaking landscapes and non-technical climb.",
+//     longDescription:
+//       "Mount Kilimanjaro is the tallest mountain in Africa and one of the most popular trekking destinations in the world. Its routes take you through lush rainforests, alpine deserts, and up to the icy summit of Uhuru Peak.",
+//     duration: "7 days",
+//     groupSize: "Up to 15 trekkers per group",
+//     included: [
+//       "Experienced trek leader",
+//       "Mountain huts/camping",
+//       "Meals during trek",
+//       "Park fees",
+//     ],
+//     notIncluded: [
+//       "Flights to Tanzania",
+//       "Tips for porters",
+//       "Travel insurance",
+//     ],
+//     availableDates: [
+//       {
+//         date: "2024-06-10",
+//         slots: [
+//           {
+//             id: "slot_1",
+//             time: "07:00",
+//             maxParticipants: 15,
+//             bookedParticipants: 10,
+//             priceMultiplier: 1.0,
+//           },
+//         ],
+//       },
+//       {
+//         date: "2024-09-05",
+//         slots: [
+//           {
+//             id: "slot_2",
+//             time: "07:30",
+//             maxParticipants: 12,
+//             bookedParticipants: 5,
+//             priceMultiplier: 1.1,
+//           },
+//         ],
+//       },
+//     ],
+//     itinerary: [
+//       {
+//         day: 1,
+//         title: "Arrival in Moshi",
+//         description:
+//           "Meet the guide team, attend briefing, and prepare for trek.",
+//         altitude: 890,
+//       },
+//       {
+//         day: 3,
+//         title: "Shira Plateau",
+//         description: "Trek through moorland to reach the scenic Shira Plateau.",
+//         altitude: 3850,
+//       },
+//       {
+//         day: 6,
+//         title: "Summit Day",
+//         description:
+//           "Start early morning to reach Uhuru Peak for sunrise, then descend to base camp.",
+//         altitude: 5895,
+//       },
+//     ],
+//     safetyRating: "Good",
+//   },
+// ];
 
 export const demoPosts: TBlogPost[] = [
   {
@@ -299,4 +299,6 @@ export const mockMountain: TMountainType = {
   ],
   safetyRating: "Good",
   availableDates: [],
+  priceUSD: 0,
+  priceINR: 0,
 };
