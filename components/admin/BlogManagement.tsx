@@ -189,7 +189,7 @@ export function BlogManagement() {
       desc: p.desc,
       author: p.author,
       tags: p.tags || [],
-      date: p.date,
+      date: p.createdAt,
       published: !!p.published,
       mainImageUrl: p.mainImageUrl || "",
     };
@@ -498,7 +498,7 @@ export function BlogManagement() {
                     <div>
                       <div className="font-semibold">{p.title}</div>
                       <div className="text-xs text-gray-600">
-                        {new Date(p.date).toLocaleDateString()}
+                        {new Date(p.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                     <div className="flex gap-2">

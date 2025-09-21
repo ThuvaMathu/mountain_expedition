@@ -12,8 +12,9 @@ import { BlogManagement } from "@/components/admin/BlogManagement";
 import { GalleryManagement } from "@/components/admin/GalleryManagement";
 import { StatsManagement } from "@/components/admin/StatsManagement";
 import { ContactsManagement } from "@/components/admin/ContactsManagement";
-import { EventsManagement } from "@/components/admin/EventsManagement";
+import { EventManagement } from "@/components/admin/EventsManagement";
 import { AdminAccount } from "@/components/admin/AdminAccount";
+import { BookingManagement } from "@/components/admin/BookingManagement";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -45,6 +46,8 @@ export default function AdminPage() {
     switch (activeTab) {
       case "dashboard":
         return <AdminDashboard />;
+      case "booking":
+        return <BookingManagement />;
       case "mountains":
         return <MountainManagement />;
       case "blog":
@@ -56,7 +59,7 @@ export default function AdminPage() {
       case "contacts":
         return <ContactsManagement />;
       case "events":
-        return <EventsManagement />;
+        return <EventManagement />;
       case "account":
         return <AdminAccount />;
       default:
@@ -73,7 +76,9 @@ export default function AdminPage() {
           <div className="max-w-7xl mx-auto">{renderContent()}</div>
         </main>
       </div>
-      <Footer />
+      {/* <div className="absolute w-full -z-10 bottom-0 ">
+        <Footer />
+      </div> */}
     </div>
   );
 }

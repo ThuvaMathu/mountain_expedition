@@ -14,7 +14,7 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
   const { user } = useAuth();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string>("");
-  const [participants, setParticipants] = useState("Select");
+  const [participants, setParticipants] = useState("1 person");
   const [isLoading, setIsLoading] = useState(false);
 
   const availableDates = [
@@ -24,22 +24,6 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
     { date: "2025-10-15", slots: 10 },
   ];
 
-  const handleBooking = async () => {
-    if (!user) {
-      router.push("/auth/login");
-      return;
-    }
-    if (!selectedDate) {
-      alert("Please select a date");
-      return;
-    }
-    setIsLoading(true);
-    setTimeout(() => {
-      router.push(
-        `/booking/checkout?mountain=${mountain.id}&date=${selectedDate}&participants=${participants}`
-      );
-    }, 500);
-  };
   const getMaxParticipants = (): string[] => {
     // Flatten all slots across all dates
     const allSlots = mountain.availableDates.flatMap((date) => date.slots);
@@ -57,6 +41,27 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
       { length: remaining },
       (_, i) => `${i + 1} ${i + 1 === 1 ? "person" : "people"}`
     );
+  };
+  const handleBooking = async () => {
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
+    if (!selectedDate) {
+      alert("Please select a date");
+      return;
+    }
+    setIsLoading(true);
+    setTimeout(() => {
+      const maxP = getMaxParticipants().length;
+      router.push(
+        `/booking/checkout?mountain=${
+          mountain.id
+        }&slot_id=${selectedDate}&participants=${
+          participants.split(" ")[0]
+        }&max=${maxP}`
+      );
+    }, 100);
   };
   const participantCount = Number(participants.split(" ")[0]);
   const totalPrice = mountain.price * participantCount;

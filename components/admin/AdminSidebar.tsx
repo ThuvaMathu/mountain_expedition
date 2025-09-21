@@ -10,6 +10,7 @@ import {
   CalendarDays,
   Shield,
   Settings,
+  ClipboardList,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -20,6 +21,7 @@ interface AdminSidebarProps {
 export function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarProps) {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+    { id: "booking", label: "Bookings", icon: ClipboardList },
     { id: "mountains", label: "Mountains", icon: Mountain },
     { id: "blog", label: "Blog Posts", icon: FileText },
     { id: "gallery", label: "Gallery", icon: ImageIcon },

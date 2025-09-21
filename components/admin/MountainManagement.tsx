@@ -38,6 +38,8 @@ const emptyMountain: TMountainType = {
   difficulty: "Intermediate",
   bestSeason: "",
   price: 0,
+  priceINR: 0,
+  priceUSD: 0,
   availableDates: [],
   description: "",
   id: "",
@@ -770,16 +772,30 @@ export function MountainManagement() {
         </div>
 
         {/* Action Buttons */}
-        <div>
-          <label className="block text-lg font-medium text-gray-700 mb-1">
-            Base Price (USD) <span className="text-red-500">*</span>
-          </label>
-          <CurrencyInput
-            value={form.price}
-            onChange={(value) => setForm({ ...form, price: value })}
-            placeholder="e.g., 65000"
-            className="max-w-xs"
-          />
+        <div className=" grid grid-cols-2 w-full">
+          <div>
+            <label className="block text-lg font-medium text-gray-700 mb-1">
+              Base Price (INR) <span className="text-red-500">*</span>
+            </label>
+            <CurrencyInput
+              value={form.priceINR}
+              onChange={(value) => setForm({ ...form, priceINR: value })}
+              placeholder="e.g., 65000"
+              className="max-w-xs"
+              prefix="₹"
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-medium text-gray-700 mb-1">
+              Base Price (USD) <span className="text-red-500">*</span>
+            </label>
+            <CurrencyInput
+              value={form.priceUSD}
+              onChange={(value) => setForm({ ...form, priceUSD: value })}
+              placeholder="e.g., 2800"
+              className="max-w-xs"
+            />
+          </div>
         </div>
         <div className="flex flex-wrap gap-3 pt-4 border-t">
           <Button

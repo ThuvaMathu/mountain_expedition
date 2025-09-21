@@ -1,11 +1,48 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-
+import { v4 as uuidv4 } from "uuid";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number, currency: string = "USD") {
+// export function formatCurrency(amount: number, currency: string = "USD") {
+//   return new Intl.NumberFormat("en-US", {
+//     style: "currency",
+//     currency,
+//   }).format(amount);
+// }
+export function formatCurrency(
+  amount: number,
+  currency: string = "USD",
+  formatShort: boolean = false
+): string {
+  if (formatShort) {
+    const absAmount = Math.abs(amount);
+    let formatted = amount;
+    let suffix = "";
+
+    if (absAmount >= 1_000_000_000_000) {
+      formatted = amount / 1_000_000_000_000;
+      suffix = "T";
+    } else if (absAmount >= 1_000_000_000) {
+      formatted = amount / 1_000_000_000;
+      suffix = "B";
+    } else if (absAmount >= 1_000_000) {
+      formatted = amount / 1_000_000;
+      suffix = "M";
+    } else if (absAmount >= 1_000) {
+      formatted = amount / 1_000;
+      suffix = "K";
+    }
+
+    return `${new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 1,
+    }).format(formatted)}${suffix}`;
+  }
+
+  // Default full format
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
@@ -22,7 +59,7 @@ export function formatDate(date: Date | string) {
 }
 
 export function generateBookingId() {
-  return "BK" + Date.now().toString(36).toUpperCase();
+  return "bk-" + Date.now().toString(36).toUpperCase();
 }
 
 export function capitalizeName(name: string | null | undefined): string {
@@ -49,3 +86,6 @@ export const getAvailableSlots = (mountain: TMountainType) => {
     }, 0) || 0
   );
 };
+
+export const generateUniqueId = ({ prefix = "" }: { prefix?: string | null }) =>
+  `${prefix ? prefix + "-" : ""}${uuidv4().replace(/-/g, "")}`;

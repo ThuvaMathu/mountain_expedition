@@ -62,7 +62,7 @@ export default function MountainDetailPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-teal-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading mountain details...</p>
         </div>
       </div>
@@ -155,7 +155,7 @@ export default function MountainDetailPage() {
                       onClick={() => setSelectedImage(index)}
                       className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
                         selectedImage === index
-                          ? "border-blue-600"
+                          ? "border-teal-600"
                           : "border-gray-200"
                       }`}
                     >
@@ -181,21 +181,21 @@ export default function MountainDetailPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="flex items-center space-x-3">
-                  <Clock className="h-6 w-6 text-blue-600" />
+                  <Clock className="h-6 w-6 text-teal-600" />
                   <div>
                     <div className="font-medium text-gray-900">Duration</div>
                     <div className="text-gray-600">{mountain.duration}</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Users className="h-6 w-6 text-blue-600" />
+                  <Users className="h-6 w-6 text-teal-600" />
                   <div>
                     <div className="font-medium text-gray-900">Group Size</div>
                     <div className="text-gray-600">{mountain.groupSize}</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Shield className="h-6 w-6 text-blue-600" />
+                  <Shield className="h-6 w-6 text-teal-600" />
                   <div>
                     <div className="font-medium text-gray-900">
                       Safety Rating
@@ -253,7 +253,7 @@ export default function MountainDetailPage() {
                 {mountain.itinerary.slice(0, 5).map((day) => (
                   <div
                     key={day.day}
-                    className="border-l-4 border-blue-600 pl-4"
+                    className="border-l-4 border-teal-600 pl-4"
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-semibold text-gray-900">
@@ -278,7 +278,7 @@ export default function MountainDetailPage() {
             <div className="sticky top-8">
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <div className="text-center mb-6">
-                  <div className="text-3xl font-bold text-blue-600">
+                  <div className="text-3xl font-bold text-teal-600">
                     ${mountain.price.toLocaleString()}
                   </div>
                   <div className="text-gray-600">per person</div>
@@ -292,7 +292,7 @@ export default function MountainDetailPage() {
                   <div className="space-y-4">
                     <Button
                       onClick={() => setShowBooking(true)}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg"
+                      className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 text-lg"
                     >
                       Check Availability & Book
                     </Button>

@@ -12,6 +12,7 @@ import {
   Award,
   Calendar,
 } from "lucide-react";
+import Image from "next/image";
 
 export function HeroSection() {
   const { t } = useLanguage();
@@ -44,7 +45,7 @@ export function HeroSection() {
   }, [heroSlides.length]);
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen flex items-center justify-center overflow-hidden sm:mt-0 ">
       {/* <div className="absolute inset-0">
         {heroSlides.map((slide, index) => (
           <div
@@ -78,6 +79,9 @@ export function HeroSection() {
         </video>
       </div>
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
+        <div className=" w-full justify-center flex items-center">
+          <Image height={220} width={220} src={"/logos/logo.png"} alt="" />
+        </div>
         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
           {heroSlides[currentSlide].title}
         </h1>

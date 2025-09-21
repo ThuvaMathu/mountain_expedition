@@ -55,6 +55,8 @@ type TMountainType = {
   bestSeason: string;
   imageUrl: string[];
   price: number;
+  priceUSD: number;
+  priceINR: number;
   rating: number;
   totalReviews: number;
   availableSlots: number;
@@ -84,4 +86,55 @@ type ItineraryItem = {
   title: string;
   description: string;
   altitude: number;
+};
+
+type TOrderData = {
+  amount: number;
+  currency: string;
+  mountainId: string;
+  mountainName: string;
+  date: string;
+  participants: number;
+  participantsInfo: TParticipantGroup;
+};
+
+type TParticipantInfo = {
+  name: string;
+  email: string;
+  country: string;
+  passport: string;
+  phone: string;
+  emergencyContact: string;
+  medicalInfo: string;
+};
+
+type TParticipantGroup = {
+  organizer: TParticipantInfo;
+  members: ParticTipantInfo[];
+};
+type TSlotDetails = {
+  date: string; // formatted date like "5 Aug 2025"
+  id: string;
+  time: string;
+  maxParticipants: number;
+  bookedParticipants: number;
+  priceMultiplier: number;
+} | null;
+
+type TBooking = {
+  id: string;
+  amount: number;
+  bookingId: string;
+  createdAt: string; // timestamp → use Date type
+  currency: string;
+  customerInfo: TParticipantGroup;
+  slotDetails: TSlotDetails;
+  mountainId: string;
+  mountainName: string;
+  participants: number;
+  paymentMethod: string;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  status: string; // can extend later
+  userEmail: string;
 };

@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Mountain, Globe, User, LogOut } from "lucide-react";
+import AppLogo from "../ui/app-logo";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,10 +19,7 @@ export function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Mountain className="h-8 w-8 text-teal-600" />
-              <span className="text-xl font-bold text-gray-900">
-                Summit Quest
-              </span>
+              <AppLogo />
             </Link>
           </div>
 

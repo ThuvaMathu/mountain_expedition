@@ -32,18 +32,8 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { capitalizeName } from "@/lib/utils";
-
-interface Booking {
-  id: string;
-  bookingId?: string;
-  mountainId: string;
-  date: string;
-  participants: number;
-  amount: number;
-  currency?: string;
-  status: string;
-}
+import { capitalizeName, formatCurrency } from "@/lib/utils";
+import { Textarea } from "../ui/textarea";
 
 interface JourneyImage {
   id: string;
@@ -68,7 +58,7 @@ interface ExperienceSubmission {
 
 export default function DashboardPageMain() {
   const { user, loading } = useAuth();
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<TBooking[]>([]);
   const [journeyImages, setJourneyImages] = useState<JourneyImage[]>([]);
   const [experienceSubmissions, setExperienceSubmissions] = useState<
     ExperienceSubmission[]
@@ -98,10 +88,10 @@ export default function DashboardPageMain() {
           // Load bookings
           const bookingsQuery = query(
             collection(db, "bookings"),
-            where("customerInfo.email", "==", user.email)
+            where("userEmail", "==", user.email)
           );
           const bookingsSnap = await getDocs(bookingsQuery);
-          const bookingsList: Booking[] = bookingsSnap.docs.map(
+          const bookingsList: TBooking[] = bookingsSnap.docs.map(
             (d) => ({ id: d.id, ...d.data() } as any)
           );
           setBookings(bookingsList);
@@ -367,9 +357,9 @@ export default function DashboardPageMain() {
                     Your Bookings
                   </h2>
                   <div className="space-y-4">
-                    {bookings.map((b) => (
+                    {bookings.map((booking) => (
                       <div
-                        key={b.id}
+                        key={booking.bookingId}
                         className="flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-gray-50 rounded-lg"
                       >
                         <div className="flex items-center gap-3">
@@ -378,38 +368,33 @@ export default function DashboardPageMain() {
                           </div>
                           <div>
                             <div className="font-semibold text-gray-900">
-                              {b.bookingId || b.id}
+                              {booking.bookingId}
                             </div>
                             <div className="flex items-center text-sm text-gray-600">
                               <Calendar className="h-4 w-4 mr-1" />{" "}
-                              {new Date(b.date).toLocaleDateString()}
+                              {booking.slotDetails?.date}
                             </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-6 mt-3 md:mt-0">
                           <div className="text-sm text-gray-700 flex items-center">
-                            <User className="h-4 w-4 mr-1" /> {b.participants}
+                            <User className="h-4 w-4 mr-1" />{" "}
+                            {booking.participants}
                           </div>
                           <div className="text-sm text-gray-700 flex items-center">
-                            <DollarSign className="h-4 w-4 mr-1" />{" "}
-                            {new Intl.NumberFormat("en-US", {
-                              style: "currency",
-                              currency: (b.currency || "USD") as any,
-                            }).format(b.amount)}
+                            {formatCurrency(booking.amount, booking.currency)}
                           </div>
                           <span
                             className={`px-2 py-1 rounded-full text-xs ${
-                              b.status === "confirmed"
+                              booking.status === "confirmed"
                                 ? "bg-green-100 text-green-700"
                                 : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {b.status}
+                            {booking.status}
                           </span>
                           <Link
-                            href={`/booking/confirmation/${
-                              b.bookingId || b.id
-                            }`}
+                            href={`/booking/confirmation/${booking.bookingId}`}
                           >
                             <Button variant="outline" size="sm">
                               View
@@ -484,7 +469,7 @@ export default function DashboardPageMain() {
                     />
                   </div>
 
-                  <textarea
+                  <Textarea
                     placeholder="Describe your experience in detail..."
                     value={experienceForm.description}
                     onChange={(e) =>
