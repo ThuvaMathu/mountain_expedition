@@ -1,12 +1,18 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, TrendingUp, Star, Users } from "lucide-react";
+import { CurrencyInput } from "../ui/currency-input";
+import { formatCurrency } from "@/lib/utils";
+import { useCurrencyStore } from "@/stores/currency-store";
+import { useEffect } from "react";
 
 interface MountainCardProps {
   mountain: TMountainType;
 }
 
 export function MountainCard({ mountain }: MountainCardProps) {
+  const { currency } = useCurrencyStore();
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "Beginner":
@@ -92,7 +98,6 @@ export function MountainCard({ mountain }: MountainCardProps) {
           <Calendar className="h-4 w-4 mr-1" />
           <span className="text-sm">{mountain.bestSeason}</span>
         </div>
-
         <div className="flex items-center justify-between mb-4">
           {/* <div className="flex items-center text-sm text-gray-600">
             <Star className="h-4 w-4 mr-1 text-yellow-400" />
@@ -102,7 +107,9 @@ export function MountainCard({ mountain }: MountainCardProps) {
           </div> */}
           <div>
             <span className="text-2xl font-bold text-teal-600">
-              ${mountain.price.toLocaleString()}
+              {formatCurrency(
+                currency === "USD" ? mountain.priceUSD : mountain.priceINR
+              )}
             </span>
             <span className="text-gray-500 text-sm ml-1">per person</span>
           </div>

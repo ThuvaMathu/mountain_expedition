@@ -22,13 +22,14 @@ import { mockMountain } from "@/lib/data/demo-data";
 import { isFirebaseConfigured, db } from "@/lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
 import { getAvailableSlots } from "@/lib/utils";
+import { useCurrencyStore } from "@/stores/currency-store";
 
 export default function MountainDetailPage() {
   const params = useParams();
   const [mountain, setMountain] = useState<TMountainType | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
-
+  const { loadCurrency, formatedValue, getCurrencyValue } = useCurrencyStore();
   // useEffect(() => {
   //   // In a real app, this would fetch from Firebase
   //   const demoMountain: TMountainType = mockMountain;
@@ -49,7 +50,12 @@ export default function MountainDetailPage() {
         id: d.id,
         ...(d.data() as any),
       }));
-      setMountain(list[0] || null);
+      const tempMount = list[0];
+      setMountain(tempMount || null);
+      loadCurrency({
+        INR: tempMount.priceINR,
+        USD: tempMount.priceUSD,
+      });
     } catch (error) {
       console.error("Error loading mountains:", error);
     }
@@ -279,7 +285,7 @@ export default function MountainDetailPage() {
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <div className="text-center mb-6">
                   <div className="text-3xl font-bold text-teal-600">
-                    ${mountain.price.toLocaleString()}
+                    {formatedValue()}
                   </div>
                   <div className="text-gray-600">per person</div>
                   <div className="flex items-center justify-center mt-2 text-sm text-gray-600">

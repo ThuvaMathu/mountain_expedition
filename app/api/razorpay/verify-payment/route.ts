@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         bookingId,
+        id: docRef.id,
         demo: true,
       });
     }
@@ -104,12 +105,12 @@ export async function POST(request: NextRequest) {
       console.log("✅ Created document with ID:", docRef.id);
 
       await updateDoc(docRef, { id: docRef.id });
+      return NextResponse.json({
+        success: true,
+        id: docRef.id,
+        bookingId,
+      });
     }
-
-    return NextResponse.json({
-      success: true,
-      bookingId,
-    });
   } catch (error) {
     console.error("Payment verification error:", error);
     return NextResponse.json(

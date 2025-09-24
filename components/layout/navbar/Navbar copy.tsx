@@ -6,9 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Mountain, Globe, User, LogOut } from "lucide-react";
-import AppLogo from "../ui/app-logo";
-import { CurrencySelector } from "./navbar/currency-selector";
-import { UserSelector } from "./navbar/user-selector";
+import AppLogo from "../../ui/app-logo";
+import { CurrencySelector } from "./currency-selector";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +25,7 @@ export function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-6">
             <Link
               href="/"
               className="text-gray-700 hover:text-teal-600 transition-colors"
@@ -67,12 +66,36 @@ export function Navbar() {
               <span>{language === "en" ? "EN" : "TA"}</span>
             </Button> */}
 
-            {/* User Selector */}
-            <UserSelector variant="desktop" />
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <Link href="/dashboard">
+                  <Button variant="ghost" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    {t("dashboard")}
+                  </Button>
+                </Link>
+                {/* Admin link removed as requested (private URL) */}
+                <Button variant="ghost" size="sm" onClick={logout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  {t("logout")}
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link href="/auth/login">
+                  <Button variant="ghost" size="sm">
+                    {t("login")}
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button size="sm">{t("register")}</Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
-          <div className="lg:hidden flex items-center">
+          <div className="md:hidden flex items-center">
             <Button
               variant="ghost"
               size="sm"
@@ -89,7 +112,7 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden">
+          <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
               <Link
                 href="/"
@@ -126,7 +149,7 @@ export function Navbar() {
               <CurrencySelector variant="mobile" />
 
               {/* Mobile Language Toggle */}
-              {/* <div className="px-3 py-2">
+              <div className="px-3 py-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -136,10 +159,45 @@ export function Navbar() {
                   <Globe className="h-4 w-4" />
                   <span>{language === "en" ? "English" : "தமிழ்"}</span>
                 </Button>
-              </div> */}
+              </div>
 
-              {/* Mobile User Selector */}
-              <UserSelector variant="mobile" />
+              {user ? (
+                <div className="px-3 py-2 space-y-2">
+                  <Link href="/dashboard">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      {t("dashboard")}
+                    </Button>
+                  </Link>
+                  {/* Admin link removed */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={logout}
+                    className="w-full justify-start"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    {t("logout")}
+                  </Button>
+                </div>
+              ) : (
+                <div className="px-3 py-2 space-y-2">
+                  <Link href="/auth/login">
+                    <Button variant="ghost" size="sm" className="w-full">
+                      {t("login")}
+                    </Button>
+                  </Link>
+                  <Link href="/auth/register">
+                    <Button size="sm" className="w-full">
+                      {t("register")}
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}

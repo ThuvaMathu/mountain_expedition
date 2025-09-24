@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Calendar, Users, CreditCard, Clock } from "lucide-react";
+import { useCurrencyStore } from "@/stores/currency-store";
+import { serviceFeeCal } from "@/lib/service-fee-cal";
+import { formatCurrency } from "@/lib/utils";
 
 interface BookingCalendarProps {
   mountain: TMountainType;
@@ -16,13 +19,8 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [participants, setParticipants] = useState("1 person");
   const [isLoading, setIsLoading] = useState(false);
-
-  const availableDates = [
-    { date: "2025-09-01", slots: 8 },
-    { date: "2025-09-15", slots: 12 },
-    { date: "2025-10-01", slots: 6 },
-    { date: "2025-10-15", slots: 10 },
-  ];
+  const { loadCurrency, formatedValue, getCurrencyValue, currency } =
+    useCurrencyStore();
 
   const getMaxParticipants = (): string[] => {
     // Flatten all slots across all dates
@@ -64,7 +62,9 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
     }, 100);
   };
   const participantCount = Number(participants.split(" ")[0]);
-  const totalPrice = mountain.price * participantCount;
+  const totalParticipantPrice = getCurrencyValue()! * participantCount;
+  const serviceFee = serviceFeeCal(currency, totalParticipantPrice);
+  const totalPrice = getCurrencyValue()! * participantCount + serviceFee;
 
   return (
     <div className="space-y-6">
@@ -152,16 +152,16 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
       <div className="bg-gray-50 rounded-lg p-4">
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-600">Base price × {participantCount}</span>
-          <span>${(mountain.price * participantCount).toLocaleString()}</span>
+          <span>{formatCurrency(totalParticipantPrice, currency)}</span>
         </div>
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-600">Service fee</span>
-          <span>${Math.round(totalPrice * 0.05).toLocaleString()}</span>
+          <span>{formatCurrency(serviceFee, currency)}</span>
         </div>
         <div className="border-t pt-2 mt-2">
           <div className="flex justify-between items-center font-semibold text-lg">
             <span>Total</span>
-            <span>${Math.round(totalPrice * 1.05).toLocaleString()}</span>
+            <span>{formatCurrency(totalPrice)}</span>
           </div>
         </div>
       </div>

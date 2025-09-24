@@ -10,17 +10,18 @@ import {
 } from "firebase/storage";
 import { X } from "lucide-react";
 import { on } from "events";
+import { processImages } from "@/lib/image-processor";
 
 interface ImageUploaderProps {
   isMulti?: boolean;
-  bucketName?: string;
+  bucketName: string;
   onImageUpload: (urls: string[]) => void;
   initialUrls?: string[];
 }
 
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
   isMulti = false,
-  bucketName = "uploads",
+  bucketName,
   onImageUpload,
   initialUrls = [],
 }) => {
@@ -55,12 +56,18 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     try {
       setUploading(true);
       setUploadProgress(0);
-      const key = `${bucketName}/${Date.now()}_${file.name.replace(
+
+      const processed = await processImages(file, {
+        aspectRatio: "16:9",
+        targetSizeKB: 350,
+      });
+
+      const key = `${bucketName}/${Date.now()}_${processed[0].name.replace(
         /\s+/g,
         "_"
       )}`;
       const refObj = storageRef(storage!, key);
-      const task = uploadBytesResumable(refObj, file);
+      const task = uploadBytesResumable(refObj, processed[0]);
 
       return new Promise<void>((resolve, reject) => {
         task.on(

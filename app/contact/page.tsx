@@ -1,14 +1,14 @@
-"use client"
-import { Navbar } from "@/components/layout/Navbar"
-import { Footer } from "@/components/layout/Footer"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
+"use client";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export default function ContactPage() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [message, setMessage] = useState("")
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -18,11 +18,19 @@ export default function ContactPage() {
         <div className="bg-white rounded-xl shadow p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Name
+              </label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
               <Input
                 type="email"
                 value={email}
@@ -32,7 +40,9 @@ export default function ContactPage() {
             </div>
           </div>
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Message
+            </label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -45,5 +55,5 @@ export default function ContactPage() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }

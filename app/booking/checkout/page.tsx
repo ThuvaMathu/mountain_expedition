@@ -13,16 +13,24 @@ import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ParticipantGroupForm from "@/components/booking/pertisipants-fields";
 import { v4 as uuidv4 } from "uuid";
+import { useCurrencyStore } from "@/stores/currency-store";
+import { serviceFeeCal } from "@/lib/service-fee-cal";
+import { formatCurrency } from "@/lib/utils";
+import { toast } from "react-toastify";
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuth();
-
   const [isLoading, setIsLoading] = useState(false);
-  const [currency, setCurrency] = useState<"USD" | "INR">("INR");
+  const { currency, setCurrency, getCurrencyValue, formatedValue } =
+    useCurrencyStore();
   const [mountain, setMountain] = useState<TMountainType | null>(null);
-
+  const [termsCon, setTermsCon] = useState({
+    tcs1: false,
+    tcs2: false,
+    tcs3: false,
+  });
   const [isRazorpayConfigured, setIsRazorpayConfigured] = useState<
     boolean | null
   >(null);
@@ -99,9 +107,6 @@ export default function CheckoutPage() {
     load().catch(console.error);
   }, []);
 
-  const format = (amt: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amt);
-
   function getSlotDetails(): TSlotDetails {
     const availableDates = mountain?.availableDates;
     if (availableDates)
@@ -132,11 +137,20 @@ export default function CheckoutPage() {
       return;
     }
     if (!isFieldsFilled) {
-      alert("Please fill in all required fields");
+      //alert("Please fill in all required fields");
+      toast.error("Please fill in all required fields");
       return;
     }
     if (!mountain) {
-      alert("Error Load mountain Details");
+      //alert("Error Load mountain Details");
+      toast.error("Error Load mountain Details");
+
+      return;
+    }
+    if (!termsCon.tcs1 || !termsCon.tcs2 || !termsCon.tcs3) {
+      toast.error(
+        "Please acknowledge that you have read and agree to our Terms and Conditions."
+      );
       return;
     }
     setIsLoading(true);
@@ -182,9 +196,12 @@ export default function CheckoutPage() {
 
           const verifyData = await verifyResponse.json();
           if (verifyData.success) {
-            router.push(`/booking/confirmation/${verifyData.bookingId}`);
+            if (verifyData.id) {
+              router.push(`/booking/confirmation/${verifyData?.id}`);
+            }
+            return;
           } else {
-            alert("Payment verification failed. Please contact support.");
+            toast("Payment verification failed. Please contact support.");
           }
         } catch (error) {
           console.error("Payment verification error:", error);
@@ -268,12 +285,10 @@ export default function CheckoutPage() {
   };
 
   const currentCount = customerInfo.members.length + 1;
-  const unitPrice =
-    currency === "USD" ? mountain?.priceUSD : mountain?.priceINR;
+  const unitPrice = getCurrencyValue();
   const basePrice = unitPrice! * currentCount;
-  const serviceFee = Math.round(basePrice * 0.05);
-  const totalAmount1 = basePrice + serviceFee;
-  const totalAmount = basePrice;
+  const serviceFee = serviceFeeCal(currency, basePrice);
+  const totalAmount = basePrice + serviceFee;
   //console.log("booking:", bookingDetails);
   return (
     <div className="min-h-screen bg-gray-50">
@@ -349,21 +364,51 @@ export default function CheckoutPage() {
               </h2>
               <div className="space-y-3 text-sm text-gray-600">
                 <label className="flex items-start">
-                  <input type="checkbox" className="mt-1 mr-3" required />
+                  <input
+                    type="checkbox"
+                    className="mt-1 mr-3 accent-teal-600"
+                    required
+                    onChange={(e) =>
+                      setTermsCon((prev) => ({
+                        ...prev,
+                        tcs1: e.target.checked,
+                      }))
+                    }
+                  />
                   <span>
                     I agree to the expedition terms and conditions, including
                     cancellation policy
                   </span>
                 </label>
                 <label className="flex items-start">
-                  <input type="checkbox" className="mt-1 mr-3" required />
+                  <input
+                    type="checkbox"
+                    className="mt-1 mr-3 accent-teal-600"
+                    required
+                    onChange={(e) =>
+                      setTermsCon((prev) => ({
+                        ...prev,
+                        tcs2: e.target.checked,
+                      }))
+                    }
+                  />{" "}
                   <span>
                     I understand the risks involved in mountaineering and have
                     appropriate insurance
                   </span>
                 </label>
                 <label className="flex items-start">
-                  <input type="checkbox" className="mt-1 mr-3" required />
+                  <input
+                    type="checkbox"
+                    className="mt-1 mr-3 accent-teal-600"
+                    required
+                    onChange={(e) =>
+                      setTermsCon((prev) => ({
+                        ...prev,
+                        tcs3: e.target.checked,
+                      }))
+                    }
+                  />{" "}
                   <span>
                     I consent to receive booking confirmations and expedition
                     updates via email
@@ -423,16 +468,18 @@ export default function CheckoutPage() {
                     <span className="text-gray-600">
                       Base price × {currentCount}
                     </span>
-                    <span>{unitPrice && format(unitPrice * currentCount)}</span>
+                    <span>
+                      {unitPrice && formatCurrency(basePrice, currency)}
+                    </span>
                   </div>
-                  {/* <div className="flex justify-between">
+                  <div className="flex justify-between">
                     <span className="text-gray-600">Service fee</span>
-                    <span>{format(serviceFee)}</span>
-                  </div> */}
+                    <span>{formatCurrency(serviceFee, currency)}</span>
+                  </div>
                   <div className="border-t pt-2 mt-2">
                     <div className="flex justify-between font-semibold text-lg">
                       <span>Total</span>
-                      <span>{format(totalAmount)}</span>
+                      <span>{formatCurrency(totalAmount, currency)}</span>
                     </div>
                   </div>
                 </div>

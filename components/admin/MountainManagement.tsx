@@ -192,7 +192,16 @@ export function MountainManagement() {
   };
 
   const handleSave = async () => {
-    if (!form.name || !form.location || form.altitude <= 0 || form.price <= 0) {
+    if (
+      !form.name ||
+      !form.location ||
+      form.altitude <= 0 ||
+      form.priceINR <= 0 ||
+      form.priceUSD <= 0 ||
+      !form.groupSize ||
+      !form.duration
+    ) {
+      console.log("Form: ", form);
       setNotice("Please fill in all required fields.");
       setTimeout(() => setNotice(null), 3000);
       return;
@@ -507,7 +516,9 @@ export function MountainManagement() {
           <div className="md:col-span-2 mt-2 ">
             <ImageUploader
               isMulti
-              bucketName="posts/main-images"
+              bucketName={`mountains/${
+                form.name === "general" ? "" : form.name
+              }`}
               initialUrls={initialUrls}
               onImageUpload={(urls) =>
                 setForm((prev) => ({ ...prev, imageUrl: urls }))

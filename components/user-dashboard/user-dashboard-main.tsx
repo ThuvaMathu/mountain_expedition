@@ -393,9 +393,7 @@ export default function DashboardPageMain() {
                           >
                             {booking.status}
                           </span>
-                          <Link
-                            href={`/booking/confirmation/${booking.bookingId}`}
-                          >
+                          <Link href={`/booking/confirmation/${booking.id}`}>
                             <Button variant="outline" size="sm">
                               View
                             </Button>

@@ -14,7 +14,8 @@ export function cn(...inputs: ClassValue[]) {
 export function formatCurrency(
   amount: number,
   currency: string = "USD",
-  formatShort: boolean = false
+  formatShort: boolean = false,
+  fractionDigits: number = 1
 ): string {
   if (formatShort) {
     const absAmount = Math.abs(amount);
@@ -38,7 +39,7 @@ export function formatCurrency(
     return `${new Intl.NumberFormat("en-US", {
       style: "currency",
       currency,
-      maximumFractionDigits: 1,
+      maximumFractionDigits: fractionDigits,
     }).format(formatted)}${suffix}`;
   }
 
@@ -46,6 +47,7 @@ export function formatCurrency(
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
+    maximumFractionDigits: fractionDigits,
   }).format(amount);
 }
 

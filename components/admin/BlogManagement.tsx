@@ -26,6 +26,7 @@ import {
 import { Save, Trash2, Edit3, ImageIcon, Upload, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import RichTextEditor from "./rich-text-editor";
+import { processImages } from "@/lib/image-processor";
 
 // const RichTextEditor = dynamic(() => import("./rich-text-editor"), {
 //   ssr: false,
@@ -229,21 +230,26 @@ export function BlogManagement() {
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Show preview immediately
-    const localUrl = URL.createObjectURL(file);
-    setForm((f) => ({ ...f, mainImageUrl: localUrl }));
+    const files = e.target.files?.[0];
+    if (!files) return;
 
     if (!canUseStorage || !storage) {
       return;
     }
 
     try {
+      const processedFile = await processImages(files, {
+        aspectRatio: "16:9",
+        targetSizeKB: 350,
+      });
+      // Show preview immediately
+      const file = processedFile[0];
+      const localUrl = URL.createObjectURL(file);
+      setForm((f) => ({ ...f, mainImageUrl: localUrl }));
+
       setUploading(true);
       setUploadProgress(0);
-      const key = `posts/main-images/${Date.now()}_${file.name.replace(
+      const key = `blog/main-images/${Date.now()}_${file.name.replace(
         /\s+/g,
         "_"
       )}`;

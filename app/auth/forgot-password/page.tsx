@@ -1,44 +1,50 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Navbar } from "@/components/layout/Navbar"
-import { Footer } from "@/components/layout/Footer"
-import { Mountain, Mail, ArrowLeft } from "lucide-react"
-import { sendPasswordResetEmail } from "firebase/auth"
-import { auth, isFirebaseConfigured } from "@/lib/firebase"
+import { useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { Mountain, Mail, ArrowLeft } from "lucide-react";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth, isFirebaseConfigured } from "@/lib/firebase";
+import AppLogo from "@/components/ui/app-logo";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [message, setMessage] = useState("")
-  const [error, setError] = useState("")
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-    setMessage("")
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    setMessage("");
 
     if (!isFirebaseConfigured || !auth) {
-      setMessage("Password reset email sent! (Demo mode - check your email)")
-      setIsLoading(false)
-      return
+      setMessage("Password reset email sent! (Demo mode - check your email)");
+      setIsLoading(false);
+      return;
     }
 
     try {
-      await sendPasswordResetEmail(auth, email)
-      setMessage("Password reset email sent! Check your inbox and follow the instructions.")
+      await sendPasswordResetEmail(auth, email);
+      setMessage(
+        "Password reset email sent! Check your inbox and follow the instructions."
+      );
     } catch (error: any) {
-      setError(error.message || "Failed to send password reset email. Please try again.")
+      setError(
+        error.message ||
+          "Failed to send password reset email. Please try again."
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -48,11 +54,14 @@ export default function ForgotPasswordPage() {
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <div className="flex justify-center">
-              <Mountain className="h-12 w-12 text-blue-600" />
+              <AppLogo isWithText={false} size="medium" />
             </div>
-            <h2 className="mt-6 text-3xl font-bold text-gray-900">Reset your password</h2>
+            <h2 className="mt-6 text-3xl font-bold text-gray-900">
+              Reset your password
+            </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Enter your email address and we'll send you a link to reset your password.
+              Enter your email address and we'll send you a link to reset your
+              password.
             </p>
           </div>
 
@@ -71,7 +80,10 @@ export default function ForgotPasswordPage() {
 
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email address
                 </label>
                 <div className="relative">
@@ -93,7 +105,7 @@ export default function ForgotPasswordPage() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3"
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
               >
                 {isLoading ? (
                   <div className="flex items-center">
@@ -106,7 +118,10 @@ export default function ForgotPasswordPage() {
               </Button>
 
               <div className="text-center">
-                <Link href="/auth/login" className="inline-flex items-center text-sm text-blue-600 hover:text-blue-500">
+                <Link
+                  href="/auth/login"
+                  className="inline-flex items-center text-sm text-teal-600 hover:text-teal-500"
+                >
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back to sign in
                 </Link>
@@ -118,5 +133,5 @@ export default function ForgotPasswordPage() {
 
       <Footer />
     </div>
-  )
+  );
 }
