@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { v4 as uuidv4 } from "uuid";
+import { Timestamp } from "firebase/firestore";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -51,13 +52,46 @@ export function formatCurrency(
   }).format(amount);
 }
 
-export function formatDate(date: Date | string) {
-  const d = typeof date === "string" ? new Date(date) : date;
-  return d.toLocaleDateString("en-US", {
+export function formatDate(input: any) {
+  const date = new Date(input);
+
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid date input: ${input}`);
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
     year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  })
+    .format(date)
+    .toUpperCase();
+}
+
+export function formatFirestoreDate(
+  input: Timestamp | Date | string | number
+): string {
+  let date: Date;
+
+  if (input instanceof Timestamp) {
+    date = input.toDate();
+  } else if (input instanceof Date) {
+    date = input;
+  } else {
+    date = new Date(input); // string or number
+  }
+
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid date input: ${input}`);
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })
+    .format(date)
+    .toUpperCase();
 }
 
 export function generateBookingId() {

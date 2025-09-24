@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { Awards } from "@/components/about/awards";
 
 export const metadata: Metadata = {
   title: "About N. Muthamizh Selvi | Seven Summits Pioneer from Tamil Nadu",
@@ -418,7 +419,7 @@ export default function AboutPage() {
         </section>
 
         {/* Awards Gallery */}
-        <section className="border-t border-gray-100 bg-white">
+        {/* <section className="border-t border-gray-100 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
             <div className="text-center mb-12">
               <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
@@ -454,8 +455,8 @@ export default function AboutPage() {
               ))}
             </div>
           </div>
-        </section>
-
+        </section> */}
+        <Awards />
         {/* Goals & Vision */}
         <section id="goals" className="border-t border-gray-100 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">

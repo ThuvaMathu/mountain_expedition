@@ -24,8 +24,9 @@ export default function AdminPage() {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push("/admin/login");
-      } else if (!user?.isAdmin) {
+        router.push("/auth/login");
+      }
+      if (!user?.isAdmin) {
         router.push("/");
       }
     }

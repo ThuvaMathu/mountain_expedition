@@ -138,3 +138,23 @@ type TBooking = {
   status: string; // can extend later
   userEmail: string;
 };
+
+type TJourneyImage = {
+  id: string;
+  url: string;
+  title: string;
+  uploadedAt: any;
+};
+
+type TExperienceSubmission = {
+  id: string;
+  title: string;
+  description: string;
+  mountainName: string;
+  rating: number;
+  images: string[];
+  status: "pending" | "approved" | "rejected";
+  submittedAt: Timestamp | Date;
+  userName: string;
+  userEmail: string;
+};
