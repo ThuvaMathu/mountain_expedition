@@ -3,6 +3,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { adminDb } from "@/lib/firebase-admin"; // ✅ use Admin SDK
 import { Calendar, User, ArrowRight } from "lucide-react";
+import { ImageLoader } from "@/components/ui/image-loader";
 
 export const revalidate = 60; // ✅ ISR: re-fetch data every 60s
 
@@ -52,10 +53,11 @@ export default async function BlogPage() {
               >
                 {post.mainImageUrl && (
                   <div className="aspect-video overflow-hidden">
-                    <img
+                    <ImageLoader
                       src={post.mainImageUrl || "/placeholder.svg"}
                       alt={post.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      height="h-56"
+                      priority
                     />
                   </div>
                 )}

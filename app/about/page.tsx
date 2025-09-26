@@ -3,6 +3,9 @@ import Script from "next/script";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Awards } from "@/components/about/awards";
+import { staticGalleryImages } from "@/lib/data/static-images";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "About N. Muthamizh Selvi | Seven Summits Pioneer from Tamil Nadu",
@@ -524,26 +527,25 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <img
-                src="/everest-summit-ridge-teal.png"
-                alt="Everest summit ridge"
-                className="h-48 w-full rounded-lg object-cover ring-1 ring-gray-200"
-              />
-              <img
-                src="/denali-storm-camp.png"
-                alt="Denali storm near high camp"
-                className="h-48 w-full rounded-lg object-cover ring-1 ring-gray-200"
-              />
-              <img
-                src="/vinson-antarctica-team-camp.png"
-                alt="Vinson Massif team camp"
-                className="h-48 w-full rounded-lg object-cover ring-1 ring-gray-200"
-              />
-              <img
-                src="/placeholder-9xipr.png"
-                alt="Technical training on ice wall"
-                className="h-48 w-full rounded-lg object-cover ring-1 ring-gray-200"
-              />
+              {staticGalleryImages.slice(0, 8).map((img, i) => (
+                <img
+                  key={i}
+                  src={img.src}
+                  alt={img.title}
+                  className="h-48 w-full rounded-lg object-cover ring-1 ring-gray-200"
+                />
+              ))}
+            </div>{" "}
+            <div className="text-center mt-12">
+              <Link href="/gallery">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-8 py-3 bg-transparent"
+                >
+                  View All Images
+                </Button>
+              </Link>
             </div>
           </div>
         </section>

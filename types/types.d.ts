@@ -158,3 +158,11 @@ type TExperienceSubmission = {
   userName: string;
   userEmail: string;
 };
+
+type TStat = {
+  id?: string;
+  title: string;
+  value: string;
+  description?: string;
+  isEnabled?: boolean;
+};

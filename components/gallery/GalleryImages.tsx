@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ImageModal from "./ImageModal";
 import Pagination from "./Pagination";
+import Image from "next/image";
 
 interface StaticImage {
   src: string;
@@ -120,19 +121,18 @@ export default function GalleryImages({
             onClick={() => handleImageClick(index)}
           >
             <div className="relative overflow-hidden">
-              <img
-                src={image.src || "/placeholder.svg"}
-                alt={image.title}
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-              />
+              <div className="relative w-full h-48  overflow-hidden">
+                <Image
+                  fill
+                  loading="lazy"
+                  src={image.src || "/placeholder.svg"}
+                  alt={image.title}
+                  className=" object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity">
                 <p className="font-medium text-sm truncate">{image.title}</p>
-                {image.mountainId && (
-                  <p className="text-xs text-gray-200 truncate">
-                    Mountain: {image.mountainId}
-                  </p>
-                )}
               </div>
 
               {/* Hover overlay with click hint */}

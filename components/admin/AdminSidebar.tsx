@@ -27,6 +27,7 @@ export function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarProps) {
     { id: "gallery", label: "Gallery", icon: ImageIcon },
     { id: "stats", label: "Statistics", icon: BarChart2 },
     { id: "contacts", label: "Contact Details", icon: Phone },
+    { id: "testimonials", label: "Testimonials", icon: Phone },
     { id: "events", label: "Events", icon: CalendarDays },
     { id: "account", label: "Admin Account", icon: Shield },
   ];

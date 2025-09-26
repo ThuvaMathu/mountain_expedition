@@ -15,6 +15,7 @@ import { ContactsManagement } from "@/components/admin/ContactsManagement";
 import { EventManagement } from "@/components/admin/EventsManagement";
 import { AdminAccount } from "@/components/admin/AdminAccount";
 import { BookingManagement } from "@/components/admin/BookingManagement";
+import { TestimonialManagement } from "@/components/admin/TestimonialManagement";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -59,6 +60,8 @@ export default function AdminPage() {
         return <StatsManagement />;
       case "contacts":
         return <ContactsManagement />;
+      case "testimonials":
+        return <TestimonialManagement />;
       case "events":
         return <EventManagement />;
       case "account":

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Star, User, Calendar, Mountain } from "lucide-react";
 import ImageModal from "./ImageModal";
 import { formatDate, formatFirestoreDate } from "@/lib/utils";
+import Image from "next/image";
 
 interface ImageData {
   src: string;
@@ -116,11 +117,20 @@ export default function CommunityExperiences({
                           )
                         }
                       >
-                        <img
-                          src={image || "/placeholder.svg"}
-                          alt={`${experience.title} ${index + 1}`}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
+                        <div className="relative w-full h-48 overflow-hidden">
+                          <Image
+                            src={image || "/placeholder.svg"}
+                            alt={`${experience.title} ${index + 1}`}
+                            fill
+                            loading="lazy"
+                            placeholder="blur"
+                            blurDataURL="/placeholder.svg"
+                            sizes="(max-width: 768px) 100vw,
+           (max-width: 1200px) 50vw,
+           33vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white bg-opacity-90 rounded-full p-2">
                             <svg

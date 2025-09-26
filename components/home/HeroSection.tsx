@@ -6,19 +6,18 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
   ArrowRight,
-  Play,
   Mountain,
   Users,
   Award,
-  Calendar,
   MapPin,
   Compass,
   Star,
   ChevronDown,
+  ImageIcon,
 } from "lucide-react";
-import Image from "next/image";
+import { statIconMapper } from "@/services/icon-maper";
 
-export function HeroSection() {
+export function HeroSection({ stats }: { stats: TStat[] }) {
   const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -92,20 +91,6 @@ export function HeroSection() {
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        {/* Logo with Animation */}
-        {/* <div className="w-full justify-center flex items-center mb-6 sm:mb-8">
-          <div className="relative">
-            <Image
-              height={160}
-              width={160}
-              src="/logos/logo.png"
-              alt="Adventure Logo"
-              className="sm:h-48 sm:w-48 lg:h-56 lg:w-56 animate-float drop-shadow-2xl"
-            />
-            <div className="absolute -inset-4 bg-white/10 rounded-full blur-2xl animate-pulse" />
-          </div>
-        </div> */}
-
         {/* Highlight Badge */}
         <div className="inline-flex items-center px-4 py-2 bg-teal-500/20 backdrop-blur-sm border border-teal-400/30 rounded-full mb-4 sm:mb-6 animate-bounce-subtle">
           <Compass className="h-4 w-4 mr-2 text-teal-300" />
@@ -136,64 +121,45 @@ export function HeroSection() {
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
-          <Button
-            variant="outline"
-            size="lg"
-            className="w-full sm:w-auto border-2 border-white/70 text-white hover:bg-white hover:text-gray-900 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg bg-white/10 backdrop-blur-sm rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300 group"
-          >
-            <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-            {t("watch_video")}
-          </Button>
+          <Link href="/gallery">
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto border-2 border-white/70 text-white hover:bg-white hover:text-gray-900 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg bg-white/10 backdrop-blur-sm rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300 group"
+            >
+              <ImageIcon className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+              View Gallery
+            </Button>
+          </Link>
         </div>
 
         {/* Enhanced Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto animate-slide-up animation-delay-600">
-          {[
-            {
-              icon: Mountain,
-              value: "50+",
-              label: t("mountains"),
-              color: "text-teal-300",
-            },
-            {
-              icon: Users,
-              value: "2000+",
-              label: t("climbers"),
-              color: "text-blue-300",
-            },
-            {
-              icon: Award,
-              value: "15",
-              label: t("years_experience"),
-              color: "text-yellow-300",
-            },
-            {
-              icon: Star,
-              value: "4.9",
-              label: "Rating",
-              color: "text-orange-300",
-            },
-          ].map((stat, index) => {
-            const IconComponent = stat.icon;
-            return (
-              <div
-                key={index}
-                className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 group"
-              >
-                <div className="flex justify-center mb-3">
-                  <IconComponent
-                    className={`h-6 w-6 sm:h-8 sm:w-8 ${stat.color} group-hover:animate-pulse`}
-                  />
+          {stats
+            .filter((temp) => temp.isEnabled === true)
+            .map((stat, index) => {
+              const IconComponent = stat.id
+                ? statIconMapper[stat.id]
+                : Mountain;
+              return (
+                <div
+                  key={index}
+                  className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 group"
+                >
+                  <div className="flex justify-center mb-3">
+                    <IconComponent
+                      className={`h-6 w-6 sm:h-8 sm:w-8 text-teal-600 group-hover:animate-pulse`}
+                    />
+                  </div>
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-300 font-medium">
+                    {stat.title}
+                  </div>
                 </div>
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  {stat.value}
-                </div>
-                <div className="text-xs sm:text-sm text-gray-300 font-medium">
-                  {stat.label}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
 
         {/* Adventure Features - Mobile Responsive */}

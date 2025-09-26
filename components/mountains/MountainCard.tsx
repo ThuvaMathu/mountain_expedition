@@ -5,6 +5,7 @@ import { CurrencyInput } from "../ui/currency-input";
 import { formatCurrency } from "@/lib/utils";
 import { useCurrencyStore } from "@/stores/currency-store";
 import { useEffect } from "react";
+import { ImageLoader } from "../ui/image-loader";
 
 interface MountainCardProps {
   mountain: TMountainType;
@@ -53,11 +54,13 @@ export function MountainCard({ mountain }: MountainCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden mountain-card-hover">
       <div className="relative">
-        <img
-          src={mountain.imageUrl[0] || "/placeholder.svg"}
+        <ImageLoader
+          src={mountain.imageUrl?.[0] || "/placeholder.svg"}
           alt={mountain.name}
-          className="w-full h-64 object-cover"
+          height="h-56"
+          priority
         />
+
         <div className="absolute top-4 left-4">
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
