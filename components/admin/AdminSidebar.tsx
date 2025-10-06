@@ -11,6 +11,8 @@ import {
   Shield,
   Settings,
   ClipboardList,
+  Bus,
+  MessageSquare,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -22,13 +24,14 @@ export function AdminSidebar({ activeTab, setActiveTab }: AdminSidebarProps) {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
     { id: "booking", label: "Bookings", icon: ClipboardList },
+    { id: "trourist", label: "Tour & Travel", icon: Bus },
     { id: "mountains", label: "Mountains", icon: Mountain },
     { id: "blog", label: "Blog Posts", icon: FileText },
     { id: "gallery", label: "Gallery", icon: ImageIcon },
     { id: "stats", label: "Statistics", icon: BarChart2 },
     { id: "contacts", label: "Contact Details", icon: Phone },
-    { id: "testimonials", label: "Testimonials", icon: Phone },
-    { id: "events", label: "Events", icon: CalendarDays },
+    { id: "testimonials", label: "Testimonials", icon: MessageSquare },
+    //  { id: "events", label: "Events", icon: CalendarDays },
     { id: "account", label: "Admin Account", icon: Shield },
   ];
 

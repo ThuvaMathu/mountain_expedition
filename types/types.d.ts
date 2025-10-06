@@ -48,6 +48,7 @@ type TTimeSlot = {
 
 type TMountainType = {
   id: string;
+  type: "trekking" | "tour";
   name: string;
   location: string;
   altitude: number;
@@ -79,6 +80,7 @@ type TMountainType = {
     altitude: number;
   }>;
   createdAt?: string;
+  category?: "domestic" | "international";
 };
 
 type ItineraryItem = {
@@ -121,15 +123,20 @@ type TSlotDetails = {
   priceMultiplier: number;
 } | null;
 
+type BookingProductType = {
+  id: string;
+  type: "trekking" | "tour";
+};
 type TBooking = {
   id: string;
+  booking: BookingProductType;
   amount: number;
   bookingId: string;
   createdAt: string; // timestamp → use Date type
   currency: string;
   customerInfo: TParticipantGroup;
   slotDetails: TSlotDetails;
-  mountainId: string;
+  //mountainId: string;
   mountainName: string;
   participants: number;
   paymentMethod: string;
@@ -159,10 +166,13 @@ type TExperienceSubmission = {
   userEmail: string;
 };
 
+type TStatSection = "landing" | "international" | "domestic";
+
 type TStat = {
   id?: string;
   title: string;
   value: string;
   description?: string;
-  isEnabled?: boolean;
+  icon?: string;
+  order?: number;
 };

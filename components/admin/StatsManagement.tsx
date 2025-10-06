@@ -11,140 +11,137 @@ import {
   updateDoc,
   setDoc,
 } from "firebase/firestore";
-import { Save, Edit3, AlertCircle, Mountain } from "lucide-react";
+import {
+  Save,
+  Edit3,
+  Mountain,
+  Users,
+  Award,
+  Globe,
+  MapPin,
+  Heart,
+  Plane,
+} from "lucide-react";
 import { defaultStats } from "@/services/default-values";
-import { statIconMapper } from "@/services/icon-maper";
+
+// Predefined stats for each section
+const PREDEFINED_STATS = defaultStats;
+
+const ICON_MAP: Record<string, any> = {
+  Mountain,
+  Users,
+  Award,
+  Globe,
+  MapPin,
+  Heart,
+  Plane,
+};
 
 export function StatsManagement() {
-  const [stats, setStats] = useState<TStat[]>([]);
+  const [activeSection, setActiveSection] = useState<TStatSection>("landing");
+  const [stats, setStats] = useState<Record<TStatSection, TStat[]>>({
+    landing: [],
+    international: [],
+    domestic: [],
+  });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<{
     value: string;
     description: string;
-    isEnabled: boolean;
-  }>({
-    value: "",
-    description: "",
-    isEnabled: true,
-  });
+  }>({ value: "", description: "" });
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(false);
 
-  const loadStats = async () => {
+  const loadStats = async (section: TStatSection) => {
     if (!isFirebaseConfigured || !db) {
-      // Demo mode - use predefined stats
-      setStats(
-        defaultStats.map((stat) => ({
-          id: stat.id,
-          title: stat.title,
-          value: stat.value,
-          description: stat.description,
-          isEnabled: stat.isEnabled,
-        }))
-      );
+      setStats((prev) => ({
+        ...prev,
+        [section]: PREDEFINED_STATS[section],
+      }));
       return;
     }
 
     try {
-      const snap = await getDocs(collection(db, "stats"));
-      const existingStats = snap.docs.map((d) => ({
+      const snap = await getDocs(collection(db, "stats", section, "items"));
+      const loadedStats = snap.docs.map((d) => ({
         id: d.id,
-        ...(d.data() as any),
+        ...d.data(),
       })) as TStat[];
-
-      setStats(existingStats);
+      setStats((prev) => ({ ...prev, [section]: loadedStats }));
     } catch (error) {
-      console.error("Error loading stats:", error);
+      console.error(`Error loading ${section} stats:`, error);
     }
   };
 
-  const initializePredefinedStats = async () => {
+  const initializeSection = async (section: TStatSection) => {
     if (!isFirebaseConfigured || !db) return;
 
     setInitializing(true);
     try {
-      const snap = await getDocs(collection(db, "stats"));
-      const existingStatsIds = snap.docs.map((doc) => doc.id);
+      const snap = await getDocs(collection(db, "stats", section, "items"));
+      const existingIds = snap.docs.map((d) => d.id);
 
-      // Add missing predefined stats
-      for (const predefinedStat of defaultStats) {
-        if (
-          predefinedStat.id &&
-          !existingStatsIds.includes(predefinedStat.id)
-        ) {
-          await setDoc(doc(db, "stats", predefinedStat.id), {
-            title: predefinedStat.title,
-            value: predefinedStat.value,
-            description: predefinedStat.description,
-            isEnabled: true, // Default to enabled
+      for (const stat of PREDEFINED_STATS[section]) {
+        if (!existingIds.includes(stat.id!)) {
+          await setDoc(doc(db, "stats", section, "items", stat.id!), {
+            title: stat.title,
+            value: stat.value,
+            description: stat.description || "",
+            icon: stat.icon,
+            order: stat.order,
           });
         }
       }
 
-      await loadStats();
+      await loadStats(section);
     } catch (error) {
-      console.error("Error initializing predefined stats:", error);
-      alert("Failed to initialize predefined stats");
+      console.error(`Error initializing ${section} stats:`, error);
+      alert(`Failed to initialize ${section} stats`);
     } finally {
       setInitializing(false);
     }
   };
 
   useEffect(() => {
-    loadStats().catch(console.error);
-  }, []);
+    loadStats(activeSection);
+  }, [activeSection]);
 
   const startEdit = (stat: TStat) => {
     setEditingId(stat.id || null);
-    setEditForm({
-      value: stat.value,
-      description: stat.description || "",
-      isEnabled: stat.isEnabled !== false, // Default to true if undefined
-    });
+    setEditForm({ value: stat.value, description: stat.description || "" });
   };
 
   const cancelEdit = () => {
     setEditingId(null);
-    setEditForm({ value: "", description: "", isEnabled: true });
+    setEditForm({ value: "", description: "" });
   };
 
   const saveEdit = async () => {
     if (!editingId) return;
-
-    // Check if disabling this stat would result in less than 4 enabled stats
-    if (!editForm.isEnabled) {
-      const currentEnabledCount = stats.filter(
-        (s) => s.isEnabled !== false && s.id !== editingId
-      ).length;
-      if (currentEnabledCount < 4) {
-        alert(
-          "You must keep at least 4 stats enabled. Please enable other stats before disabling this one."
-        );
-        return;
-      }
-    }
 
     setLoading(true);
     try {
       const updateData = {
         value: editForm.value,
         description: editForm.description,
-        isEnabled: editForm.isEnabled,
       };
 
       if (!isFirebaseConfigured || !db) {
-        // Demo mode update
-        setStats((prev) =>
-          prev.map((stat) =>
-            stat.id === editingId ? { ...stat, ...updateData } : stat
-          )
-        );
+        setStats((prev) => ({
+          ...prev,
+          [activeSection]: prev[activeSection].map((s) =>
+            s.id === editingId ? { ...s, ...updateData } : s
+          ),
+        }));
         cancelEdit();
         return;
       }
 
-      await updateDoc(doc(db, "stats", editingId), updateData as any);
-      await loadStats();
+      await updateDoc(
+        doc(db, "stats", activeSection, "items", editingId),
+        updateData as any
+      );
+      await loadStats(activeSection);
       cancelEdit();
     } catch (error) {
       console.error("Error updating stat:", error);
@@ -154,110 +151,53 @@ export function StatsManagement() {
     }
   };
 
-  const getPredefinedStat = (id: string) => {
-    return defaultStats.find((stat) => stat.id === id);
-  };
-
-  // Check if all predefined stats exist
-  const missingStats = defaultStats.filter(
-    (predefined) => !stats.some((stat) => stat.id === predefined.id)
+  const currentStats = stats[activeSection];
+  const missingStats = PREDEFINED_STATS[activeSection].filter(
+    (p) => !currentStats.some((s) => s.id === p.id)
   );
-
-  // Count enabled stats
-  const enabledStatsCount = stats.filter(
-    (stat) => stat.isEnabled !== false
-  ).length;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
           Statistics Management
         </h1>
-        <p className="text-gray-600">
-          Update values and descriptions for predefined statistics. Contact
-          admin to change titles.
-        </p>
+        <p className="text-gray-600">Manage stats for different sections</p>
       </div>
 
-      {/* Info Card */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-          <div className="text-sm">
-            <p className="text-blue-800 font-medium mb-1">Important Notes:</p>
-            <ul className="text-blue-700 space-y-1 list-disc list-inside">
-              <li>
-                You can only edit <strong>values</strong> and{" "}
-                <strong>descriptions</strong>
-              </li>
-              <li>Stat titles are fixed and cannot be changed</li>
-              <li>
-                At least <strong>4 stats must remain enabled</strong> at all
-                times
-              </li>
-              <li>
-                Contact the developer to modify titles or add new stat
-                categories
-              </li>
-              <li>All changes are immediately reflected on the website</li>
-            </ul>
-          </div>
+      {/* Section Tabs */}
+      <div className="border-b border-gray-200">
+        <div className="flex gap-4">
+          {(["landing", "international", "domestic"] as TStatSection[]).map(
+            (section) => (
+              <button
+                key={section}
+                onClick={() => setActiveSection(section)}
+                className={`px-4 py-2 font-medium border-b-2 transition-colors capitalize ${
+                  activeSection === section
+                    ? "border-teal-600 text-teal-600"
+                    : "border-transparent text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                {section}
+              </button>
+            )
+          )}
         </div>
       </div>
 
-      {/* Stats Status Summary */}
-      {stats.length > 0 && (
-        <div
-          className={`rounded-xl p-4 ${
-            enabledStatsCount < 4
-              ? "bg-red-50 border border-red-200"
-              : "bg-green-50 border border-green-200"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <AlertCircle
-              className={`h-5 w-5 ${
-                enabledStatsCount < 4 ? "text-red-600" : "text-green-600"
-              }`}
-            />
-            <div className="text-sm">
-              <p
-                className={`font-medium ${
-                  enabledStatsCount < 4 ? "text-red-800" : "text-green-800"
-                }`}
-              >
-                Stats Status: {enabledStatsCount} of {stats.length} enabled
-              </p>
-              <p
-                className={`${
-                  enabledStatsCount < 4 ? "text-red-700" : "text-green-700"
-                }`}
-              >
-                {enabledStatsCount < 4
-                  ? "⚠️ Warning: You need at least 4 enabled stats. Please enable more stats."
-                  : "✅ All requirements met. Your stats section is ready to display."}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Initialize Missing Stats */}
+      {/* Initialize Button */}
       {missingStats.length > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-yellow-800 font-medium">
-                Missing Predefined Stats
-              </h3>
+              <h3 className="text-yellow-800 font-medium">Missing Stats</h3>
               <p className="text-yellow-700 text-sm">
-                {missingStats.length} predefined stats are missing from your
-                database.
+                {missingStats.length} stats need initialization
               </p>
             </div>
             <Button
-              onClick={initializePredefinedStats}
+              onClick={() => initializeSection(activeSection)}
               disabled={initializing}
               className="bg-yellow-600 hover:bg-yellow-700"
             >
@@ -268,91 +208,46 @@ export function StatsManagement() {
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {defaultStats.map((predefinedStat) => {
-          const currentStat = stats.find((s) => s.id === predefinedStat.id);
-          const isEditing = editingId === predefinedStat.id;
-          const IconComponent = predefinedStat.id
-            ? statIconMapper[predefinedStat.id]
-            : Mountain;
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {PREDEFINED_STATS[activeSection].map((predefined) => {
+          const stat = currentStats.find((s) => s.id === predefined.id);
+          const isEditing = editingId === predefined.id;
+          const IconComponent = ICON_MAP[predefined?.icon!] || Mountain;
 
-          if (!currentStat) {
-            // Show placeholder for missing stats
+          if (!stat) {
             return (
               <div
-                key={predefinedStat.id}
-                className="bg-gray-100 rounded-xl shadow p-6 opacity-50"
+                key={predefined.id}
+                className="bg-gray-100 rounded-lg p-4 opacity-50"
               >
-                <div className="flex items-center mb-4">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-white-300 rounded-full mr-3">
-                    <IconComponent className="h-6 w-6 text-teal-600" />
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                    <IconComponent className="h-5 w-5 text-gray-500" />
                   </div>
-                  <div className="flex-1">
+                  <div>
                     <h3 className="font-semibold text-gray-700">
-                      {predefinedStat.title}
+                      {predefined.title}
                     </h3>
-                    <p className="text-sm text-gray-500">Not initialized</p>
+                    <p className="text-xs text-gray-500">Not initialized</p>
                   </div>
-                </div>
-                <div className="text-center py-4">
-                  <p className="text-gray-500 text-sm">
-                    Initialize stats to manage this item
-                  </p>
                 </div>
               </div>
             );
           }
 
-          const isDisabled = currentStat.isEnabled === false;
-
           return (
-            <div
-              key={currentStat.id}
-              className={`rounded-xl shadow p-6 ${
-                isDisabled ? "bg-gray-50 border-2 border-gray-200" : "bg-white"
-              }`}
-            >
-              {/* Header with Icon, Title and Status */}
-              <div className="flex items-center mb-4">
-                <div
-                  className={`inline-flex items-center justify-center w-12 h-12 rounded-full mr-3 ${
-                    isDisabled ? "bg-gray-200" : "bg-teal-100"
-                  }`}
-                >
-                  <IconComponent
-                    className={`h-6 w-6 ${
-                      isDisabled ? "text-gray-400" : "text-teal-600"
-                    }`}
-                  />
+            <div key={stat.id} className="bg-white rounded-lg shadow p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                  <IconComponent className="h-5 w-5 text-teal-600" />
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3
-                      className={`font-semibold ${
-                        isDisabled ? "text-gray-500" : "text-gray-900"
-                      }`}
-                    >
-                      {currentStat.title}
-                    </h3>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        isDisabled
-                          ? "bg-gray-200 text-gray-600"
-                          : "bg-green-100 text-green-700"
-                      }`}
-                    >
-                      {isDisabled ? "Disabled" : "Enabled"}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500">Fixed title</p>
-                </div>
+                <h3 className="font-semibold text-gray-900">{stat.title}</h3>
               </div>
 
               {isEditing ? (
-                /* Edit Mode */
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
                       Value
                     </label>
                     <Input
@@ -360,105 +255,59 @@ export function StatsManagement() {
                       onChange={(e) =>
                         setEditForm({ ...editForm, value: e.target.value })
                       }
-                      placeholder="e.g., 50+, 2,000+, 15 years"
+                      placeholder="e.g., 50+, $799+"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      value={editForm.description}
-                      onChange={(e) =>
-                        setEditForm({
-                          ...editForm,
-                          description: e.target.value,
-                        })
-                      }
-                      rows={2}
-                      placeholder="Brief description of this statistic"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                    />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={editForm.isEnabled}
+                  {activeSection === "landing" && (
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        Description
+                      </label>
+                      <Input
+                        value={editForm.description}
                         onChange={(e) =>
                           setEditForm({
                             ...editForm,
-                            isEnabled: e.target.checked,
+                            description: e.target.value,
                           })
                         }
-                        className="w-4 h-4 text-teal-600 bg-gray-100 border-gray-300 rounded focus:ring-teal-500 focus:ring-2"
+                        placeholder="Brief description"
                       />
-                      <span className="text-sm font-medium text-gray-700">
-                        Enable this stat
-                      </span>
-                    </label>
-                    {!editForm.isEnabled && enabledStatsCount <= 4 && (
-                      <span className="text-xs text-red-600">
-                        ⚠️ Need 4+ enabled
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex gap-2 pt-2">
+                    </div>
+                  )}
+                  <div className="flex gap-2">
                     <Button
                       onClick={saveEdit}
-                      disabled={
-                        loading ||
-                        (!editForm.isEnabled && enabledStatsCount <= 4)
-                      }
+                      disabled={loading}
                       size="sm"
-                      className="bg-teal-600 hover:bg-teal-700"
+                      className="bg-teal-600 hover:bg-teal-700 flex-1"
                     >
-                      <Save className="h-4 w-4 mr-1" />
+                      <Save className="h-3 w-3 mr-1" />
                       {loading ? "Saving..." : "Save"}
                     </Button>
-                    <Button
-                      onClick={cancelEdit}
-                      variant="outline"
-                      size="sm"
-                      className="bg-transparent"
-                    >
+                    <Button onClick={cancelEdit} variant="outline" size="sm">
                       Cancel
                     </Button>
                   </div>
                 </div>
               ) : (
-                /* View Mode */
-                <div className={isDisabled ? "opacity-60" : ""}>
-                  <div
-                    className={`text-3xl font-bold mb-2 ${
-                      isDisabled ? "text-gray-400" : "text-teal-600"
-                    }`}
-                  >
-                    {currentStat.value}
+                <div>
+                  <div className="text-2xl font-bold text-teal-600 mb-1">
+                    {stat.value}
                   </div>
-                  <div
-                    className={`text-sm mb-4 min-h-[2.5rem] ${
-                      isDisabled ? "text-gray-400" : "text-gray-600"
-                    }`}
-                  >
-                    {currentStat.description || "No description"}
-                  </div>
-                  {isDisabled && (
-                    <div className="mb-4 p-2 bg-gray-100 rounded-md">
-                      <p className="text-xs text-gray-600 text-center">
-                        This stat is currently disabled and won't appear on the
-                        website
-                      </p>
+                  {activeSection === "landing" && stat.description && (
+                    <div className="text-xs text-gray-600 mb-3">
+                      {stat.description}
                     </div>
                   )}
                   <Button
-                    onClick={() => startEdit(currentStat)}
+                    onClick={() => startEdit(stat)}
                     variant="outline"
                     size="sm"
-                    className="bg-transparent w-full"
+                    className="w-full"
                   >
-                    <Edit3 className="h-4 w-4 mr-1" />
-                    Edit Values
+                    <Edit3 className="h-3 w-3 mr-1" />
+                    Edit
                   </Button>
                 </div>
               )}
@@ -466,61 +315,6 @@ export function StatsManagement() {
           );
         })}
       </div>
-
-      {/* Preview Section */}
-      {stats.length > 0 && (
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Live Preview
-          </h2>
-          <p className="text-sm text-gray-600 mb-6">
-            This is how your stats will appear on the website:
-          </p>
-
-          {/* Mini preview of stats section */}
-          <div className="bg-teal-600 rounded-lg p-6">
-            <div className="w-full flex-wrap flex justify-between items-center gap-8 ">
-              {stats
-                .filter((stat) => stat.isEnabled !== false)
-                .slice(0, 6)
-                .map((stat, index) => {
-                  const predefined = getPredefinedStat(stat.id || "");
-                  const IconComponent = predefined?.id
-                    ? statIconMapper[predefined?.id]
-                    : Mountain;
-
-                  return (
-                    <div
-                      key={stat.id || index}
-                      className="text-center text-white  max-w-xs"
-                    >
-                      <div className="inline-flex items-center justify-center w-10 h-10 bg-white bg-opacity-20 rounded-full mb-2">
-                        <IconComponent className="h-5 w-5 text-teal-600" />
-                      </div>
-                      <div className="text-xl font-bold mb-1">{stat.value}</div>
-                      <div className="text-sm font-medium mb-1">
-                        {stat.title}
-                      </div>
-                      {stat.description && (
-                        <div className="text-teal-100 text-xs">
-                          {stat.description}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-            </div>
-            {enabledStatsCount < 4 && (
-              <div className="mt-4 p-3 bg-red-500 bg-opacity-20 rounded-lg">
-                <p className="text-white text-sm text-center">
-                  ⚠️ Preview showing {enabledStatsCount} stats - Need at least 4
-                  enabled for public display
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

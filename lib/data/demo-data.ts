@@ -301,4 +301,5 @@ export const mockMountain: TMountainType = {
   availableDates: [],
   priceUSD: 0,
   priceINR: 0,
+  type: "trekking",
 };

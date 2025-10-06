@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
+      type,
       bookingDetails,
     } = body;
 
@@ -33,8 +34,9 @@ export async function POST(request: NextRequest) {
       const booking: TBooking = {
         id: "",
         bookingId,
+        booking: { id: bookingDetails?.mountainId, type: type },
         userEmail: bookingDetails?.userEmail,
-        mountainId: bookingDetails?.mountainId,
+        //mountainId: bookingDetails?.mountainId,
         mountainName: bookingDetails?.mountainName,
         slotDetails: bookingDetails?.slotDetails,
         participants: bookingDetails?.participants,

@@ -633,12 +633,11 @@ export default function DashboardPageMain() {
               )}
 
               {/* Journey Images Section */}
-              <div className="bg-white rounded-xl shadow-md p-6">
+              {/* <div className="bg-white rounded-xl shadow-md p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   Your Journey Images
                 </h2>
 
-                {/* Upload Form */}
                 <div className="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-lg">
                   <div className="text-center">
                     <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
@@ -727,7 +726,6 @@ export default function DashboardPageMain() {
                   )}
                 </div>
 
-                {/* Images Grid */}
                 {journeyImages.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {journeyImages.map((image) => (
@@ -761,7 +759,7 @@ export default function DashboardPageMain() {
                     </p>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* Sidebar */}

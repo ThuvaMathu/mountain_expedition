@@ -13,7 +13,7 @@ interface BookingCalendarProps {
   mountain: TMountainType;
 }
 
-export function BookingCalendar({ mountain }: BookingCalendarProps) {
+export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
   const { user } = useAuth();
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -24,7 +24,7 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
 
   const getMaxParticipants = (): string[] => {
     // Flatten all slots across all dates
-    const allSlots = mountain.availableDates.flatMap((date) => date.slots);
+    const allSlots = product.availableDates.flatMap((date) => date.slots);
 
     // Find the slot by ID
     const slot = allSlots.find((s) => s.id === selectedDate) || null;
@@ -53,8 +53,8 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
     setTimeout(() => {
       const maxP = getMaxParticipants().length;
       router.push(
-        `/booking/checkout?mountain=${
-          mountain.id
+        `/booking/checkout?id=${product.id}&type=${
+          product.type
         }&slot_id=${selectedDate}&participants=${
           participants.split(" ")[0]
         }&max=${maxP}`
@@ -73,7 +73,7 @@ export function BookingCalendar({ mountain }: BookingCalendarProps) {
           <Calendar className="h-5 w-5 mr-2" /> Select Date
         </h3>
         <div className="space-y-2">
-          {mountain.availableDates.map((slot) => (
+          {product.availableDates.map((slot) => (
             <div
               key={slot.date}
               className={`w-full p-2 text-left rounded-lg border transition-colors 

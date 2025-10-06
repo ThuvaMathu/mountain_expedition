@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase"; // adjust path
@@ -22,11 +22,13 @@ export default function BookingConfirmationPage() {
   const params = useParams();
   const [booking, setBooking] = useState<TBooking | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const searchParams = useSearchParams();
   useEffect(() => {
     const fetchBooking = async () => {
       try {
         if (!params.id || !db) return;
+        if (!searchParams.get("type")) return;
+        const type = searchParams.get("type");
         const docRef = doc(db, "bookings", params.id as string);
         const docSnap = await getDoc(docRef);
 

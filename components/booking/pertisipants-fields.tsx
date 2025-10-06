@@ -24,6 +24,7 @@ interface ParticipantGroupFormProps {
   participantCount: number;
   maxParticipants: number;
   onChange: (data: ParticipantGroup, isAllFilled: boolean) => void;
+  productType: "domestic" | "international"; // Optional prop to differentiate product types
 }
 
 // Input component
@@ -54,7 +55,14 @@ const ParticipantFields: React.FC<{
   onChange: (participant: ParticipantInfo) => void;
   title: string;
   isOrganizer?: boolean;
-}> = ({ participant, onChange, title, isOrganizer = false }) => {
+  type: "domestic" | "international";
+}> = ({
+  participant,
+  onChange,
+  type: category,
+  title,
+  isOrganizer = false,
+}) => {
   const updateField = (field: keyof ParticipantInfo, value: string) => {
     onChange({ ...participant, [field]: value });
   };
@@ -98,31 +106,34 @@ const ParticipantFields: React.FC<{
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Country of Residence *
-          </label>
-          <Input
-            type="text"
-            value={participant.country}
-            onChange={(e) => updateField("country", e.target.value)}
-            required
-            placeholder="e.g., India"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Passport Number *
-          </label>
-          <Input
-            type="text"
-            value={participant.passport}
-            onChange={(e) => updateField("passport", e.target.value)}
-            required
-            placeholder="e.g., N12345677"
-          />
-        </div>
+        {category !== "domestic" && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Country of Residence *
+            </label>
+            <Input
+              type="text"
+              value={participant.country}
+              onChange={(e) => updateField("country", e.target.value)}
+              required
+              placeholder="e.g., India"
+            />
+          </div>
+        )}
+        {category !== "domestic" && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Passport Number *
+            </label>
+            <Input
+              type="text"
+              value={participant.passport}
+              onChange={(e) => updateField("passport", e.target.value)}
+              required
+              placeholder="e.g., N12345677"
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -172,6 +183,7 @@ const ParticipantGroupForm: React.FC<ParticipantGroupFormProps> = ({
   participantCount,
   maxParticipants,
   onChange,
+  productType,
 }) => {
   const [participantGroup, setParticipantGroup] = useState<ParticipantGroup>({
     organizer: createEmptyParticipant(),
@@ -180,12 +192,14 @@ const ParticipantGroupForm: React.FC<ParticipantGroupFormProps> = ({
   const isMaxParticipants = participantGroup.members.length < maxParticipants;
   // Validation helpers
   const isParticipantValid = (participant: ParticipantInfo): boolean => {
+    const type = productType;
     return !!(
       (
         participant.name.trim() &&
         participant.email.trim() &&
-        participant.country.trim() &&
-        participant.passport.trim() &&
+        (type !== "domestic"
+          ? participant.country.trim() && participant.passport.trim()
+          : true) &&
         participant.phone.trim() &&
         participant.emergencyContact.trim()
       )
@@ -269,6 +283,7 @@ const ParticipantGroupForm: React.FC<ParticipantGroupFormProps> = ({
     <div className="space-y-6">
       {/* Organizer/Primary Participant */}
       <ParticipantFields
+        type={productType}
         participant={participantGroup.organizer}
         onChange={updateOrganizer}
         title="Primary Participant"
@@ -279,6 +294,7 @@ const ParticipantGroupForm: React.FC<ParticipantGroupFormProps> = ({
       {participantGroup.members.map((member, index) => (
         <div key={index} className="relative">
           <ParticipantFields
+            type={productType}
             participant={member}
             onChange={(updatedMember) => updateMember(index, updatedMember)}
             title={`Additional Participant ${index + 1}`}

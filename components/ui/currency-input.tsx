@@ -50,7 +50,8 @@ export const CurrencyInput = React.forwardRef<
         <span
           className={cn(
             "absolute top-1/2 -translate-y-1/2 text-gray-500 select-none",
-            prefixSizeClasses[size]
+            prefixSizeClasses[size],
+            className
           )}
         >
           {prefix}

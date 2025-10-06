@@ -36,12 +36,14 @@ export default function CheckoutPage() {
   >(null);
 
   const [bookingDetails, setBookingDetails] = useState<{
-    mountainId: string;
+    productId: string;
+    type: string;
     slotId: string;
     participants: number;
     maxParticipants: number;
   }>({
-    mountainId: "",
+    productId: "",
+    type: "international",
     slotId: "",
     participants: 1,
     maxParticipants: 1,
@@ -51,7 +53,7 @@ export default function CheckoutPage() {
     organizer: {
       name: user?.displayName || "",
       email: user?.email || "",
-      country: "",
+      country: "India",
       passport: "",
       phone: "",
       emergencyContact: "",
@@ -77,7 +79,8 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const temp = {
-      mountainId: searchParams.get("mountain") || "",
+      productId: searchParams.get("id") || "",
+      type: searchParams.get("type") || "trekking",
       slotId: searchParams.get("slot_id") || "",
       participants: Number.parseInt(searchParams.get("participants") || "1"),
       maxParticipants: Number.parseInt(searchParams.get("max") || "1"),
@@ -88,9 +91,11 @@ export default function CheckoutPage() {
         return;
       }
       try {
+        const dbName =
+          temp.type === "trekking" ? "mountains" : "tourist-packages";
         const q = query(
-          collection(db, "mountains"),
-          where("id", "==", temp.mountainId)
+          collection(db, dbName),
+          where("id", "==", temp.productId)
         );
         const snap = await getDocs(q);
         const list: TMountainType[] = snap.docs.map((d) => ({
@@ -98,6 +103,16 @@ export default function CheckoutPage() {
           ...(d.data() as any),
         }));
         setMountain(list[0] || null);
+        if (list[0]?.category === "domestic") {
+          setCurrency("INR");
+          setCustomerInfo((prev) => ({
+            ...prev,
+            organizer: {
+              ...prev.organizer,
+              country: "India",
+            },
+          }));
+        }
       } catch (error) {
         console.error("Error loading mountains:", error);
       }
@@ -180,6 +195,7 @@ export default function CheckoutPage() {
               razorpay_order_id: `razorpay_order_id_${uuidv4()}`,
               razorpay_payment_id: `razorpay_payment_id_${uuidv4()}`,
               razorpay_signature: `razorpay_signature_${uuidv4()}`,
+              type: bookingDetails.type,
               bookingDetails: {
                 userEmail: user.email,
                 bookingId: orderData.bookingId,
@@ -197,7 +213,9 @@ export default function CheckoutPage() {
           const verifyData = await verifyResponse.json();
           if (verifyData.success) {
             if (verifyData.id) {
-              router.push(`/booking/confirmation/${verifyData?.id}`);
+              router.push(
+                `/booking/confirmation/${verifyData?.id}?type=${bookingDetails.type}`
+              );
             }
             return;
           } else {
@@ -316,6 +334,7 @@ export default function CheckoutPage() {
           {/* Booking Form */}
           <div className="lg:col-span-2 space-y-6">
             <ParticipantGroupForm
+              productType={mountain?.category!}
               participantCount={bookingDetails.participants}
               onChange={(participant, isFilled) => {
                 setCustomerInfo(participant);

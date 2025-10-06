@@ -6,16 +6,18 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { AdminDashboard } from "@/components/admin/AdminDashboard";
-import { MountainManagement } from "@/components/admin/MountainManagement";
+//import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { BlogManagement } from "@/components/admin/BlogManagement";
 import { GalleryManagement } from "@/components/admin/GalleryManagement";
 import { StatsManagement } from "@/components/admin/StatsManagement";
 import { ContactsManagement } from "@/components/admin/ContactsManagement";
 import { EventManagement } from "@/components/admin/EventsManagement";
 import { AdminAccount } from "@/components/admin/AdminAccount";
-import { BookingManagement } from "@/components/admin/BookingManagement";
+import { BookingManagement } from "@/components/admin/booking/BookingManagement";
 import { TestimonialManagement } from "@/components/admin/TestimonialManagement";
+import TourAndTravelManagement from "@/components/admin/TouristPackageManagement";
+import MountainManagement from "@/components/admin/MountainManagement";
+import { AdminDashboard } from "@/components/admin/dashboard/AdminDashboard";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -52,6 +54,8 @@ export default function AdminPage() {
         return <BookingManagement />;
       case "mountains":
         return <MountainManagement />;
+      case "trourist":
+        return <TourAndTravelManagement />;
       case "blog":
         return <BlogManagement />;
       case "gallery":

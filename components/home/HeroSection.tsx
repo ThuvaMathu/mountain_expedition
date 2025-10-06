@@ -135,31 +135,27 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
 
         {/* Enhanced Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto animate-slide-up animation-delay-600">
-          {stats
-            .filter((temp) => temp.isEnabled === true)
-            .map((stat, index) => {
-              const IconComponent = stat.id
-                ? statIconMapper[stat.id]
-                : Mountain;
-              return (
-                <div
-                  key={index}
-                  className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 group"
-                >
-                  <div className="flex justify-center mb-3">
-                    <IconComponent
-                      className={`h-6 w-6 sm:h-8 sm:w-8 text-teal-600 group-hover:animate-pulse`}
-                    />
-                  </div>
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-300 font-medium">
-                    {stat.title}
-                  </div>
+          {stats.map((stat, index) => {
+            const IconComponent = stat.id ? statIconMapper[stat.id] : Mountain;
+            return (
+              <div
+                key={index}
+                className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 group"
+              >
+                <div className="flex justify-center mb-3">
+                  <IconComponent
+                    className={`h-6 w-6 sm:h-8 sm:w-8 text-teal-600 group-hover:animate-pulse`}
+                  />
                 </div>
-              );
-            })}
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  {stat.value}
+                </div>
+                <div className="text-xs sm:text-sm text-gray-300 font-medium">
+                  {stat.title}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Adventure Features - Mobile Responsive */}

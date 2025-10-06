@@ -23,6 +23,7 @@ import { isFirebaseConfigured, db } from "@/lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
 import { getAvailableSlots } from "@/lib/utils";
 import { useCurrencyStore } from "@/stores/currency-store";
+import { BookingCalendar } from "@/components/booking/BookingCalendar";
 
 export default function TouristDetailPage() {
   const params = useParams();
@@ -140,7 +141,7 @@ export default function TouristDetailPage() {
               <span>{touristPackage.bestSeason}</span>
             </div>
             <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(
+              className={`px-3 py-1 rounded-full flex items-center text-sm font-medium ${getCategoryColor(
                 category
               )}`}
             >
@@ -430,10 +431,7 @@ export default function TouristDetailPage() {
                     </Button>
                   </div>
                 ) : (
-                  <TouristBooking
-                    tourist={touristPackage}
-                    category={category}
-                  />
+                  <BookingCalendar mountain={touristPackage} />
                 )}
 
                 <div className="mt-6 pt-6 border-t">
