@@ -15,7 +15,8 @@ type HeightClass =
   | "h-56"
   | "h-64"
   | "h-72"
-  | "h-80";
+  | "h-80"
+  | "h-96";
 
 interface AppImageProps extends Omit<ImageProps, "height" | "width"> {
   /** Tailwind height class (one of the union) — default "h-48" */

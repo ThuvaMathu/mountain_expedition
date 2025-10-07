@@ -4,6 +4,7 @@ import { useState } from "react";
 import ImageModal from "./ImageModal";
 import Pagination from "./Pagination";
 import Image from "next/image";
+import { ImageLoader } from "../ui/image-loader";
 
 interface StaticImage {
   src: string;
@@ -122,7 +123,7 @@ export default function GalleryImages({
           >
             <div className="relative overflow-hidden">
               <div className="relative w-full h-48  overflow-hidden">
-                <Image
+                <ImageLoader
                   fill
                   loading="lazy"
                   src={image.src || "/placeholder.svg"}

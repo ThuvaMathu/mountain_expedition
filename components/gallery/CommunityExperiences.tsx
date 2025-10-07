@@ -5,6 +5,7 @@ import { Star, User, Calendar, Mountain } from "lucide-react";
 import ImageModal from "./ImageModal";
 import { formatDate, formatFirestoreDate } from "@/lib/utils";
 import Image from "next/image";
+import { ImageLoader } from "../ui/image-loader";
 
 interface ImageData {
   src: string;
@@ -118,7 +119,7 @@ export default function CommunityExperiences({
                         }
                       >
                         <div className="relative w-full h-48 overflow-hidden">
-                          <Image
+                          <ImageLoader
                             src={image || "/placeholder.svg"}
                             alt={`${experience.title} ${index + 1}`}
                             fill

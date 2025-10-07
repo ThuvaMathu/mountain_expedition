@@ -195,7 +195,7 @@ export const DEFAULT_SEO: SEOConfig = {
 export const SITE_CONFIG = {
   url:
     process.env.NEXT_PUBLIC_SITE_URL ||
-    "https://tamiladventuretrekkingclub.com",
+    "https://dev.tamiladventuretrekkingclub.com",
   name: COMPANY_INFO.name,
   locale: "en_IN",
   defaultImage: "/og-image.jpg",
