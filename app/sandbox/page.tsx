@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Mountain, Mail, ArrowRight, CheckCircle } from "lucide-react";
+import AppLogo from "@/components/ui/app-logo";
 
 export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
@@ -74,12 +75,13 @@ export default function ComingSoonPage() {
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Logo/Icon */}
         <div className="flex justify-center mb-8 animate-float">
-          <div className="w-20 h-20 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-2xl">
-            <Mountain className="h-10 w-10 text-white" />
-          </div>
+          <AppLogo isWithText={false} size="large" />
         </div>
 
         {/* Main heading */}
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 bg-gradient-to-r from-white via-teal-300 to-white bg-clip-text text-transparent leading-tight">
+          Tamil Adventure Trekking Club
+        </h1>
         <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-teal-200 to-white bg-clip-text text-transparent leading-tight">
           Something Epic is Coming
         </h1>
