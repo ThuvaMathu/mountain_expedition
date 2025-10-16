@@ -9,14 +9,16 @@ import { ToastContainer, toast } from "react-toastify";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Summit Quest - Global Mountain Expedition Booking",
+  title: "Tamil Adventure Treckking Club - Global Mountain Expedition Booking",
   description:
-    "Book your next mountain adventure with Summit Quest. Explore the Seven Summits, Himalayas, and Indian peaks with expert guides.",
+    "Book your next mountain adventure with Tamil Adventure Treckking Club. Explore the Seven Summits, Himalayas, and Indian peaks with expert guides.",
   keywords:
     "mountain climbing, expedition booking, Seven Summits, Himalayas, trekking, adventure travel",
   openGraph: {
-    title: "Summit Quest - Global Mountain Expedition Booking",
-    description: "Book your next mountain adventure with Summit Quest",
+    title:
+      "Tamil Adventure Treckking Club - Global Mountain Expedition Booking",
+    description:
+      "Book your next mountain adventure with Tamil Adventure Treckking Club",
     images: ["/images/hero-mountain.jpg"],
   },
   generator: "v0.app",

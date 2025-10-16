@@ -23,3 +23,5 @@ Razorpay
 
 They also offer a slightly lower rate for certain debit/credit card types, depending on the plan.
 Razorpay
+
+gcloud storage buckets update gs://careful-drummer-471609-n2.firebasestorage.app --cors-file=cors.json

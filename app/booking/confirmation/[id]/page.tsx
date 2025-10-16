@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase"; // adjust path
+import { db } from "@/lib/firebase";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -17,18 +17,21 @@ import {
   User,
   MapPin,
 } from "lucide-react";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 export default function BookingConfirmationPage() {
   const params = useParams();
   const [booking, setBooking] = useState<TBooking | null>(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
   const searchParams = useSearchParams();
+
   useEffect(() => {
     const fetchBooking = async () => {
       try {
         if (!params.id || !db) return;
-        if (!searchParams.get("type")) return;
-        const type = searchParams.get("type");
+        // if (!searchParams.get("type")) return;
+        // const type = searchParams.get("type");
         const docRef = doc(db, "bookings", params.id as string);
         const docSnap = await getDoc(docRef);
 
@@ -47,6 +50,79 @@ export default function BookingConfirmationPage() {
 
     fetchBooking();
   }, [params.id]);
+
+  // const handleDownloadReceipt = async () => {
+  //   if (!booking?.pdfUrl) {
+  //     alert("Receipt is not available yet. Please try again later.");
+  //     return;
+  //   }
+
+  //   try {
+  //     setDownloading(true);
+
+  //     // Option 1: Open in new tab (bypasses CORS)
+  //     // window.open(booking.pdfUrl, '_blank');
+
+  //     // Option 2: Direct download using anchor tag (bypasses CORS)
+  //     const link = document.createElement("a");
+  //     link.href = booking.pdfUrl;
+  //     link.target = "_blank";
+  //     link.download = `Invoice_${booking.bookingId}.pdf`;
+  //     link.rel = "noopener noreferrer";
+
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //   } catch (error) {
+  //     console.error("Error downloading receipt:", error);
+  //     alert("Failed to download receipt. Please try again or contact support.");
+  //   } finally {
+  //     setDownloading(false);
+  //   }
+  // };
+
+  const handleDownloadReceipt = async () => {
+    if (!booking?.pdfPath) {
+      // Use 'pdfPath' (like "receipts/bk-ABC123.pdf"), not a full URL
+      alert("Receipt is not available yet. Please try again later.");
+      return;
+    }
+
+    try {
+      setDownloading(true);
+
+      const storage = getStorage();
+      const fileRef = ref(storage, booking.pdfPath);
+
+      // Get a secure, time-limited download URL directly from Firebase
+      const downloadURL = await getDownloadURL(fileRef);
+
+      // Fetch file as blob to trigger real download (instead of opening a new tab)
+      const response = await fetch(downloadURL);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+
+      // Create a blob URL and trigger the browser download
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `Invoice_${booking.bookingId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Error downloading receipt:", error);
+      alert("Failed to download receipt. Please try again or contact support.");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -98,6 +174,11 @@ export default function BookingConfirmationPage() {
           <p className="text-xl text-gray-600">
             Your expedition booking has been successfully confirmed.
           </p>
+          {booking.paymentMethod === "razorpay_demo" && (
+            <p className="text-sm text-yellow-600 mt-2">
+              (Demo Mode - No actual payment processed)
+            </p>
+          )}
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
@@ -183,16 +264,32 @@ export default function BookingConfirmationPage() {
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="flex items-center">
-            <Download className="h-5 w-5 mr-2" /> Download Receipt
-          </Button>
           <Button
-            variant="outline"
             size="lg"
-            className="flex items-center bg-transparent"
+            className="flex items-center"
+            onClick={handleDownloadReceipt}
+            disabled={downloading || !booking.pdfUrl}
           >
-            <Mail className="h-5 w-5 mr-2" /> Contact Support
+            {downloading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Downloading...
+              </>
+            ) : (
+              <>
+                <Download className="h-5 w-5 mr-2" /> Download Receipt
+              </>
+            )}
           </Button>
+          <a href="mailto:support@tamiladventures.com">
+            <Button
+              variant="outline"
+              size="lg"
+              className="flex items-center bg-transparent"
+            >
+              <Mail className="h-5 w-5 mr-2" /> Contact Support
+            </Button>
+          </a>
           <Link href="/dashboard">
             <Button variant="outline" size="lg">
               View My Bookings
@@ -200,12 +297,21 @@ export default function BookingConfirmationPage() {
           </Link>
         </div>
 
+        {!booking.pdfUrl && (
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500">
+              Your receipt is being generated. Please refresh the page in a few
+              moments.
+            </p>
+          </div>
+        )}
+
         <div className="mt-12 text-center">
           <p className="text-gray-600 mb-2">
             Questions about your booking? We're here to help!
           </p>
           <p className="text-gray-900 font-semibold">
-            Email: support@summitquest.com | Phone: +1 (555) 123-4567
+            Email: support@tamiladventures.com | Phone: +1 (555) 123-4567
           </p>
         </div>
       </main>

@@ -144,6 +144,8 @@ type TBooking = {
   razorpayPaymentId: string;
   status: string; // can extend later
   userEmail: string;
+  pdfUrl?: string;
+  pdfPath?: string;
 };
 
 type TJourneyImage = {

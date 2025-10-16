@@ -104,7 +104,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-teal-400" />
-                <span className="text-gray-300">info@summitquest.com</span>
+                <span className="text-gray-300">info@tamiladventures.com</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-teal-400" />
@@ -125,7 +125,8 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} Summit Quest. All rights reserved.
+              © {new Date().getFullYear()} Tamil Adventure Treckking Club. All
+              rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link

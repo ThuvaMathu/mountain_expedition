@@ -197,6 +197,7 @@ export default function CheckoutPage() {
               razorpay_signature: `razorpay_signature_${uuidv4()}`,
               type: bookingDetails.type,
               bookingDetails: {
+                organizerEmail: customerInfo.organizer.email,
                 userEmail: user.email,
                 bookingId: orderData.bookingId,
                 mountainId: mountain.id,
@@ -240,7 +241,7 @@ export default function CheckoutPage() {
         key: orderData.key,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: "Summit Quest Expeditions",
+        name: "Tamil Adventure Treckking Club",
         description: `${mountain.name} Expedition`,
         order_id: orderData.orderId,
         handler: async (response: any) => {

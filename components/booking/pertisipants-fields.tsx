@@ -99,6 +99,7 @@ const ParticipantFields: React.FC<{
           </label>
           <Input
             type="email"
+            aria-label="email"
             value={participant.email}
             onChange={(e) => updateField("email", e.target.value)}
             required
