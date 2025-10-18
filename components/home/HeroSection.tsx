@@ -72,10 +72,7 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
           preload="auto"
           poster="/images/hero-poster.jpg"
         >
-          <source
-            src="https://s3.ap-southeast-2.amazonaws.com/images.thuvarakan.info/hero-video-hd-1200.webm"
-            type="video/webm"
-          />
+          <source src="/videos/hero-video-hd.mp4" type="video/webm" />
           <source
             src="https://s3.ap-southeast-2.amazonaws.com/images.thuvarakan.info/hero-video-hd-1200.mp4"
             type="video/mp4"
