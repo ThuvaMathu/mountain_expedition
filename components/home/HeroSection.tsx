@@ -69,7 +69,7 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
           poster="/images/hero-poster.jpg"
         >
           <source src="/bg-videos/hero-video-hd.webm" type="video/webm" />
