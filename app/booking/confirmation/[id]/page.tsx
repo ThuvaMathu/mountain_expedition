@@ -5,8 +5,6 @@ import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle,
@@ -18,14 +16,18 @@ import {
   MapPin,
 } from "lucide-react";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import dynamic from "next/dynamic";
+import { getContactDetailsClient } from "@/services/client-service/get-contact";
+import { fallbackContactDetails } from "@/services/default-values";
 
 export default function BookingConfirmationPage() {
   const params = useParams();
   const [booking, setBooking] = useState<TBooking | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
-  const searchParams = useSearchParams();
-
+  const [contactDetails, setContactDetails] = useState<TContactDetails>(
+    fallbackContactDetails
+  );
   useEffect(() => {
     const fetchBooking = async () => {
       try {
@@ -47,39 +49,13 @@ export default function BookingConfirmationPage() {
         setLoading(false);
       }
     };
-
+    const fetchContact = async () => {
+      const contactDetails = await getContactDetailsClient();
+      setContactDetails(contactDetails);
+    };
     fetchBooking();
+    fetchContact();
   }, [params.id]);
-
-  // const handleDownloadReceipt = async () => {
-  //   if (!booking?.pdfUrl) {
-  //     alert("Receipt is not available yet. Please try again later.");
-  //     return;
-  //   }
-
-  //   try {
-  //     setDownloading(true);
-
-  //     // Option 1: Open in new tab (bypasses CORS)
-  //     // window.open(booking.pdfUrl, '_blank');
-
-  //     // Option 2: Direct download using anchor tag (bypasses CORS)
-  //     const link = document.createElement("a");
-  //     link.href = booking.pdfUrl;
-  //     link.target = "_blank";
-  //     link.download = `Invoice_${booking.bookingId}.pdf`;
-  //     link.rel = "noopener noreferrer";
-
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-  //   } catch (error) {
-  //     console.error("Error downloading receipt:", error);
-  //     alert("Failed to download receipt. Please try again or contact support.");
-  //   } finally {
-  //     setDownloading(false);
-  //   }
-  // };
 
   const handleDownloadReceipt = async () => {
     if (!booking?.pdfPath) {
@@ -160,163 +136,153 @@ export default function BookingConfirmationPage() {
     }).format(n);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
-            <CheckCircle className="h-12 w-12 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Booking Confirmed!
-          </h1>
-          <p className="text-xl text-gray-600">
-            Your expedition booking has been successfully confirmed.
+    <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+          <CheckCircle className="h-12 w-12 text-green-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Booking Confirmed!
+        </h1>
+        <p className="text-xl text-gray-600">
+          Your expedition booking has been successfully confirmed.
+        </p>
+        {booking.paymentMethod === "razorpay_demo" && (
+          <p className="text-sm text-yellow-600 mt-2">
+            (Demo Mode - No actual payment processed)
           </p>
-          {booking.paymentMethod === "razorpay_demo" && (
-            <p className="text-sm text-yellow-600 mt-2">
-              (Demo Mode - No actual payment processed)
-            </p>
-          )}
-        </div>
-
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900">
-              Booking Details
-            </h2>
-            <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">
-              {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <Mountain className="h-5 w-5 text-teal-600 mt-1" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Expedition
-                  </p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {booking.mountainName}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <Calendar className="h-5 w-5 text-teal-600 mt-1" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Expedition Date
-                  </p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {booking.slotDetails?.date}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <User className="h-5 w-5 text-teal-600 mt-1" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Participants
-                  </p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {booking.participants} person(s)
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <Mail className="h-5 w-5 text-teal-600 mt-1" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Booking ID
-                  </p>
-                  <p className="text-lg font-semibold text-gray-900 font-mono">
-                    {booking.bookingId}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <MapPin className="h-5 w-5 text-teal-600 mt-1" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Customer</p>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {booking.customerInfo.organizer.name}
-                  </p>
-                  <p className="text-sm text-gray-600">{booking.userEmail}</p>
-                </div>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm font-medium text-gray-500 mb-1">
-                  Total Amount Paid
-                </p>
-                <p className="text-2xl font-bold text-green-600">
-                  {fmt(booking.amount)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            size="lg"
-            className="flex items-center"
-            onClick={handleDownloadReceipt}
-            disabled={downloading || !booking.pdfUrl}
-          >
-            {downloading ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Downloading...
-              </>
-            ) : (
-              <>
-                <Download className="h-5 w-5 mr-2" /> Download Receipt
-              </>
-            )}
-          </Button>
-          <a href="mailto:support@tamiladventures.com">
-            <Button
-              variant="outline"
-              size="lg"
-              className="flex items-center bg-transparent"
-            >
-              <Mail className="h-5 w-5 mr-2" /> Contact Support
-            </Button>
-          </a>
-          <Link href="/dashboard">
-            <Button variant="outline" size="lg">
-              View My Bookings
-            </Button>
-          </Link>
-        </div>
-
-        {!booking.pdfUrl && (
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
-              Your receipt is being generated. Please refresh the page in a few
-              moments.
-            </p>
-          </div>
         )}
+      </div>
 
-        <div className="mt-12 text-center">
-          <p className="text-gray-600 mb-2">
-            Questions about your booking? We're here to help!
-          </p>
-          <p className="text-gray-900 font-semibold">
-            Email: support@tamiladventures.com | Phone: +1 (555) 123-4567
+      <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-semibold text-gray-900">
+            Booking Details
+          </h2>
+          <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">
+            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <Mountain className="h-5 w-5 text-teal-600 mt-1" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Expedition</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {booking.mountainName}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <Calendar className="h-5 w-5 text-teal-600 mt-1" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Expedition Date
+                </p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {booking.slotDetails?.date}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <User className="h-5 w-5 text-teal-600 mt-1" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Participants
+                </p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {booking.participants} person(s)
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <Mail className="h-5 w-5 text-teal-600 mt-1" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Booking ID</p>
+                <p className="text-lg font-semibold text-gray-900 font-mono">
+                  {booking.bookingId}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <MapPin className="h-5 w-5 text-teal-600 mt-1" />
+              <div>
+                <p className="text-sm font-medium text-gray-500">Customer</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {booking.customerInfo.organizer.name}
+                </p>
+                <p className="text-sm text-gray-600">{booking.userEmail}</p>
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-sm font-medium text-gray-500 mb-1">
+                Total Amount Paid
+              </p>
+              <p className="text-2xl font-bold text-green-600">
+                {fmt(booking.amount)}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Button
+          size="lg"
+          className="flex items-center"
+          onClick={handleDownloadReceipt}
+          disabled={downloading || !booking.pdfUrl}
+        >
+          {downloading ? (
+            <>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              Downloading...
+            </>
+          ) : (
+            <>
+              <Download className="h-5 w-5 mr-2" /> Download Receipt
+            </>
+          )}
+        </Button>
+        <Link href="/contact">
+          <Button
+            variant="outline"
+            size="lg"
+            className="flex items-center bg-transparent"
+          >
+            <Mail className="h-5 w-5 mr-2" /> Contact Support
+          </Button>
+        </Link>
+        <Link href="/dashboard">
+          <Button variant="outline" size="lg">
+            View My Bookings
+          </Button>
+        </Link>
+      </div>
+
+      {!booking.pdfUrl && (
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500">
+            Your receipt is being generated. Please refresh the page in a few
+            moments.
           </p>
         </div>
-      </main>
+      )}
 
-      <Footer />
-    </div>
+      <div className="mt-12 text-center">
+        <p className="text-gray-600 mb-2">
+          Questions about your booking? We're here to help!
+        </p>
+        <p className="text-gray-900 font-semibold">
+          Email: {contactDetails.email} | Phone: {contactDetails.phone}
+        </p>
+      </div>
+    </main>
   );
 }

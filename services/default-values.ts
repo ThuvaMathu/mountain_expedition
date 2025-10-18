@@ -86,3 +86,36 @@ export const defaultStats: Record<TStatSection, TStat[]> = {
     },
   ],
 };
+export const fallbackContactDetails: TContactDetails = {
+  email: "info@tamiladventures.com",
+  phone: "+91 90031 40943",
+  address: "123 Adventure Street, Chennai, Tamil Nadu 600001, India",
+  emergencyPhone: "+91 90031 40943",
+  officeHours: [
+    { day: "Monday - Friday", hours: "9:00 AM - 6:00 PM" },
+    { day: "Saturday", hours: "9:00 AM - 4:00 PM" },
+    { day: "Sunday", hours: "Closed" },
+  ],
+  faqs: [
+    {
+      question: "How far in advance should I book?",
+      answer:
+        "We recommend booking at least 2-3 months in advance, especially for popular peaks during peak season.",
+    },
+    {
+      question: "What's included in the expedition cost?",
+      answer:
+        "Our packages typically include guides, permits, base camp accommodation, and meals. Equipment rental available separately.",
+    },
+    {
+      question: "Do you provide equipment?",
+      answer:
+        "Yes, we offer equipment rental for technical gear. Personal items like clothing and boots should be brought by participants.",
+    },
+    {
+      question: "What fitness level is required?",
+      answer:
+        "Fitness requirements vary by expedition. We provide detailed preparation guides and fitness recommendations for each trip.",
+    },
+  ],
+};

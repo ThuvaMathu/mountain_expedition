@@ -33,17 +33,14 @@ export default async function HomePage() {
           __html: JSON.stringify(organizationSchema),
         }}
       />
-      <div className="min-h-screen">
-        <Navbar />
-        <main>
-          <HeroSection stats={stats} />
-          <FeaturedMountains />
-          <WhyChooseUs />
-          <StatsSection stats={stats} />
-          <TestimonialsCarousel />
-        </main>
-        <Footer />
-      </div>
+
+      <main>
+        <HeroSection stats={stats} />
+        <FeaturedMountains />
+        <WhyChooseUs />
+        <StatsSection stats={stats} />
+        <TestimonialsCarousel />
+      </main>
     </>
   );
 }

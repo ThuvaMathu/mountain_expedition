@@ -1,4 +1,4 @@
-import { emergency_contact, emergency_contact_email } from "@/app/config";
+import { emergency_contact, emergency_contact_email } from "@/lib/config";
 
 interface BookingConfirmationEmailProps {
   booking: TBooking;

@@ -2,8 +2,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
@@ -310,234 +308,226 @@ export default function CheckoutPage() {
   const totalAmount = basePrice + serviceFee;
   //console.log("booking:", bookingDetails);
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
+    <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Complete Your Booking
+        </h1>
+        <p className="text-gray-600">
+          Secure your spot on this incredible expedition
+        </p>
+        {isRazorpayConfigured === false && (
+          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800 text-sm">
+              <strong>Demo Mode:</strong> Payment gateway is not configured.
+              This will simulate a successful booking.
+            </p>
+          </div>
+        )}
+      </div>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Complete Your Booking
-          </h1>
-          <p className="text-gray-600">
-            Secure your spot on this incredible expedition
-          </p>
-          {isRazorpayConfigured === false && (
-            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <p className="text-yellow-800 text-sm">
-                <strong>Demo Mode:</strong> Payment gateway is not configured.
-                This will simulate a successful booking.
-              </p>
-            </div>
-          )}
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Booking Form */}
+        <div className="lg:col-span-2 space-y-6">
+          <ParticipantGroupForm
+            productType={mountain?.category!}
+            participantCount={bookingDetails.participants}
+            onChange={(participant, isFilled) => {
+              setCustomerInfo(participant);
+              setIsFieldsFilled(isFilled);
+              const temp = {
+                ...bookingDetails,
+                participant: participant.members.length + 1,
+              };
+              //console.log("max:", temp);
+              setBookingDetails(temp);
+            }}
+            maxParticipants={bookingDetails.maxParticipants - 1}
+          />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Booking Form */}
-          <div className="lg:col-span-2 space-y-6">
-            <ParticipantGroupForm
-              productType={mountain?.category!}
-              participantCount={bookingDetails.participants}
-              onChange={(participant, isFilled) => {
-                setCustomerInfo(participant);
-                setIsFieldsFilled(isFilled);
-                const temp = {
-                  ...bookingDetails,
-                  participant: participant.members.length + 1,
-                };
-                //console.log("max:", temp);
-                setBookingDetails(temp);
-              }}
-              maxParticipants={bookingDetails.maxParticipants - 1}
-            />
-
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Currency
-              </h2>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setCurrency("USD")}
-                  className={`px-4 py-2 rounded-md border ${
-                    currency === "USD"
-                      ? "bg-teal-600 text-white border-teal-600"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  USD
-                </button>
-                <button
-                  onClick={() => setCurrency("INR")}
-                  className={`px-4 py-2 rounded-md border ${
-                    currency === "INR"
-                      ? "bg-teal-600 text-white border-teal-600"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                  }`}
-                >
-                  INR
-                </button>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Terms & Conditions
-              </h2>
-              <div className="space-y-3 text-sm text-gray-600">
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    className="mt-1 mr-3 accent-teal-600"
-                    required
-                    onChange={(e) =>
-                      setTermsCon((prev) => ({
-                        ...prev,
-                        tcs1: e.target.checked,
-                      }))
-                    }
-                  />
-                  <span>
-                    I agree to the expedition terms and conditions, including
-                    cancellation policy
-                  </span>
-                </label>
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    className="mt-1 mr-3 accent-teal-600"
-                    required
-                    onChange={(e) =>
-                      setTermsCon((prev) => ({
-                        ...prev,
-                        tcs2: e.target.checked,
-                      }))
-                    }
-                  />{" "}
-                  <span>
-                    I understand the risks involved in mountaineering and have
-                    appropriate insurance
-                  </span>
-                </label>
-                <label className="flex items-start">
-                  <input
-                    type="checkbox"
-                    className="mt-1 mr-3 accent-teal-600"
-                    required
-                    onChange={(e) =>
-                      setTermsCon((prev) => ({
-                        ...prev,
-                        tcs3: e.target.checked,
-                      }))
-                    }
-                  />{" "}
-                  <span>
-                    I consent to receive booking confirmations and expedition
-                    updates via email
-                  </span>
-                </label>
-              </div>
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Currency
+            </h2>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setCurrency("USD")}
+                className={`px-4 py-2 rounded-md border ${
+                  currency === "USD"
+                    ? "bg-teal-600 text-white border-teal-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                USD
+              </button>
+              <button
+                onClick={() => setCurrency("INR")}
+                className={`px-4 py-2 rounded-md border ${
+                  currency === "INR"
+                    ? "bg-teal-600 text-white border-teal-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                INR
+              </button>
             </div>
           </div>
 
-          {/* Booking Summary */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-8">
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                  Booking Summary
-                </h2>
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Terms & Conditions
+            </h2>
+            <div className="space-y-3 text-sm text-gray-600">
+              <label className="flex items-start">
+                <input
+                  type="checkbox"
+                  className="mt-1 mr-3 accent-teal-600"
+                  required
+                  onChange={(e) =>
+                    setTermsCon((prev) => ({
+                      ...prev,
+                      tcs1: e.target.checked,
+                    }))
+                  }
+                />
+                <span>
+                  I agree to the expedition terms and conditions, including
+                  cancellation policy
+                </span>
+              </label>
+              <label className="flex items-start">
+                <input
+                  type="checkbox"
+                  className="mt-1 mr-3 accent-teal-600"
+                  required
+                  onChange={(e) =>
+                    setTermsCon((prev) => ({
+                      ...prev,
+                      tcs2: e.target.checked,
+                    }))
+                  }
+                />{" "}
+                <span>
+                  I understand the risks involved in mountaineering and have
+                  appropriate insurance
+                </span>
+              </label>
+              <label className="flex items-start">
+                <input
+                  type="checkbox"
+                  className="mt-1 mr-3 accent-teal-600"
+                  required
+                  onChange={(e) =>
+                    setTermsCon((prev) => ({
+                      ...prev,
+                      tcs3: e.target.checked,
+                    }))
+                  }
+                />{" "}
+                <span>
+                  I consent to receive booking confirmations and expedition
+                  updates via email
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
 
-                <div className="flex items-center space-x-3 mb-4">
-                  <img
-                    src={mountain?.imageUrl[0] || "/placeholder.svg"}
-                    alt={mountain?.name}
-                    className="w-16 h-16 rounded-lg object-cover"
-                  />
-                  <div>
-                    <h3 className="font-medium text-gray-900">
-                      {mountain?.name}
-                    </h3>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Mountain className="h-4 w-4 mr-1" />
-                      <span>Expedition</span>
-                    </div>
+        {/* Booking Summary */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-8">
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Booking Summary
+              </h2>
+
+              <div className="flex items-center space-x-3 mb-4">
+                <img
+                  src={mountain?.imageUrl[0] || "/placeholder.svg"}
+                  alt={mountain?.name}
+                  className="w-16 h-16 rounded-lg object-cover"
+                />
+                <div>
+                  <h3 className="font-medium text-gray-900">
+                    {mountain?.name}
+                  </h3>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Mountain className="h-4 w-4 mr-1" />
+                    <span>Expedition</span>
                   </div>
                 </div>
+              </div>
 
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center text-gray-600">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      <span>Date</span>
-                    </div>
-                    <span className="font-medium">
-                      {getSlotDetails()?.date}
-                    </span>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center text-gray-600">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    <span>Date</span>
                   </div>
-
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center text-gray-600">
-                      <User className="h-4 w-4 mr-1" />
-                      <span>Participants</span>
-                    </div>
-                    <span className="font-medium">{currentCount}</span>
-                  </div>
+                  <span className="font-medium">{getSlotDetails()?.date}</span>
                 </div>
 
-                <div className="border-t pt-4 space-y-2  text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">
-                      Base price × {currentCount}
-                    </span>
-                    <span>
-                      {unitPrice && formatCurrency(basePrice, currency)}
-                    </span>
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center text-gray-600">
+                    <User className="h-4 w-4 mr-1" />
+                    <span>Participants</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Service fee</span>
-                    <span>{formatCurrency(serviceFee, currency)}</span>
-                  </div>
-                  <div className="border-t pt-2 mt-2">
-                    <div className="flex justify-between font-semibold text-lg">
-                      <span>Total</span>
-                      <span>{formatCurrency(totalAmount, currency)}</span>
-                    </div>
+                  <span className="font-medium">{currentCount}</span>
+                </div>
+              </div>
+
+              <div className="border-t pt-4 space-y-2  text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">
+                    Base price × {currentCount}
+                  </span>
+                  <span>
+                    {unitPrice && formatCurrency(basePrice, currency)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Service fee</span>
+                  <span>{formatCurrency(serviceFee, currency)}</span>
+                </div>
+                <div className="border-t pt-2 mt-2">
+                  <div className="flex justify-between font-semibold text-lg">
+                    <span>Total</span>
+                    <span>{formatCurrency(totalAmount, currency)}</span>
                   </div>
                 </div>
+              </div>
 
-                <Button
-                  onClick={handlePayment}
-                  disabled={isLoading}
-                  className="w-full mt-6 bg-teal-600 hover:bg-teal-700 text-white py-3 text-lg"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Processing...
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center">
-                      <CreditCard className="h-5 w-5 mr-2" /> Pay Now
-                    </div>
-                  )}
-                </Button>
-
-                <div className="mt-4 flex items-center justify-center space-x-4 text-xs text-gray-500">
+              <Button
+                onClick={handlePayment}
+                disabled={isLoading}
+                className="w-full mt-6 bg-teal-600 hover:bg-teal-700 text-white py-3 text-lg"
+              >
+                {isLoading ? (
                   <div className="flex items-center">
-                    <Shield className="h-4 w-4 mr-1" />
-                    <span>Secure Payment</span>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Processing...
                   </div>
-                  <span>•</span>
-                  <span>
-                    {isRazorpayConfigured ? "Powered by Razorpay" : "Demo Mode"}
-                  </span>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <CreditCard className="h-5 w-5 mr-2" /> Pay Now
+                  </div>
+                )}
+              </Button>
+
+              <div className="mt-4 flex items-center justify-center space-x-4 text-xs text-gray-500">
+                <div className="flex items-center">
+                  <Shield className="h-4 w-4 mr-1" />
+                  <span>Secure Payment</span>
                 </div>
+                <span>•</span>
+                <span>
+                  {isRazorpayConfigured ? "Powered by Razorpay" : "Demo Mode"}
+                </span>
               </div>
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </main>
   );
 }

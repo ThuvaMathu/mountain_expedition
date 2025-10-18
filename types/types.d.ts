@@ -178,3 +178,22 @@ type TStat = {
   icon?: string;
   order?: number;
 };
+
+type OfficeHours = {
+  day: string;
+  hours: string;
+};
+
+type FAQ = {
+  question: string;
+  answer: string;
+};
+
+type TContactDetails = {
+  email: string;
+  phone: string;
+  address: string;
+  emergencyPhone: string;
+  officeHours: OfficeHours[];
+  faqs: FAQ[];
+};

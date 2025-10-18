@@ -76,17 +76,11 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <div className="flex relative">
-        <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-        <main className="flex-1 ml-60 p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">{renderContent()}</div>
-        </main>
-      </div>
-      {/* <div className="absolute w-full -z-10 bottom-0 ">
-        <Footer />
-      </div> */}
+    <div className="flex relative">
+      <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <main className="flex-1 ml-60 p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto">{renderContent()}</div>
+      </main>
     </div>
   );
 }

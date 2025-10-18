@@ -6,6 +6,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "@/components/ui/toast";
 import { ToastContainer, toast } from "react-toastify";
+import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -34,7 +36,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <LanguageProvider>
-            {children}
+            <div className="min-h-screen bg-gray-50">
+              <Navbar />
+              {children} <Footer />
+            </div>
             <Toaster />
           </LanguageProvider>
         </AuthProvider>
