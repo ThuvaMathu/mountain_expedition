@@ -26,10 +26,10 @@ export default function NotFound() {
               loop
               muted
               playsInline
-              preload="auto"
-              poster="/images/hero-poster.jpg"
+              preload="metadata"
+              // poster="/images/hero-poster.jpg"
             >
-              <source src="/videos/loop-demo.mp4" type="video/webm" />
+              <source src="/bg-videos/loop-demo.mp4" type="video/webm" />
             </video>
           </div>
         </div>

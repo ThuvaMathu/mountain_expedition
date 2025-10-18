@@ -69,17 +69,19 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           poster="/images/hero-poster.jpg"
         >
-          <source
+          <source src="/bg-videos/hero-video-hd.webm" type="video/webm" />
+
+          {/* <source
             src="https://s3.ap-southeast-2.amazonaws.com/images.thuvarakan.info/hero-video-hd-1200.webm"
             type="video/webm"
           />
           <source
             src="https://s3.ap-southeast-2.amazonaws.com/images.thuvarakan.info/hero-video-hd-1200.mp4"
             type="video/mp4"
-          />
+          /> */}
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.1)_0%,transparent_50%)] animate-pulse" />
