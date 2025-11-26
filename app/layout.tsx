@@ -10,6 +10,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
+const isDevelopment = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
+
 export const metadata: Metadata = {
   title: "Tamil Adventure Treckking Club - Global Mountain Expedition Booking",
   description:
@@ -24,6 +26,18 @@ export const metadata: Metadata = {
     images: ["/images/hero-mountain.jpg"],
   },
   generator: "v0.app",
+  robots: isDevelopment
+    ? {
+        index: false,
+        follow: false,
+        nocache: true,
+        googleBot: {
+          index: false,
+          follow: false,
+          noimageindex: true,
+        },
+      }
+    : undefined,
 };
 
 export default function RootLayout({
