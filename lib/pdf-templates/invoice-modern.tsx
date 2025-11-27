@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Document,
   Page,
@@ -7,7 +6,9 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
-import { formatCurrency } from "../utils";
+
+import { getContactDetails } from "@/services/get-contact";
+import { emergency_contact, emergency_contact_email } from "../config";
 
 // Register fonts (optional - using default fonts)
 Font.register({
@@ -203,12 +204,22 @@ interface InvoiceModernProps {
 }
 
 export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
-  //   const formatCurrency = (amount: number, currency: string) => {
-  //     return new Intl.NumberFormat("en-US", {
-  //       style: "currency",
-  //       currency: currency,
-  //     }).format(amount);
-  //   };
+  const contactDetails = {
+    email: emergency_contact_email,
+    phone: emergency_contact,
+  };
+  const formatCurrency = (amount: number, currency: string) => {
+    const normalized = currency?.trim().toUpperCase();
+    const safeCurrency = normalized === "USD" ? "USD" : "INR";
+
+    const formatted = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: safeCurrency,
+    }).format(amount);
+
+    // Replace ₹ with Rs. (since ₹ may not render correctly in react-pdf)
+    return safeCurrency === "INR" ? formatted.replace("₹", "Rs.") : formatted;
+  };
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-GB", {
@@ -418,7 +429,7 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
             Thank you for choosing Tamil Adventure Treckking Club!
           </Text>
           <Text style={styles.footerText}>
-            For inquiries: support@tamiladventures.com | +1 (555) 123-4567
+            For inquiries: {contactDetails.email} | {contactDetails.phone}
           </Text>
           <Text style={styles.footerText}>
             This is a computer-generated invoice and does not require a

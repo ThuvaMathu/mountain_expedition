@@ -14,18 +14,14 @@ export default function DashboardPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="max-w-3xl mx-auto px-4 py-16 text-center">
-          <h1 className="text-3xl font-bold mb-4">
-            Please sign in to view your dashboard
-          </h1>
-          <Link href="/auth/login">
-            <Button className="bg-teal-600 hover:bg-teal-700">Sign in</Button>
-          </Link>
-        </main>
-        <Footer />
-      </div>
+      <main className="max-w-3xl mx-auto px-4 py-16 text-center">
+        <h1 className="text-3xl font-bold mb-4">
+          Please sign in to view your dashboard
+        </h1>
+        <Link href="/auth/login">
+          <Button className="bg-teal-600 hover:bg-teal-700">Sign in</Button>
+        </Link>
+      </main>
     );
   }
   return (
@@ -36,11 +32,7 @@ export default function DashboardPage() {
           __html: JSON.stringify(organizationSchema),
         }}
       />{" "}
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <DashboardPageMain />
-        <Footer />
-      </div>
+      <DashboardPageMain />
     </>
   );
 }

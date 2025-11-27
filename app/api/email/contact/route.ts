@@ -1,4 +1,4 @@
-import { emergency_contact, site_url } from "@/app/config";
+import { emergency_contact, site_url } from "@/lib/config";
 import { g_transporter } from "@/services/emails/email";
 import { NextRequest, NextResponse } from "next/server";
 

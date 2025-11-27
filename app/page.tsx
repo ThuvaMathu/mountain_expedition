@@ -1,10 +1,3 @@
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { HeroSection } from "@/components/home/HeroSection";
-import { FeaturedMountains } from "@/components/home/FeaturedMountains";
-import { WhyChooseUs } from "@/components/home/WhyChooseUs";
-import { TestimonialsCarousel } from "@/components/home/TestimonialsSection";
-import { StatsSection } from "@/components/home/StatsSection";
 import { getStats } from "@/services/get-stats";
 import { defaultStats } from "@/services/default-values";
 import { generateHomeMetadata } from "@/seo/metadata/home";

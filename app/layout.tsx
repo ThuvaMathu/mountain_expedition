@@ -6,7 +6,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "@/components/ui/toast";
 import { ToastContainer, toast } from "react-toastify";
+import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
 const inter = Inter({ subsets: ["latin"] });
+
+const isDevelopment = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
 
 export const metadata: Metadata = {
   title: "Tamil Adventure Treckking Club - Global Mountain Expedition Booking",
@@ -22,6 +26,18 @@ export const metadata: Metadata = {
     images: ["/images/hero-mountain.jpg"],
   },
   generator: "v0.app",
+  robots: isDevelopment
+    ? {
+        index: false,
+        follow: false,
+        nocache: true,
+        googleBot: {
+          index: false,
+          follow: false,
+          noimageindex: true,
+        },
+      }
+    : undefined,
 };
 
 export default function RootLayout({
@@ -34,7 +50,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <LanguageProvider>
-            {children}
+            <div className="min-h-screen bg-gray-50">
+              <Navbar />
+              {children} <Footer />
+            </div>
             <Toaster />
           </LanguageProvider>
         </AuthProvider>

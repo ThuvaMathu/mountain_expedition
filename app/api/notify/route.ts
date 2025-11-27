@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { g_transporter } from "@/services/emails/email";
-import { emergency_contact } from "@/app/config";
+import { emergency_contact } from "@/lib/config";
 
 interface NotifyRequest {
   email: string;

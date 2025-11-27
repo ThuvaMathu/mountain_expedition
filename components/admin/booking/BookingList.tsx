@@ -24,8 +24,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Tag,
+  Download,
 } from "lucide-react";
-
+import { formatCurrency } from "@/lib/utils";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 interface BookingListProps {
   bookings: TBooking[];
   filteredBookings: TBooking[];
@@ -44,6 +46,10 @@ export function BookingList({
   const [currentPage, setCurrentPage] = useState(1);
   const [editingBooking, setEditingBooking] = useState<TBooking | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [downloading, setDownloading] = useState({
+    status: false,
+    id: "",
+  });
 
   // Get unique destinations from filtered bookings for display
   const filteredMountains = Array.from(
@@ -270,7 +276,48 @@ export function BookingList({
       </div>
     );
   };
+  const handleDownloadReceipt = async (booking: TBooking) => {
+    if (!booking?.pdfPath) {
+      // Use 'pdfPath' (like "receipts/bk-ABC123.pdf"), not a full URL
+      alert("Receipt is not available yet. Please try again later.");
+      return;
+    }
 
+    try {
+      setDownloading({ status: true, id: booking.id });
+
+      const storage = getStorage();
+      const fileRef = ref(storage, booking.pdfPath);
+
+      // Get a secure, time-limited download URL directly from Firebase
+      const downloadURL = await getDownloadURL(fileRef);
+
+      // Fetch file as blob to trigger real download (instead of opening a new tab)
+      const response = await fetch(downloadURL);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+
+      // Create a blob URL and trigger the browser download
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `Invoice_${booking.bookingId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Error downloading receipt:", error);
+      alert("Failed to download receipt. Please try again or contact support.");
+    } finally {
+      setDownloading({ status: false, id: "" });
+    }
+  };
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="p-6 border-b border-gray-200">
@@ -379,7 +426,7 @@ export function BookingList({
                           </div>
                           <div className="text-sm text-gray-500 flex items-center">
                             <MapPin className="h-3 w-3 mr-1" />
-                            {booking.customerInfo.organizer.country}
+                            {booking.customerInfo.organizer.country || "India"}
                           </div>
                           {booking.customerInfo.members.length > 0 && (
                             <div className="text-xs text-blue-600 mt-1">
@@ -419,7 +466,7 @@ export function BookingList({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="font-medium text-gray-900">
-                          ${booking.amount.toLocaleString()}
+                          {formatCurrency(booking.amount, booking.currency)}
                         </div>
                         <div className="text-sm text-gray-500">
                           {booking.currency}
@@ -466,6 +513,32 @@ export function BookingList({
                               Cancel
                             </Button>
                           )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                          {/* Download Recipt */}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={
+                              !booking?.pdfPath && booking.pdfPath === ""
+                            }
+                            onClick={() => handleDownloadReceipt(booking)}
+                            className={`text-xs w-20  ${
+                              !booking?.pdfPath && booking.pdfPath === ""
+                                ? "bg-gray-200 border-gray-700 text-gray-700 cursor-not-allowed "
+                                : "bg-sky-200 border-sky-700 text-sky-700 cursor-pointer "
+                            }`}
+                          >
+                            {downloading.id === booking.id &&
+                            downloading.status ? (
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-teal-600 mx-auto"></div>
+                            ) : (
+                              <div className=" flex gap-1 items-center">
+                                <Download className="h-3 w-3" />{" "}
+                                <span>Invoice</span>
+                              </div>
+                            )}
+                          </Button>
 
                           {/* Edit and Delete */}
                           <Button
