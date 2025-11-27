@@ -59,42 +59,54 @@ export default function ComingSoonPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 relative overflow-hidden flex items-center justify-center">
       {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute  -bottom-1/2 -right-2/3 -rotate-[30deg] opacity-80   skew-3 w-[200rem] h-[60rem]  bg-slate-950"></div>
+      <div className="absolute -bottom-10 right-0 opacity-10 -rotate-[30deg] ">
+        <video
+          className="w-[40rem] h-[40rem] object-cover [mask-image:radial-gradient(circle,white_70%,transparent_100%)]"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          // poster="/images/hero-poster.jpg"
+        >
+          <source src="/bg-videos/logo-video.mp4" type="video/webm" />
+        </video>
+      </div>{" "}
+      {/* <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-20 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div
           className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
         ></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-teal-600/5 rounded-full blur-3xl"></div>
-      </div>
-
+      </div> */}
       {/* Mountain silhouette overlay */}
       <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
-
       {/* Main content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 sm:pt-16 lg:pt-0">
         {/* Logo/Icon */}
-        <div className="flex justify-center items-center mb-8 w-full">
-          <div className="animate-float">
+        <div className="flex justify-center items-center mb-4 w-full">
+          <div className="">
             <AppLogo isWithText={false} size="large" />
           </div>
         </div>
 
         {/* Main heading */}
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 bg-gradient-to-r from-white via-teal-300 to-white bg-clip-text text-transparent leading-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-white via-teal-300 to-white bg-clip-text text-transparent leading-tight">
           Tamil Adventure Trekking Club
         </h1>
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-teal-200 to-white bg-clip-text text-transparent leading-tight">
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-4 bg-gradient-to-r from-white via-teal-200 to-white bg-clip-text text-transparent leading-tight">
           Something Epic is Coming
         </h1>
 
-        <p className="text-xl sm:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-xl sm:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
           We're preparing an extraordinary adventure experience. Get ready to
           conquer new heights.
         </p>
 
         {/* Email subscription form */}
-        <div className="max-w-md mx-auto mb-12">
+        <div className="max-w-md mx-auto mb-8">
           <p className="text-teal-200 font-medium mb-4">
             Be the first to know when we launch
           </p>
@@ -147,7 +159,7 @@ export default function ComingSoonPage() {
         </div>
 
         {/* Features preview */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto mb-8">
           {[
             { icon: Mountain, text: "Expert-Led Expeditions" },
             { icon: CheckCircle, text: "Premium Experience" },
@@ -169,7 +181,6 @@ export default function ComingSoonPage() {
           experience
         </p>
       </div>
-
       {/* Custom animations */}
       <style jsx>{`
         @keyframes float {
