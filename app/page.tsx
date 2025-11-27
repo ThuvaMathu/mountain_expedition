@@ -3,6 +3,13 @@ import { defaultStats } from "@/services/default-values";
 import { generateHomeMetadata } from "@/seo/metadata/home";
 import { organizationSchema } from "@/seo/schemas";
 import ComingSoonPage from "./sandbox/page";
+import { FeaturedMountains } from "@/components/home/FeaturedMountains";
+import { HeroSection } from "@/components/home/HeroSection";
+import { StatsSection } from "@/components/home/StatsSection";
+import { TestimonialsCarousel } from "@/components/home/TestimonialsSection";
+import { WhyChooseUs } from "@/components/home/WhyChooseUs";
+import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
 export const metadata = generateHomeMetadata();
 export default async function HomePage() {
   let stats: TStat[] = [];
@@ -28,7 +35,7 @@ export default async function HomePage() {
         }}
       />
       <div className="min-h-screen">
-        {/* <Navbar />
+        <Navbar />
         <main>
           <HeroSection stats={stats} />
           <FeaturedMountains />
@@ -36,8 +43,8 @@ export default async function HomePage() {
           <StatsSection stats={stats} />
           <TestimonialsCarousel />
         </main>
-        <Footer /> */}
-        <ComingSoonPage />
+        <Footer />
+        {/* <ComingSoonPage /> */}
       </div>
     </>
   );
