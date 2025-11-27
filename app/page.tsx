@@ -3,7 +3,11 @@ import { defaultStats } from "@/services/default-values";
 import { generateHomeMetadata } from "@/seo/metadata/home";
 import { organizationSchema } from "@/seo/schemas";
 import ComingSoonPage from "./sandbox/page";
+
 export const metadata = generateHomeMetadata();
+
+const isProduction = process.env.NEXT_PUBLIC_ENVIRONMENT === "production";
+
 export default async function HomePage() {
   let stats: TStat[] = [];
 
@@ -19,6 +23,8 @@ export default async function HomePage() {
       description: stat.description,
     }));
   }
+
+  // Render based on environment
   return (
     <>
       <script
@@ -28,16 +34,25 @@ export default async function HomePage() {
         }}
       />
       <div className="min-h-screen">
-        {/* <Navbar />
-        <main>
-          <HeroSection stats={stats} />
-          <FeaturedMountains />
-          <WhyChooseUs />
-          <StatsSection stats={stats} />
-          <TestimonialsCarousel />
-        </main>
-        <Footer /> */}
+        {/* For now, show coming soon page regardless of environment */}
         <ComingSoonPage />
+
+        {/* Uncomment when ready to launch in production */}
+        {/* {isProduction ? (
+          <>
+            <Navbar />
+            <main>
+              <HeroSection stats={stats} />
+              <FeaturedMountains />
+              <WhyChooseUs />
+              <StatsSection stats={stats} />
+              <TestimonialsCarousel />
+            </main>
+            <Footer />
+          </>
+        ) : (
+          <ComingSoonPage />
+        )} */}
       </div>
     </>
   );
