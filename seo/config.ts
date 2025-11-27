@@ -87,11 +87,17 @@ export const COMPANY_INFO = {
   description:
     "Premier mountain trekking and expedition company specializing in Tamil Nadu peaks and Himalayan adventures. Expert guides, safety-first approach, unforgettable experiences.",
 
+  logoUrl:
+    "https://excelbees-project-do-not-delete.s3.ap-southeast-2.amazonaws.com/Tamil-Adventures/icon-512x512.png",
+
   contact: {
-    email: "info@tamiladventures.com",
+    email: "info@tamiladventuretrekkingclub.com",
     phone: "+91 98765 43210",
     emergencyPhone: "+91 98765 43211",
-    address: "123 Adventure Street, Chennai, Tamil Nadu 600001, India",
+    emergencyContactName: "Muthamil Selvi",
+    emergencyContactEmail: "contact@tamiladventuretrekkingclub.com",
+    address:
+      " plot #11 vgp selva nagar Extn, Balamurugan nagar 3rd street, Velachery. Chennai -600042",
   },
 
   location: {

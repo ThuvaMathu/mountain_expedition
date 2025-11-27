@@ -72,10 +72,12 @@ export default function ComingSoonPage() {
       <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
 
       {/* Main content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 sm:pt-16 lg:pt-0">
         {/* Logo/Icon */}
-        <div className="flex justify-center mb-8 animate-float">
-          <AppLogo isWithText={false} size="large" />
+        <div className="flex justify-center items-center mb-8 w-full">
+          <div className="animate-float">
+            <AppLogo isWithText={false} size="large" />
+          </div>
         </div>
 
         {/* Main heading */}

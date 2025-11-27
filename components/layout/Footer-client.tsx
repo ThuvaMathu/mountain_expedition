@@ -12,7 +12,7 @@ import {
   Clock,
 } from "lucide-react";
 import AppLogo from "../ui/app-logo";
-import { socialLinks } from "@/lib/config";
+import { COMPANY_INFO } from "@/seo/config";
 
 type OfficeHours = {
   day: string;
@@ -59,25 +59,25 @@ export function FooterClient({
             </p>
             <div className="flex space-x-4">
               <Link
-                href={socialLinks.facebook}
+                href={COMPANY_INFO.social.facebook}
                 className="text-gray-400 hover:text-teal-400 transition-colors"
               >
                 <Facebook className="h-6 w-6" />
               </Link>
               <Link
-                href={socialLinks.twitter}
+                href={COMPANY_INFO.social.twitter}
                 className="text-gray-400 hover:text-teal-400 transition-colors"
               >
                 <Twitter className="h-6 w-6" />
               </Link>
               <Link
-                href={socialLinks.instagram}
+                href={COMPANY_INFO.social.instagram}
                 className="text-gray-400 hover:text-teal-400 transition-colors"
               >
                 <Instagram className="h-6 w-6" />
               </Link>
               <Link
-                href={socialLinks.youtube}
+                href={COMPANY_INFO.social.youtube}
                 className="text-gray-400 hover:text-teal-400 transition-colors"
               >
                 <Youtube className="h-6 w-6" />

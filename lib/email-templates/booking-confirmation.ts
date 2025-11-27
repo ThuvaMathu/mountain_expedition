@@ -1,4 +1,4 @@
-import { emergency_contact, emergency_contact_email } from "@/lib/config";
+import { COMPANY_INFO } from "@/seo/config";
 
 interface BookingConfirmationEmailProps {
   booking: TBooking;
@@ -28,9 +28,10 @@ export function generateBookingConfirmationEmail(
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
       <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        
-        <!-- Header with Success Icon -->
+
+        <!-- Header with Logo and Success Icon -->
         <div style="text-align: center; margin-bottom: 30px;">
+          <img src="${COMPANY_INFO.logoUrl}" alt="${COMPANY_INFO.name}" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 20px;" />
           <div style="display: inline-block; width: 80px; height: 80px; background-color: #d1fae5; border-radius: 50%; margin-bottom: 15px; line-height: 80px;">
             <span style="font-size: 40px; color: #059669;">✓</span>
           </div>
@@ -132,13 +133,9 @@ export function generateBookingConfirmationEmail(
         
         <!-- CTA Buttons -->
         <div style="text-align: center; margin-bottom: 25px;">
-          <a href="https://tamiladventures.com/dashboard" 
+          <a href="${process.env.NEXT_PUBLIC_SITE_URL || COMPANY_INFO.contact.email}/dashboard"
              style="display: inline-block; background-color: #0d9488; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: 500; margin: 5px;">
             View My Bookings
-          </a>
-          <a href="https://tamiladventures.com/expedition-guide" 
-             style="display: inline-block; background-color: #059669; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: 500; margin: 5px;">
-            Preparation Guide
           </a>
         </div>
         
@@ -149,9 +146,9 @@ export function generateBookingConfirmationEmail(
             Our support team is here to assist you with any questions.
           </p>
           <p style="color: #0d9488; margin: 0; font-size: 14px; font-weight: bold;">
-            Email: support@tamiladventures.com<br>
-            Phone: +1 (555) 123-4567<br>
-            Available: 24/7
+            Email: ${COMPANY_INFO.contact.emergencyContactEmail}<br>
+            Phone: ${COMPANY_INFO.contact.emergencyPhone}<br>
+            Contact: ${COMPANY_INFO.contact.emergencyContactName}
           </p>
         </div>
         
@@ -161,14 +158,14 @@ export function generateBookingConfirmationEmail(
             Follow us for expedition updates and mountain photography:
           </p>
           <div style="margin-bottom: 15px;">
-            <a href="#" style="color: #0d9488; text-decoration: none; margin: 0 10px; font-size: 13px;">Facebook</a>
-            <a href="#" style="color: #0d9488; text-decoration: none; margin: 0 10px; font-size: 13px;">Instagram</a>
-            <a href="#" style="color: #0d9488; text-decoration: none; margin: 0 10px; font-size: 13px;">Twitter</a>
+            <a href="${COMPANY_INFO.social.facebook}" style="color: #0d9488; text-decoration: none; margin: 0 10px; font-size: 13px;">Facebook</a>
+            <a href="${COMPANY_INFO.social.instagram}" style="color: #0d9488; text-decoration: none; margin: 0 10px; font-size: 13px;">Instagram</a>
+            <a href="${COMPANY_INFO.social.twitter}" style="color: #0d9488; text-decoration: none; margin: 0 10px; font-size: 13px;">Twitter</a>
           </div>
           <p style="color: #9ca3af; font-size: 11px; margin: 0;">
-            Tamil Adventure Treckking Club - Your Gateway to Mountain Adventures
+            ${COMPANY_INFO.legalName} - ${COMPANY_INFO.tagline}
             <br>This is an automated confirmation email. Please do not reply to this message.
-            <br>© ${new Date().getFullYear()} Tamil Adventure Treckking Club. All rights reserved.
+            <br>© ${new Date().getFullYear()} ${COMPANY_INFO.legalName}. All rights reserved.
           </p>
         </div>
       </div>
@@ -176,7 +173,7 @@ export function generateBookingConfirmationEmail(
   `;
 
   const textContent = `
-BOOKING CONFIRMED - Tamil Adventure Treckking Club
+BOOKING CONFIRMED - ${COMPANY_INFO.legalName}
 ═══════════════════════════════════════════════
 
 Hi ${customerName},
@@ -215,15 +212,15 @@ IMPORTANT REMINDERS
 
 NEED HELP?
 ──────────
-Email: ${emergency_contact_email}
-Phone:${emergency_contact}
-Available: 24/7
+Email: ${COMPANY_INFO.contact.emergencyContactEmail}
+Phone: ${COMPANY_INFO.contact.emergencyPhone}
+Contact: ${COMPANY_INFO.contact.emergencyContactName}
 
-Thank you for choosing Tamil Adventure Treckking Club!
+Thank you for choosing ${COMPANY_INFO.legalName}!
 
 ---
 This is an automated confirmation email.
-© ${new Date().getFullYear()} Tamil Adventure Treckking Club. All rights reserved.
+© ${new Date().getFullYear()} ${COMPANY_INFO.legalName}. All rights reserved.
   `;
 
   return { html: htmlContent, text: textContent };

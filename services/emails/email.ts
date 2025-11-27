@@ -1,20 +1,39 @@
 import nodemailer from "nodemailer";
 
-export const COMPANY_NAME = "Tamil Adventure Trekking Club";
-export const COMPANY_LOGO_URL =
-  "https://yourcdn.com/assets/tamil-adventure-trekking-logo.png"; // update with real logo path
+// Determine if we're in production
+const isProduction = process.env.NEXT_PUBLIC_ENVIRONMENT === "production";
 
-export const g_transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT || "587"),
-  secure: true,
+// Select environment-specific SMTP configuration
+const smtpConfig = {
+  host: isProduction ? process.env.SMTP_HOST_PROD : process.env.SMTP_HOST,
+  port: parseInt(
+    isProduction
+      ? process.env.SMTP_PORT_PROD || "587"
+      : process.env.SMTP_PORT || "587"
+  ),
+  secure: isProduction
+    ? parseInt(process.env.SMTP_PORT_PROD || "587") === 465
+    : parseInt(process.env.SMTP_PORT || "587") === 465,
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: isProduction ? process.env.SMTP_USER_PROD : process.env.SMTP_USER,
+    pass: isProduction ? process.env.SMTP_PASS_PROD : process.env.SMTP_PASS,
   },
   tls: {
     rejectUnauthorized: false,
   },
-});
+};
 
-export const defaultMailFrom = process.env.FROM_EMAIL || "no-reply@example.com";
+// Log which email service is being used (without exposing credentials)
+console.log(
+  `📧 Email Service: ${
+    isProduction ? "Google (Production)" : "Zoho (Development)"
+  }`
+);
+console.log(`📧 SMTP Host: ${smtpConfig.host}`);
+console.log(`📧 SMTP Port: ${smtpConfig.port}`);
+
+export const g_transporter = nodemailer.createTransport(smtpConfig);
+
+export const defaultMailFrom = isProduction
+  ? process.env.FROM_EMAIL_PROD || "no-reply@example.com"
+  : process.env.FROM_EMAIL || "no-reply@example.com";

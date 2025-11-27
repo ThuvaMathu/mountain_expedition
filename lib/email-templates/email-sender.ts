@@ -1,5 +1,6 @@
 import { g_transporter } from "@/services/emails/email";
 import { generateBookingConfirmationEmail } from "./booking-confirmation";
+import { COMPANY_INFO } from "@/seo/config";
 
 interface SendBookingEmailOptions {
   booking: TBooking;
@@ -46,7 +47,7 @@ export async function sendBookingConfirmationEmail(
 
     // Send email to customer with PDF attachment
     await transporter.sendMail({
-      from: `"Tamil Adventures Treckking Club" <${process.env.FROM_EMAIL}>`,
+      from: `"${COMPANY_INFO.legalName}" <${process.env.FROM_EMAIL}>`,
       to: customerEmail,
       subject: `Booking Confirmed - ${booking.mountainName} Expedition (${booking.bookingId})`,
       text: text,
@@ -101,7 +102,11 @@ async function sendAdminNotificationEmail(options: {
 
     const adminHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #0d9488;">🎉 New Booking Received</h2>
+        <!-- Company Header with Logo -->
+        <div style="text-align: center; margin-bottom: 20px;">
+          <img src="${COMPANY_INFO.logoUrl}" alt="${COMPANY_INFO.name}" style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 10px;" />
+          <h2 style="color: #0d9488; margin: 0;">🎉 New Booking Received</h2>
+        </div>
         
         <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
           <h3 style="color: #374151; margin-top: 0;">Booking Details</h3>
@@ -157,7 +162,8 @@ async function sendAdminNotificationEmail(options: {
     `;
 
     const adminText = `
-NEW BOOKING RECEIVED - Tamil Adventure Treckking Club
+NEW BOOKING RECEIVED - ${COMPANY_INFO.legalName}
+═══════════════════════════════════════════════════
 
 Booking ID: ${booking.bookingId}
 Customer: ${customerName}
@@ -171,10 +177,14 @@ Payment Method: ${
     }
 
 Action Required: Contact customer within 24-48 hours.
+
+---
+${COMPANY_INFO.name}
+${COMPANY_INFO.contact.email}
     `;
 
     await transporter.sendMail({
-      from: `"Tamil Adventure Treckking Club Booking System" <${process.env.FROM_EMAIL}>`,
+      from: `"${COMPANY_INFO.legalName} Booking System" <${process.env.FROM_EMAIL}>`,
       to: process.env.SMTP_USER, // Admin email
       subject: `New Booking: ${booking.mountainName} - ${booking.bookingId}`,
       text: adminText,
