@@ -92,8 +92,8 @@ export const COMPANY_INFO = {
 
   contact: {
     email: "info@tamiladventuretrekkingclub.com",
-    phone: "+91 98765 43210",
-    emergencyPhone: "+91 98765 43211",
+    phone: "+91 80156 40943",
+    emergencyPhone: "+91 80156 40943",
     emergencyContactName: "Muthamil Selvi",
     emergencyContactEmail: "contact@tamiladventuretrekkingclub.com",
     address:
@@ -118,9 +118,10 @@ export const COMPANY_INFO = {
   },
 
   social: {
-    facebook: "https://facebook.com/tamiladventures",
-    instagram: "https://instagram.com/tamiladventures",
-    twitter: "https://twitter.com/tamiladventures",
+    facebook: "https://www.facebook.com/share/1FfpYofbwY/",
+    instagram:
+      "https://www.instagram.com/tamil_adventure_trekking_club?igsh=M2Vlbzk5MW92YXll",
+    twitter: "https://twitter.com/",
     youtube: "https://youtube.com/@tamiladventures",
     linkedin: "https://linkedin.com/company/tamiladventures",
   },

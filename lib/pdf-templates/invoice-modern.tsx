@@ -8,7 +8,7 @@ import {
 } from "@react-pdf/renderer";
 
 import { getContactDetails } from "@/services/get-contact";
-import { emergency_contact, emergency_contact_email } from "../config";
+import { COMPANY_INFO } from "@/seo/config";
 
 // Register fonts (optional - using default fonts)
 Font.register({
@@ -205,8 +205,8 @@ interface InvoiceModernProps {
 
 export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
   const contactDetails = {
-    email: emergency_contact_email,
-    phone: emergency_contact,
+    email: COMPANY_INFO.contact.email,
+    phone: COMPANY_INFO.contact.phone,
   };
   const formatCurrency = (amount: number, currency: string) => {
     const normalized = currency?.trim().toUpperCase();
