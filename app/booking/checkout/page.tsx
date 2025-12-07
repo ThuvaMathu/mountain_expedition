@@ -29,9 +29,6 @@ export default function CheckoutPage() {
     tcs2: false,
     tcs3: false,
   });
-  const [isRazorpayConfigured, setIsRazorpayConfigured] = useState<
-    boolean | null
-  >(null);
 
   const [bookingDetails, setBookingDetails] = useState<{
     productId: string;
@@ -60,20 +57,6 @@ export default function CheckoutPage() {
     members: [],
   });
   const [isFieldsFilled, setIsFieldsFilled] = useState(false);
-
-  useEffect(() => {
-    const checkRazorpayConfig = async () => {
-      try {
-        const response = await fetch("/api/razorpay/config");
-        const data = await response.json();
-        setIsRazorpayConfigured(data.configured);
-      } catch (error) {
-        console.error("Error checking Razorpay config:", error);
-        setIsRazorpayConfigured(false);
-      }
-    };
-    checkRazorpayConfig();
-  }, []);
 
   useEffect(() => {
     const temp = {
@@ -180,53 +163,6 @@ export default function CheckoutPage() {
         participantsInfo: customerInfo,
       });
 
-      if (orderData.demo) {
-        console.log("demo executed");
-        // Demo mode - redirect directly to confirmation
-        try {
-          const verifyResponse = await fetch("/api/razorpay/verify-payment", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              razorpay_order_id: `razorpay_order_id_${uuidv4()}`,
-              razorpay_payment_id: `razorpay_payment_id_${uuidv4()}`,
-              razorpay_signature: `razorpay_signature_${uuidv4()}`,
-              type: bookingDetails.type,
-              bookingDetails: {
-                organizerEmail: customerInfo.organizer.email,
-                userEmail: user.email,
-                bookingId: orderData.bookingId,
-                mountainId: mountain.id,
-                mountainName: mountain.name,
-                slotDetails: getSlotDetails(),
-                participants: currentCount,
-                customerInfo,
-                amount: orderData.amount,
-                currency: orderData.currency,
-              },
-            }),
-          });
-
-          const verifyData = await verifyResponse.json();
-          if (verifyData.success) {
-            if (verifyData.id) {
-              router.push(
-                `/booking/confirmation/${verifyData?.id}?type=${bookingDetails.type}`
-              );
-            }
-            return;
-          } else {
-            toast("Payment verification failed. Please contact support.");
-          }
-        } catch (error) {
-          console.error("Payment verification error:", error);
-          alert("Payment verification failed. Please contact support.");
-        }
-        return;
-      }
-
       // Load Razorpay script
       const razorpayLoaded = await loadRazorpay();
       if (!razorpayLoaded) {
@@ -239,7 +175,7 @@ export default function CheckoutPage() {
         key: orderData.key,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: "Tamil Adventure Treckking Club",
+        name: "Tamil Adventure Trekking Club",
         description: `${mountain.name} Expedition`,
         order_id: orderData.orderId,
         handler: async (response: any) => {
@@ -254,6 +190,7 @@ export default function CheckoutPage() {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
+                type: bookingDetails.type,
                 bookingDetails: {
                   bookingId: orderData.bookingId,
                   mountainId: mountain.id,
@@ -263,13 +200,14 @@ export default function CheckoutPage() {
                   customerInfo,
                   amount: orderData.amount,
                   currency: orderData.currency,
+                  userEmail: user.email,
                 },
               }),
             });
 
             const verifyData = await verifyResponse.json();
             if (verifyData.success) {
-              router.push(`/booking/confirmation/${verifyData.bookingId}`);
+              router.push(`/booking/confirmation/${verifyData.id}?type=${bookingDetails.type}`);
             } else {
               alert("Payment verification failed. Please contact support.");
             }
@@ -316,14 +254,6 @@ export default function CheckoutPage() {
         <p className="text-gray-600">
           Secure your spot on this incredible expedition
         </p>
-        {isRazorpayConfigured === false && (
-          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-yellow-800 text-sm">
-              <strong>Demo Mode:</strong> Payment gateway is not configured.
-              This will simulate a successful booking.
-            </p>
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -520,9 +450,7 @@ export default function CheckoutPage() {
                   <span>Secure Payment</span>
                 </div>
                 <span>•</span>
-                <span>
-                  {isRazorpayConfigured ? "Powered by Razorpay" : "Demo Mode"}
-                </span>
+                <span>Powered by Razorpay</span>
               </div>
             </div>
           </div>
