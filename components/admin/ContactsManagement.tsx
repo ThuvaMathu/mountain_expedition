@@ -174,7 +174,7 @@ export function ContactsManagement() {
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="info@tamiladventures.com"
+              placeholder="info@tamiladventuretrekkingclub.com"
             />
           </div>
           <div>

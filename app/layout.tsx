@@ -51,9 +51,9 @@ export default function RootLayout({
         <AuthProvider>
           <LanguageProvider>
             <div className="min-h-screen bg-gray-50">
-              {/* <Navbar /> */}
+              <Navbar />
               {children}
-              {/* <Footer /> */}
+              <Footer />
             </div>
             <Toaster />
           </LanguageProvider>

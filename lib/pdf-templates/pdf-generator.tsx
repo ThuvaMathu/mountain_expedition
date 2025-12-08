@@ -1,10 +1,8 @@
 import { renderToBuffer } from "@react-pdf/renderer";
 import React from "react";
 import { InvoiceModern } from "./invoice-modern";
-import { InvoiceClassic } from "./invoice-classic";
-import { InvoiceElegant } from "./invoice-elegant";
 
-export type TemplateType = "modern" | "classic" | "elegant";
+export type TemplateType = "modern";
 
 interface GeneratePDFOptions {
   booking: TBooking;
@@ -12,15 +10,9 @@ interface GeneratePDFOptions {
 }
 
 /**
- * Get the invoice component based on template type
+ * Get the invoice component (only modern template available)
  */
 function getInvoiceComponent(templateType: TemplateType, booking: TBooking) {
-  if (templateType === "classic") {
-    return <InvoiceClassic booking={booking} />;
-  }
-  if (templateType === "elegant") {
-    return <InvoiceElegant booking={booking} />;
-  }
   return <InvoiceModern booking={booking} />;
 }
 
@@ -51,17 +43,11 @@ export async function generateInvoicePDF(
 /**
  * Validate template type
  * @param templateType - Template type to validate
- * @returns Valid template type or default
+ * @returns Valid template type (always "modern")
  */
 export function validateTemplateType(
   templateType: string | undefined
 ): TemplateType {
-  const validTypes: TemplateType[] = ["modern", "classic", "elegant"];
-
-  if (templateType && validTypes.includes(templateType as TemplateType)) {
-    return templateType as TemplateType;
-  }
-
-  // Default to modern if invalid or undefined
+  // Only modern template is supported
   return "modern";
 }

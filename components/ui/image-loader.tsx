@@ -5,6 +5,7 @@ import Image, { ImageProps } from "next/image";
 import { Loader2 } from "lucide-react";
 
 type HeightClass =
+  | "h-20"
   | "h-24"
   | "h-28"
   | "h-32"

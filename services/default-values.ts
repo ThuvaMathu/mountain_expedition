@@ -87,7 +87,7 @@ export const defaultStats: Record<TStatSection, TStat[]> = {
   ],
 };
 export const fallbackContactDetails: TContactDetails = {
-  email: "info@tamiladventures.com",
+  email: "info@tamiladventuretrekkingclub.com",
   phone: "+91 90031 40943",
   address: "123 Adventure Street, Chennai, Tamil Nadu 600001, India",
   emergencyPhone: "+91 90031 40943",

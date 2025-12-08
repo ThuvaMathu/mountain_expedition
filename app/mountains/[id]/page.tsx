@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BookingCalendar } from "@/components/booking/BookingCalendar";
 import { Button } from "@/components/ui/button";
+import { ImageLoader } from "@/components/ui/image-loader";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
   MapPin,
@@ -133,10 +134,12 @@ export default function MountainDetailPage() {
           {/* Image Gallery */}
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="relative">
-              <img
+              <ImageLoader
                 src={mountain.imageUrl[selectedImage] || "/placeholder.svg"}
                 alt={mountain.name}
-                className="w-full h-96 object-cover"
+                height="h-96"
+                priority
+                className="w-full"
               />
               <Button
                 variant="secondary"
@@ -152,7 +155,7 @@ export default function MountainDetailPage() {
               <div className="flex space-x-2 overflow-x-auto">
                 {mountain.imageUrl.map((image, index) => (
                   <button
-                    key={index}
+                    key={`thumb-${index}`}
                     onClick={() => setSelectedImage(index)}
                     className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
                       selectedImage === index
@@ -160,10 +163,12 @@ export default function MountainDetailPage() {
                         : "border-gray-200"
                     }`}
                   >
-                    <img
+                    <ImageLoader
                       src={image || "/placeholder.svg"}
                       alt={`${mountain.name} ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      height="h-20"
+                      priority={index < 4}
+                      className="w-full"
                     />
                   </button>
                 ))}

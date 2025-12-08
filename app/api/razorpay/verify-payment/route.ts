@@ -26,11 +26,11 @@ export async function POST(request: NextRequest) {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      type,
-      bookingDetails,
+      firestoreOrderId, // Get the Firestore order ID from client
     } = body;
 
     console.log("💳 Processing Razorpay payment verification");
+    console.log("📋 Firestore Order ID:", firestoreOrderId);
 
     // Check configuration
     if (!razorpayKeySecret || !isFirebaseConfigured || !db) {
@@ -56,8 +56,34 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Razorpay signature verified");
 
-    // Payment verified successfully
-    const bookingId = bookingDetails?.bookingId || `BK${Date.now()}`;
+    // Fetch order from Firestore to get the trusted data
+    // This prevents client-side data manipulation
+    const orderDocRef = doc(db, "orders", firestoreOrderId);
+    const orderDoc = await getDoc(orderDocRef);
+
+    if (!orderDoc.exists()) {
+      console.error("❌ Order not found in Firestore:", firestoreOrderId);
+      return NextResponse.json(
+        { error: "Order not found" },
+        { status: 404 }
+      );
+    }
+
+    const orderData = orderDoc.data();
+    console.log("✅ Order fetched from Firestore");
+
+    // Verify that the Razorpay order ID matches
+    if (orderData.razorpayOrderId !== razorpay_order_id) {
+      console.error("❌ Razorpay order ID mismatch");
+      return NextResponse.json(
+        { error: "Order verification failed" },
+        { status: 400 }
+      );
+    }
+
+    // Payment verified successfully - use data from Firestore order
+    const bookingId = orderData.bookingId;
+    const type = orderData.booking.type;
 
     // 1. Fetch invoice template type from Firebase settings
     let templateType: TemplateType = "modern"; // default
@@ -78,18 +104,18 @@ export async function POST(request: NextRequest) {
       console.log("⚠️ Using default template: modern");
     }
 
-    // 2. Create booking object
+    // 2. Create booking object using data from Firestore order (trusted source)
     const booking: TBooking = {
       id: "",
       bookingId,
-      booking: { id: bookingDetails?.mountainId, type: type },
-      userEmail: bookingDetails?.userEmail,
-      mountainName: bookingDetails?.mountainName,
-      slotDetails: bookingDetails?.slotDetails,
-      participants: bookingDetails?.participants,
-      customerInfo: bookingDetails?.customerInfo,
-      amount: bookingDetails?.amount / 100, // Convert back from paise
-      currency: bookingDetails?.currency,
+      booking: orderData.booking,
+      userEmail: orderData.userEmail,
+      mountainName: orderData.mountainName,
+      slotDetails: orderData.slotDetails,
+      participants: orderData.participants,
+      customerInfo: orderData.customerInfo,
+      amount: orderData.amount, // Already in correct unit from order
+      currency: orderData.currency,
       status: "confirmed",
       paymentMethod: "razorpay",
       razorpayOrderId: razorpay_order_id,
@@ -139,14 +165,23 @@ export async function POST(request: NextRequest) {
 
     await updateDoc(docRef, { id: docRef.id });
 
-    // 6. Send confirmation email with PDF attachment
+    // 6. Update order status to confirmed
+    await updateDoc(orderDocRef, {
+      status: "confirmed",
+      razorpayPaymentId: razorpay_payment_id,
+      updatedAt: serverTimestamp(),
+      bookingDocId: docRef.id, // Link to the booking document
+    });
+    console.log("✅ Order status updated to confirmed");
+
+    // 7. Send confirmation email with PDF attachment
     try {
       console.log("📧 Sending confirmation email");
       await sendBookingConfirmationEmail({
         booking: { ...booking, id: docRef.id },
         pdfBuffer,
-        customerEmail: bookingDetails?.userEmail,
-        customerName: bookingDetails?.customerInfo?.organizer?.name,
+        customerEmail: orderData.userEmail,
+        customerName: orderData.customerInfo?.organizer?.name,
       });
       console.log("✅ Confirmation email sent successfully");
     } catch (error) {

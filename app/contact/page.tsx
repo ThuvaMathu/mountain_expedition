@@ -4,6 +4,8 @@ import { ContactInfo } from "@/components/contact/contact-info";
 import { generateContactMetadata } from "@/seo/metadata/contact";
 import { localBusinessSchema, generateFAQSchema } from "@/seo/schemas";
 import { getContactDetails } from "@/services/get-contact";
+import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
 
 export const metadata = generateContactMetadata();
 

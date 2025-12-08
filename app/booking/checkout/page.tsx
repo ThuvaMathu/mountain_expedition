@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { CreditCard, Shield, User, Calendar, Mountain } from "lucide-react";
 import { loadRazorpay, createRazorpayOrder } from "@/lib/razorpay";
-import { db, isFirebaseConfigured } from "@/lib/firebase";
+import { db, isFirebaseConfigured, auth } from "@/lib/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ParticipantGroupForm from "@/components/booking/pertisipants-fields";
 import { v4 as uuidv4 } from "uuid";
@@ -15,6 +15,13 @@ import { useCurrencyStore } from "@/stores/currency-store";
 import { serviceFeeCal } from "@/lib/service-fee-cal";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "react-toastify";
+import { TermsCheckbox } from "@/components/booking/TermsCheckbox";
+import { CurrencyButton } from "@/components/booking/CurrencyButton";
+import {
+  CHECKOUT_CONFIG,
+  CHECKOUT_MESSAGES,
+  TERMS_CONDITIONS,
+} from "@/lib/constants/checkout-constants";
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
@@ -127,114 +134,122 @@ export default function CheckoutPage() {
       }
     return null; // not found
   }
-  const handlePayment = async () => {
-    if (!user) {
-      router.push("/auth/login");
-      return;
-    }
-    if (!isFieldsFilled) {
-      //alert("Please fill in all required fields");
-      toast.error("Please fill in all required fields");
-      return;
-    }
-    if (!mountain) {
-      //alert("Error Load mountain Details");
-      toast.error("Error Load mountain Details");
 
-      return;
+  // Validation helper for checkout readiness
+  const validateCheckoutReadiness = () => {
+    if (!user)
+      return { isValid: false, error: CHECKOUT_MESSAGES.LOGIN_REQUIRED };
+    if (!isFieldsFilled)
+      return { isValid: false, error: CHECKOUT_MESSAGES.FORM_INCOMPLETE };
+    if (!mountain)
+      return { isValid: false, error: CHECKOUT_MESSAGES.MOUNTAIN_LOAD_ERROR };
+    if (!Object.values(termsCon).every(Boolean)) {
+      return { isValid: false, error: CHECKOUT_MESSAGES.TERMS_NOT_ACCEPTED };
     }
-    if (!termsCon.tcs1 || !termsCon.tcs2 || !termsCon.tcs3) {
-      toast.error(
-        "Please acknowledge that you have read and agree to our Terms and Conditions."
-      );
+    return { isValid: true };
+  };
+
+  // Build order payload
+  const buildOrderPayload = () => ({
+    amount: totalAmount,
+    currency,
+    mountainId: mountain!.id,
+    mountainName: mountain!.name,
+    date: bookingDetails.slotId,
+    participants: bookingDetails.participants,
+    participantsInfo: customerInfo,
+    type: bookingDetails.type,
+    slotDetails: getSlotDetails(),
+    userEmail: user!.email,
+  });
+
+  // Handle payment success
+  const handlePaymentSuccess = async (response: any) => {
+    try {
+      const verifyResponse = await fetch("/api/razorpay/verify-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          firestoreOrderId: response.firestoreOrderId,
+        }),
+      });
+
+      const verifyData = await verifyResponse.json();
+      if (verifyData.success) {
+        router.push(
+          `/booking/confirmation/${verifyData.id}?type=${bookingDetails.type}`
+        );
+      } else {
+        toast.error(CHECKOUT_MESSAGES.PAYMENT_VERIFICATION_FAILED);
+      }
+    } catch (error) {
+      console.error("Payment verification error:", error);
+      toast.error(CHECKOUT_MESSAGES.PAYMENT_VERIFICATION_FAILED);
+    }
+  };
+
+  // Build Razorpay options
+  const buildRazorpayOptions = (orderData: any) => ({
+    key: orderData.key,
+    amount: orderData.amount,
+    currency: orderData.currency,
+    name: CHECKOUT_CONFIG.COMPANY_NAME,
+    description: `${mountain!.name} Expedition`,
+    order_id: orderData.orderId,
+    handler: async (response: any) => {
+      await handlePaymentSuccess({
+        ...response,
+        firestoreOrderId: orderData.firestoreOrderId,
+      });
+    },
+    prefill: {
+      name: customerInfo.organizer.name,
+      email: customerInfo.organizer.email,
+      contact: customerInfo.organizer.phone,
+    },
+    theme: { color: CHECKOUT_CONFIG.RAZORPAY_THEME_COLOR },
+    modal: { ondismiss: () => setIsLoading(false) },
+  });
+
+  const handlePayment = async () => {
+    const validation = validateCheckoutReadiness();
+    if (!validation.isValid) {
+      if (validation.error === CHECKOUT_MESSAGES.LOGIN_REQUIRED) {
+        router.push("/auth/login");
+      } else {
+        toast.error(validation.error);
+      }
       return;
     }
     setIsLoading(true);
 
     try {
-      // Create Razorpay order
-      const orderData = await createRazorpayOrder({
-        amount: totalAmount,
-        currency,
-        mountainId: mountain.id,
-        mountainName: mountain.name,
-        date: bookingDetails.slotId,
-        participants: bookingDetails.participants,
-        participantsInfo: customerInfo,
-      });
-
-      // Load Razorpay script
-      const razorpayLoaded = await loadRazorpay();
-      if (!razorpayLoaded) {
-        alert("Razorpay SDK failed to load. Please try again.");
-        return;
+      // Get Firebase auth token for API authentication
+      let authToken: string | undefined;
+      if (auth?.currentUser) {
+        authToken = await auth.currentUser.getIdToken();
       }
 
-      // Configure Razorpay options
-      const options = {
-        key: orderData.key,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "Tamil Adventure Trekking Club",
-        description: `${mountain.name} Expedition`,
-        order_id: orderData.orderId,
-        handler: async (response: any) => {
-          try {
-            // Verify payment
-            const verifyResponse = await fetch("/api/razorpay/verify-payment", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                type: bookingDetails.type,
-                bookingDetails: {
-                  bookingId: orderData.bookingId,
-                  mountainId: mountain.id,
-                  mountainName: mountain.name,
-                  slotDetails: getSlotDetails(),
-                  participants: bookingDetails.participants,
-                  customerInfo,
-                  amount: orderData.amount,
-                  currency: orderData.currency,
-                  userEmail: user.email,
-                },
-              }),
-            });
+      // Create Razorpay order
+      const orderData = await createRazorpayOrder(
+        buildOrderPayload(),
+        authToken
+      );
 
-            const verifyData = await verifyResponse.json();
-            if (verifyData.success) {
-              router.push(`/booking/confirmation/${verifyData.id}?type=${bookingDetails.type}`);
-            } else {
-              alert("Payment verification failed. Please contact support.");
-            }
-          } catch (error) {
-            console.error("Payment verification error:", error);
-            alert("Payment verification failed. Please contact support.");
-          }
-        },
-        prefill: {
-          name: customerInfo.organizer.name,
-          email: customerInfo.organizer.email,
-          contact: customerInfo.organizer.phone,
-        },
-        theme: {
-          color: "#0d9488", // Teal color
-        },
-        modal: {
-          ondismiss: () => {
-            setIsLoading(false);
-          },
-        },
-      };
-      const razorpay = new window.Razorpay(options);
+      // Load Razorpay SDK
+      if (!(await loadRazorpay())) {
+        throw new Error(CHECKOUT_MESSAGES.RAZORPAY_LOAD_ERROR);
+      }
+
+      // Open Razorpay checkout
+      const razorpay = new window.Razorpay(buildRazorpayOptions(orderData));
       razorpay.open();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Payment error:", error);
-      alert("Payment failed. Please try again.");
+      toast.error(error?.message || CHECKOUT_MESSAGES.PAYMENT_FAILED);
       setIsLoading(false);
     }
   };
@@ -265,6 +280,7 @@ export default function CheckoutPage() {
             onChange={(participant, isFilled) => {
               setCustomerInfo(participant);
               setIsFieldsFilled(isFilled);
+              console.log("🔄 Checkout Page: isFieldsFilled =", isFilled);
               const temp = {
                 ...bookingDetails,
                 participant: participant.members.length + 1,
@@ -277,88 +293,20 @@ export default function CheckoutPage() {
 
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Currency
-            </h2>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setCurrency("USD")}
-                className={`px-4 py-2 rounded-md border ${
-                  currency === "USD"
-                    ? "bg-teal-600 text-white border-teal-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                USD
-              </button>
-              <button
-                onClick={() => setCurrency("INR")}
-                className={`px-4 py-2 rounded-md border ${
-                  currency === "INR"
-                    ? "bg-teal-600 text-white border-teal-600"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                INR
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Terms & Conditions
             </h2>
             <div className="space-y-3 text-sm text-gray-600">
-              <label className="flex items-start">
-                <input
-                  type="checkbox"
-                  className="mt-1 mr-3 accent-teal-600"
-                  required
-                  onChange={(e) =>
-                    setTermsCon((prev) => ({
-                      ...prev,
-                      tcs1: e.target.checked,
-                    }))
+              {TERMS_CONDITIONS.map((term) => (
+                <TermsCheckbox
+                  key={term.id}
+                  id={term.id}
+                  label={term.label}
+                  checked={termsCon[term.id as keyof typeof termsCon]}
+                  onChange={(checked) =>
+                    setTermsCon((prev) => ({ ...prev, [term.id]: checked }))
                   }
                 />
-                <span>
-                  I agree to the expedition terms and conditions, including
-                  cancellation policy
-                </span>
-              </label>
-              <label className="flex items-start">
-                <input
-                  type="checkbox"
-                  className="mt-1 mr-3 accent-teal-600"
-                  required
-                  onChange={(e) =>
-                    setTermsCon((prev) => ({
-                      ...prev,
-                      tcs2: e.target.checked,
-                    }))
-                  }
-                />{" "}
-                <span>
-                  I understand the risks involved in mountaineering and have
-                  appropriate insurance
-                </span>
-              </label>
-              <label className="flex items-start">
-                <input
-                  type="checkbox"
-                  className="mt-1 mr-3 accent-teal-600"
-                  required
-                  onChange={(e) =>
-                    setTermsCon((prev) => ({
-                      ...prev,
-                      tcs3: e.target.checked,
-                    }))
-                  }
-                />{" "}
-                <span>
-                  I consent to receive booking confirmations and expedition
-                  updates via email
-                </span>
-              </label>
+              ))}
             </div>
           </div>
         </div>
@@ -427,10 +375,35 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              {/* Currency Selector */}
+              <div className="border-t pt-4 mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Currency
+                </label>
+                <div className="flex gap-2">
+                  {CHECKOUT_CONFIG.CURRENCIES.map((curr) => (
+                    <CurrencyButton
+                      key={curr}
+                      value={curr}
+                      isActive={currency === curr}
+                      onClick={() => setCurrency(curr)}
+                    />
+                  ))}
+                </div>
+              </div>
+
               <Button
                 onClick={handlePayment}
-                disabled={isLoading}
-                className="w-full mt-6 bg-teal-600 hover:bg-teal-700 text-white py-3 text-lg"
+                disabled={
+                  isLoading ||
+                  !isFieldsFilled ||
+                  !Object.values(termsCon).every(Boolean)
+                }
+                className={`w-full mt-6 ${
+                  !isFieldsFilled || !Object.values(termsCon).every(Boolean)
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-teal-600 hover:bg-teal-700"
+                } text-white py-3 text-lg`}
               >
                 {isLoading ? (
                   <div className="flex items-center">
@@ -439,10 +412,21 @@ export default function CheckoutPage() {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
-                    <CreditCard className="h-5 w-5 mr-2" /> Pay Now
+                    <CreditCard className="h-5 w-5 mr-2" />
+                    Pay Now
                   </div>
                 )}
               </Button>
+              {!isFieldsFilled && (
+                <p className="text-sm text-amber-600 mt-2 text-center">
+                  Please fill in all required fields with valid information
+                </p>
+              )}
+              {isFieldsFilled && !Object.values(termsCon).every(Boolean) && (
+                <p className="text-sm text-amber-600 mt-2 text-center">
+                  Please accept all terms and conditions to proceed
+                </p>
+              )}
 
               <div className="mt-4 flex items-center justify-center space-x-4 text-xs text-gray-500">
                 <div className="flex items-center">

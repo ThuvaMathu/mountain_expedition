@@ -5,9 +5,9 @@ import {
   View,
   StyleSheet,
   Font,
+  Image,
 } from "@react-pdf/renderer";
 
-import { getContactDetails } from "@/services/get-contact";
 import { COMPANY_INFO } from "@/seo/config";
 
 // Register fonts (optional - using default fonts)
@@ -28,6 +28,17 @@ const styles = StyleSheet.create({
     borderBottom: 3,
     borderBottomColor: "#0d9488",
     paddingBottom: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerLeft: {
+    flexDirection: "column",
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    objectFit: "contain",
   },
   companyName: {
     fontSize: 24,
@@ -242,8 +253,14 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
 
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.companyName}>Tamil Adventure Treckking Club</Text>
-          <Text style={styles.invoiceTitle}>BOOKING INVOICE</Text>
+          <View style={styles.headerLeft}>
+            <Text style={styles.companyName}>Tamil Adventure Treckking Club</Text>
+            <Text style={styles.invoiceTitle}>BOOKING INVOICE</Text>
+          </View>
+          <Image
+            style={styles.logo}
+            src="/logos/logo.png"
+          />
         </View>
 
         {/* Invoice Details */}

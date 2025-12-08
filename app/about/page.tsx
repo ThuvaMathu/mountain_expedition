@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { localBusinessSchema, organizationSchema } from "@/seo/schemas";
 import { generateAboutMetadata } from "@/seo/metadata/about";
 import { Awards2 } from "./awards";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 export const metadata = generateAboutMetadata();
 
 export default function AboutPage() {
@@ -79,7 +81,6 @@ export default function AboutPage() {
           __html: JSON.stringify(localBusinessSchema),
         }}
       />
-
       <header className="relative isolate">
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-teal-50 to-white" />
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">

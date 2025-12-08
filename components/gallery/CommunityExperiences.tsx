@@ -97,10 +97,11 @@ export default function CommunityExperiences({
                       handleImageClick(experience.images, experience.title, 0)
                     }
                   >
-                    <img
+                    <ImageLoader
                       src={experience.images[0] || "/placeholder.svg"}
                       alt={experience.title}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      height="h-48"
+                      className="w-full group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 ) : (

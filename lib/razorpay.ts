@@ -19,12 +19,22 @@ export const loadRazorpay = (): Promise<boolean> => {
   });
 };
 
-export const createRazorpayOrder = async (orderData: TOrderData) => {
+export const createRazorpayOrder = async (
+  orderData: TOrderData,
+  authToken?: string
+) => {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add auth token if provided
+  if (authToken) {
+    headers["Authorization"] = `Bearer ${authToken}`;
+  }
+
   const response = await fetch("/api/razorpay/create-order", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers,
     body: JSON.stringify(orderData),
   });
 
