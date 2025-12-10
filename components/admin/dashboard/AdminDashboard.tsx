@@ -46,8 +46,8 @@ export function AdminDashboard() {
   const [topTours, setTopTours] = useState<any[]>([]);
   const [activeUsers, setActiveUsers] = useState<any[]>([]);
   const [categorySplit, setCategorySplit] = useState({
-    mountains: { bookings: 0, revenue: 0 },
-    tours: { bookings: 0, revenue: 0 },
+    mountains: { bookings: 0, revenueUSD: 0, revenueINR: 0 },
+    tours: { bookings: 0, revenueUSD: 0, revenueINR: 0 },
   });
 
   const [allBookings, setAllBookings] = useState<TBooking[]>([]);
@@ -177,7 +177,7 @@ export function AdminDashboard() {
       totalUsers: uniqueUsers,
     });
 
-    // Calculate category split
+    // Calculate category split with currency breakdown
     const mountainBookingList = bookingList.filter(
       (b) => b.status === "confirmed" && b.booking.type === "trekking"
     );
@@ -186,24 +186,32 @@ export function AdminDashboard() {
       (b) => b.status === "confirmed" && b.booking.type === "tour"
     );
 
-    const mountainRevenue = mountainBookingList.reduce(
-      (sum, b) => sum + (b.amount || 0),
-      0
-    );
+    const mountainRevenueUSD = mountainBookingList
+      .filter((b) => b.currency === "USD")
+      .reduce((sum, b) => sum + (b.amount || 0), 0);
 
-    const tourRevenue = tourBookingList.reduce(
-      (sum, b) => sum + (b.amount || 0),
-      0
-    );
+    const mountainRevenueINR = mountainBookingList
+      .filter((b) => b.currency === "INR")
+      .reduce((sum, b) => sum + (b.amount || 0), 0);
+
+    const tourRevenueUSD = tourBookingList
+      .filter((b) => b.currency === "USD")
+      .reduce((sum, b) => sum + (b.amount || 0), 0);
+
+    const tourRevenueINR = tourBookingList
+      .filter((b) => b.currency === "INR")
+      .reduce((sum, b) => sum + (b.amount || 0), 0);
 
     setCategorySplit({
       mountains: {
         bookings: mountainBookingList.length,
-        revenue: mountainRevenue,
+        revenueUSD: mountainRevenueUSD,
+        revenueINR: mountainRevenueINR,
       },
       tours: {
         bookings: tourBookingList.length,
-        revenue: tourRevenue,
+        revenueUSD: tourRevenueUSD,
+        revenueINR: tourRevenueINR,
       },
     });
 

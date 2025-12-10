@@ -46,7 +46,6 @@ export default async function HomePage() {
         {/* Uncomment when ready to launch in production */}
         {isProduction ? (
           <>
-            <Navbar />
             <main>
               <HeroSection stats={stats} />
               <FeaturedMountains />
@@ -54,7 +53,6 @@ export default async function HomePage() {
               <StatsSection stats={stats} />
               <TestimonialsCarousel />
             </main>
-            <Footer />
           </>
         ) : (
           <ComingSoonPage />

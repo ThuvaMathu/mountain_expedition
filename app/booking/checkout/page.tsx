@@ -128,6 +128,7 @@ export default function CheckoutPage() {
 
           return {
             date: formattedDate,
+            originalDate: dateObj.date, // Keep original date for validation
             ...slot,
           };
         }
@@ -273,7 +274,17 @@ export default function CheckoutPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Booking Form */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6 relative">
+          {/* Processing Overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-50 rounded-xl flex items-center justify-center">
+              <div className="bg-white rounded-lg shadow-xl p-6 flex items-center space-x-3">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+                <span className="text-gray-900 font-medium">Processing your payment...</span>
+              </div>
+            </div>
+          )}
+
           <ParticipantGroupForm
             productType={mountain?.category!}
             participantCount={bookingDetails.participants}

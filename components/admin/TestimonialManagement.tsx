@@ -14,6 +14,7 @@ import {
   Eye,
   MoreHorizontal,
   AlertTriangle,
+  Plus,
 } from "lucide-react";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import {
@@ -25,6 +26,8 @@ import {
   query,
   orderBy,
   where,
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 
 interface Testimonial {
@@ -61,6 +64,16 @@ export function TestimonialManagement() {
   );
   const [editingTestimonial, setEditingTestimonial] =
     useState<Testimonial | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newTestimonial, setNewTestimonial] = useState({
+    name: "",
+    location: "",
+    mountain: "",
+    rating: 5,
+    text: "",
+    email: "",
+    status: "approved" as "approved" | "pending" | "rejected",
+  });
 
   // Mock data for when Firebase is not configured
   const mockTestimonials: Testimonial[] = [
@@ -211,6 +224,62 @@ export function TestimonialManagement() {
     setActionLoading(null);
   };
 
+  const handleAddTestimonial = async () => {
+    if (!newTestimonial.name || !newTestimonial.text) {
+      setError("Name and testimonial text are required");
+      return;
+    }
+
+    if (!isFirebaseConfigured || !db) {
+      // Mock add for demo
+      const mockTestimonial: Testimonial = {
+        id: Date.now().toString(),
+        ...newTestimonial,
+        createdAt: { toDate: () => new Date() },
+      };
+      setTestimonials((prev) => [mockTestimonial, ...prev]);
+      setShowAddModal(false);
+      resetNewTestimonial();
+      return;
+    }
+
+    setActionLoading("add");
+    try {
+      const docRef = await addDoc(collection(db, "testimonials"), {
+        ...newTestimonial,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      const addedTestimonial: Testimonial = {
+        id: docRef.id,
+        ...newTestimonial,
+        createdAt: { toDate: () => new Date() },
+      };
+
+      setTestimonials((prev) => [addedTestimonial, ...prev]);
+      setShowAddModal(false);
+      resetNewTestimonial();
+    } catch (err) {
+      console.error("Error adding testimonial:", err);
+      setError("Failed to add testimonial");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const resetNewTestimonial = () => {
+    setNewTestimonial({
+      name: "",
+      location: "",
+      mountain: "",
+      rating: 5,
+      text: "",
+      email: "",
+      status: "approved",
+    });
+  };
+
   // Filter and search effects
   useEffect(() => {
     let filtered = testimonials;
@@ -281,23 +350,33 @@ export function TestimonialManagement() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">
-          Testimonial Management
-        </h1>
-        <p className="text-gray-600">
-          Review and manage customer testimonials and feedback submissions.
-        </p>
-        {!isFirebaseConfigured && (
-          <div className="mt-3 p-3 rounded-md border border-yellow-200 bg-yellow-50 text-yellow-800 text-sm">
-            Firebase not configured: Using demo data. Changes won't be saved.
-          </div>
-        )}
-        {error && (
-          <div className="mt-3 p-3 rounded-md border border-red-200 bg-red-50 text-red-800 text-sm">
-            {error}
-          </div>
-        )}
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Testimonial Management
+          </h1>
+          <p className="text-gray-600">
+            Review and manage customer testimonials and feedback submissions.
+          </p>
+          {!isFirebaseConfigured && (
+            <div className="mt-3 p-3 rounded-md border border-yellow-200 bg-yellow-50 text-yellow-800 text-sm">
+              Firebase not configured: Using demo data. Changes won't be saved.
+            </div>
+          )}
+          {error && (
+            <div className="mt-3 p-3 rounded-md border border-red-200 bg-red-50 text-red-800 text-sm">
+              {error}
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors whitespace-nowrap"
+        >
+          <Plus className="h-5 w-5" />
+          Add Testimonial
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -614,6 +693,180 @@ export function TestimonialManagement() {
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
               >
                 {actionLoading === showDeleteConfirm ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Testimonial Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">
+                Add New Testimonial
+              </h3>
+              <button
+                onClick={() => {
+                  setShowAddModal(false);
+                  resetNewTestimonial();
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={newTestimonial.name}
+                  onChange={(e) =>
+                    setNewTestimonial({ ...newTestimonial, name: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  placeholder="Enter customer name"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email (Optional)
+                </label>
+                <input
+                  type="email"
+                  value={newTestimonial.email}
+                  onChange={(e) =>
+                    setNewTestimonial({ ...newTestimonial, email: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  placeholder="customer@example.com"
+                />
+              </div>
+
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  value={newTestimonial.location}
+                  onChange={(e) =>
+                    setNewTestimonial({ ...newTestimonial, location: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  placeholder="City, Country"
+                />
+              </div>
+
+              {/* Mountain/Trek */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mountain/Trek
+                </label>
+                <input
+                  type="text"
+                  value={newTestimonial.mountain}
+                  onChange={(e) =>
+                    setNewTestimonial({ ...newTestimonial, mountain: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  placeholder="e.g., Mount Kilimanjaro"
+                />
+              </div>
+
+              {/* Rating */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Rating
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      type="button"
+                      onClick={() =>
+                        setNewTestimonial({ ...newTestimonial, rating })
+                      }
+                      className="focus:outline-none"
+                    >
+                      <Star
+                        className={`h-8 w-8 ${
+                          rating <= newTestimonial.rating
+                            ? "text-yellow-400 fill-current"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  <span className="ml-2 text-sm text-gray-600">
+                    ({newTestimonial.rating}/5)
+                  </span>
+                </div>
+              </div>
+
+              {/* Testimonial Text */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Testimonial <span className="text-red-600">*</span>
+                </label>
+                <textarea
+                  value={newTestimonial.text}
+                  onChange={(e) =>
+                    setNewTestimonial({ ...newTestimonial, text: e.target.value })
+                  }
+                  rows={5}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  placeholder="Enter the testimonial text..."
+                />
+              </div>
+
+              {/* Status */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Status
+                </label>
+                <select
+                  value={newTestimonial.status}
+                  onChange={(e) =>
+                    setNewTestimonial({
+                      ...newTestimonial,
+                      status: e.target.value as "approved" | "pending" | "rejected",
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                >
+                  <option value="approved">Approved</option>
+                  <option value="pending">Pending</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowAddModal(false);
+                  resetNewTestimonial();
+                }}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddTestimonial}
+                disabled={actionLoading === "add" || !newTestimonial.name || !newTestimonial.text}
+                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {actionLoading === "add" ? "Adding..." : "Add Testimonial"}
               </button>
             </div>
           </div>

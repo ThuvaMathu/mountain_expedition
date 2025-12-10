@@ -136,6 +136,41 @@ export async function POST(request: NextRequest) {
     }
     console.log("✅ Amount validated:", amount);
 
+    // STEP 5.5: Validate slot availability before payment
+    console.log("🔍 Validating slot availability...");
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+      const validateResponse = await fetch(`${baseUrl}/api/booking/validate-slot`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: mountainId,
+          productType: type || "trekking",
+          slotId: slotDetails?.id,
+          date: slotDetails?.originalDate || slotDetails?.date || date,
+          participants
+        })
+      });
+
+      if (!validateResponse.ok) {
+        const validation = await validateResponse.json();
+        console.error("❌ [CREATE ORDER] Slot validation failed:", validation.message);
+        return NextResponse.json({
+          error: "SLOT_UNAVAILABLE",
+          message: validation.message || "This slot is no longer available",
+          availableSpots: validation.availableSpots
+        }, { status: 400 });
+      }
+
+      await validateResponse.json();
+      console.log("✅ [CREATE ORDER] Slot validated, proceeding with order creation");
+    } catch (slotError) {
+      console.error("❌ [CREATE ORDER] Slot validation error:", slotError);
+      return NextResponse.json({
+        error: "Failed to validate slot availability. Please try again."
+      }, { status: 500 });
+    }
+
     // Convert amount to smallest currency unit (paise for INR, cents for USD)
     const amountInSmallestUnit = Math.round(amount * 100);
 

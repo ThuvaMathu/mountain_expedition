@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { TouristBooking } from "@/components/tourist/tourist-booking";
@@ -19,6 +20,7 @@ import {
   Camera,
   Globe,
   Plane,
+  AlertTriangle,
 } from "lucide-react";
 import { isFirebaseConfigured, db } from "@/lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
@@ -37,6 +39,31 @@ export default function TouristDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
   const { loadCurrency, formatedValue, getCurrencyValue } = useCurrencyStore();
+
+  // Check if event is disabled or outdated
+  const isDisabled = useMemo(() => {
+    if (!touristPackage) return false;
+    if (touristPackage.status === "disabled") return true;
+    if (touristPackage.status === "outdated") return true;
+
+    // Auto-detect: Check if all dates are in the past
+    const allDatesExpired = touristPackage.availableDates?.every(dateObj => {
+      return new Date(dateObj.date) < new Date();
+    });
+
+    return allDatesExpired;
+  }, [touristPackage]);
+
+  const getDisabledReason = () => {
+    if (!touristPackage) return "";
+    if (touristPackage.status === "disabled" && touristPackage.disabledReason) {
+      return touristPackage.disabledReason;
+    }
+    if (touristPackage.status === "outdated" || (touristPackage.availableDates?.every(dateObj => new Date(dateObj.date) < new Date()))) {
+      return "This tour is no longer available";
+    }
+    return "Currently unavailable";
+  };
 
   const load = async () => {
     if (!isFirebaseConfigured || !db) {
@@ -117,12 +144,14 @@ export default function TouristDetailPage() {
           <h1 className="text-4xl font-bold text-gray-900">
             {touristPackage.name}
           </h1>
-          <div className="text-sm">
-            <span className="text-green-600 font-medium">
-              {getAvailableSlots(touristPackage)}
-            </span>
-            <span className="text-gray-500"> spots available</span>
-          </div>
+          {!isDisabled && (
+            <div className="text-sm">
+              <span className="text-green-600 font-medium">
+                {getAvailableSlots(touristPackage)}
+              </span>
+              <span className="text-gray-500"> spots available</span>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-4 text-gray-600">
@@ -157,6 +186,22 @@ export default function TouristDetailPage() {
           </span>
         </div>
       </div>
+
+      {/* Unavailability Banner */}
+      {isDisabled && (
+        <div className="mb-8 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <AlertTriangle className="h-5 w-5 text-yellow-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-yellow-700">
+                <strong className="font-bold">This event is currently unavailable.</strong> {getDisabledReason()}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Images and Details */}
@@ -412,7 +457,16 @@ export default function TouristDetailPage() {
                 </div>
               </div>
 
-              {!showBooking ? (
+              {isDisabled ? (
+                <div className="text-center py-6">
+                  <p className="text-gray-600 mb-4">Booking is not available for this event.</p>
+                  <Link href="/contact">
+                    <Button className="w-full bg-teal-600 hover:bg-teal-700">
+                      Contact Us for Similar Events
+                    </Button>
+                  </Link>
+                </div>
+              ) : !showBooking ? (
                 <div className="space-y-4">
                   <Button
                     onClick={() => setShowBooking(true)}

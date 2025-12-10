@@ -76,9 +76,9 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="flex relative">
+    <div className="flex relative overflow-hidden">
       <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main className="flex-1 ml-60 p-6 lg:p-8">
+      <main className="flex-1 ml-60 p-6 lg:p-8 overflow-x-hidden">
         <div className="max-w-7xl mx-auto">{renderContent()}</div>
       </main>
     </div>

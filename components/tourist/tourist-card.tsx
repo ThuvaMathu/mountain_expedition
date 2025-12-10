@@ -4,6 +4,7 @@ import { MapPin, Calendar, Clock, Star, Users } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useCurrencyStore } from "@/stores/currency-store";
 import { ImageLoader } from "../ui/image-loader";
+import { useMemo } from "react";
 
 interface TouristCardProps {
   tourist: TMountainType; // Reusing TMountainType for tourist packages
@@ -12,6 +13,29 @@ interface TouristCardProps {
 
 export function TouristCard({ tourist, category }: TouristCardProps) {
   const { currency } = useCurrencyStore();
+
+  // Check if event is disabled or outdated
+  const isDisabled = useMemo(() => {
+    if (tourist.status === "disabled") return true;
+    if (tourist.status === "outdated") return true;
+
+    // Auto-detect: Check if all dates are in the past
+    const allDatesExpired = tourist.availableDates?.every(dateObj => {
+      return new Date(dateObj.date) < new Date();
+    });
+
+    return allDatesExpired;
+  }, [tourist]);
+
+  const getDisabledReason = () => {
+    if (tourist.status === "disabled" && tourist.disabledReason) {
+      return tourist.disabledReason;
+    }
+    if (tourist.status === "outdated" || (tourist.availableDates?.every(dateObj => new Date(dateObj.date) < new Date()))) {
+      return "This tour is no longer available";
+    }
+    return "Currently unavailable";
+  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -60,16 +84,27 @@ export function TouristCard({ tourist, category }: TouristCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden tourist-card-hover">
+    <div className={`bg-white rounded-xl shadow-lg overflow-hidden tourist-card-hover relative ${isDisabled ? "opacity-80" : ""}`}>
       <div className="relative">
         <ImageLoader
           src={tourist.imageUrl?.[0] || "/placeholder.svg"}
           alt={tourist.name}
           height="h-56"
           priority
+          className={isDisabled ? "grayscale" : ""}
         />
 
-        <div className="absolute top-4 left-4 flex gap-2">
+        {/* Disabled Overlay */}
+        {isDisabled && (
+          <div className="absolute inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-10 rounded-t-xl">
+            <div className="text-center p-4">
+              <p className="text-white text-xl font-bold mb-2">Currently Unavailable</p>
+              <p className="text-gray-300 text-sm">{getDisabledReason()}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="absolute top-4 left-4 flex gap-2 z-20">
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(
               category
@@ -86,16 +121,18 @@ export function TouristCard({ tourist, category }: TouristCardProps) {
           </span>
         </div>
 
-        <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1">
-          <div className="flex items-center space-x-1">
-            <div className="text-sm">
-              <span className="text-green-600 font-medium">
-                {getAvailableSlots(tourist)}
-              </span>
-              <span className="text-gray-500"> spots available</span>
+        {!isDisabled && (
+          <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1 z-20">
+            <div className="flex items-center space-x-1">
+              <div className="text-sm">
+                <span className="text-green-600 font-medium">
+                  {getAvailableSlots(tourist)}
+                </span>
+                <span className="text-gray-500"> spots available</span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="p-6">
@@ -134,9 +171,16 @@ export function TouristCard({ tourist, category }: TouristCardProps) {
           </div>
         </div>
 
-        <Link href={`/tourist/${tourist.id}`}>
-          <Button className="w-full bg-teal-600 hover:bg-teal-700">
-            View Details & Book
+        <Link
+          href={isDisabled ? "#" : `/tourist/${tourist.id}`}
+          onClick={(e) => isDisabled && e.preventDefault()}
+          className={isDisabled ? "pointer-events-none" : ""}
+        >
+          <Button
+            className={`w-full ${isDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-teal-600 hover:bg-teal-700"}`}
+            disabled={isDisabled}
+          >
+            {isDisabled ? "Unavailable" : "View Details & Book"}
           </Button>
         </Link>
       </div>

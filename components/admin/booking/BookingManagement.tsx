@@ -167,11 +167,16 @@ export function BookingManagement() {
   const confirmedBookings = currentTypeBookings.filter(
     (b) => b.status === "confirmed"
   );
+
+  // Calculate revenue by currency
   const totalRevenueUSD = confirmedBookings.reduce(
-    (sum, b) => sum + b.amount,
+    (sum, b) => sum + (b.currency === "USD" ? b.amount : 0),
     0
   );
-  const totalRevenueINR = totalRevenueUSD * 83; // Approximate conversion rate
+  const totalRevenueINR = confirmedBookings.reduce(
+    (sum, b) => sum + (b.currency === "INR" ? b.amount : 0),
+    0
+  );
 
   const confirmedCount = confirmedBookings.length;
   const pendingCount = currentTypeBookings.filter(
@@ -190,7 +195,7 @@ export function BookingManagement() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-hidden">
       {/* Header with Product Type Tabs */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -265,7 +270,7 @@ export function BookingManagement() {
       {/* Stats Cards - 2 Rows */}
       <div className="space-y-4">
         {/* Row 1: Revenue & Bookings */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-white rounded-xl shadow-lg p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -311,7 +316,7 @@ export function BookingManagement() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-4">
+          {/* <div className="bg-white rounded-xl shadow-lg p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">
@@ -326,7 +331,7 @@ export function BookingManagement() {
               </div>
               <DollarSign className="h-8 w-8 text-purple-500" />
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Row 2: Status */}

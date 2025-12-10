@@ -81,6 +81,9 @@ type TMountainType = {
   }>;
   createdAt?: string;
   category?: "domestic" | "international";
+  status?: "active" | "disabled" | "outdated";
+  disabledReason?: string;
+  lastUpdated?: string;
 };
 
 type ItineraryItem = {
@@ -116,6 +119,7 @@ type TParticipantGroup = {
 };
 type TSlotDetails = {
   date: string; // formatted date like "5 Aug 2025"
+  originalDate?: string; // original database date format for validation
   id: string;
   time: string;
   maxParticipants: number;

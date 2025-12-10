@@ -350,25 +350,25 @@ export function BookingList({
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="min-w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     Booking Info
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     Customer
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     Mountain & Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     Amount
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     Actions
                   </th>
                 </tr>
@@ -380,7 +380,7 @@ export function BookingList({
 
                   return (
                     <tr key={booking.bookingId} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="font-medium text-gray-900">
                             {booking.bookingId}
@@ -410,7 +410,7 @@ export function BookingList({
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="font-medium text-gray-900 flex items-center">
                             <User className="h-3 w-3 mr-1" />
@@ -435,7 +435,7 @@ export function BookingList({
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="font-medium text-gray-900 flex items-center">
                             <Mountain className="h-3 w-3 mr-1" />
@@ -453,7 +453,7 @@ export function BookingList({
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusDetails.color}`}
@@ -464,7 +464,7 @@ export function BookingList({
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                         <div className="font-medium text-gray-900">
                           {formatCurrency(booking.amount, booking.currency)}
                         </div>
@@ -475,7 +475,7 @@ export function BookingList({
                           <div className="text-xs text-green-600">Paid</div>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           {/* Status Change Buttons */}
                           {booking.status !== "confirmed" && (

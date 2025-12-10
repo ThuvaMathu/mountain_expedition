@@ -70,7 +70,7 @@ export function validateParticipantInfo(
     return { isValid: false, error: "Invalid participants info" };
   }
 
-  const { organizer, members } = participantsInfo;
+  const { organizer, members } = participantsInfo as any;
 
   // Validate organizer
   if (!organizer || typeof organizer !== "object") {

@@ -4,7 +4,7 @@ import { MapPin, Calendar, TrendingUp, Star, Users } from "lucide-react";
 import { CurrencyInput } from "../ui/currency-input";
 import { formatCurrency } from "@/lib/utils";
 import { useCurrencyStore } from "@/stores/currency-store";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { ImageLoader } from "../ui/image-loader";
 
 interface MountainCardProps {
@@ -13,6 +13,29 @@ interface MountainCardProps {
 
 export function MountainCard({ mountain }: MountainCardProps) {
   const { currency } = useCurrencyStore();
+
+  // Check if event is disabled or outdated
+  const isDisabled = useMemo(() => {
+    if (mountain.status === "disabled") return true;
+    if (mountain.status === "outdated") return true;
+
+    // Auto-detect: Check if all dates are in the past
+    const allDatesExpired = mountain.availableDates?.every(dateObj => {
+      return new Date(dateObj.date) < new Date();
+    });
+
+    return allDatesExpired;
+  }, [mountain]);
+
+  const getDisabledReason = () => {
+    if (mountain.status === "disabled" && mountain.disabledReason) {
+      return mountain.disabledReason;
+    }
+    if (mountain.status === "outdated" || (mountain.availableDates?.every(dateObj => new Date(dateObj.date) < new Date()))) {
+      return "This trek is no longer available";
+    }
+    return "Currently unavailable";
+  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -52,16 +75,27 @@ export function MountainCard({ mountain }: MountainCardProps) {
     );
   };
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden mountain-card-hover">
+    <div className={`bg-white rounded-xl shadow-lg overflow-hidden mountain-card-hover relative ${isDisabled ? "opacity-80" : ""}`}>
       <div className="relative">
         <ImageLoader
           src={mountain.imageUrl?.[0] || "/placeholder.svg"}
           alt={mountain.name}
           height="h-56"
           priority
+          className={isDisabled ? "grayscale" : ""}
         />
 
-        <div className="absolute top-4 left-4">
+        {/* Disabled Overlay */}
+        {isDisabled && (
+          <div className="absolute inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-10 rounded-t-xl">
+            <div className="text-center p-4">
+              <p className="text-white text-xl font-bold mb-2">Currently Unavailable</p>
+              <p className="text-gray-300 text-sm">{getDisabledReason()}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="absolute top-4 left-4 z-20">
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
               mountain.difficulty
@@ -70,16 +104,18 @@ export function MountainCard({ mountain }: MountainCardProps) {
             {mountain.difficulty}
           </span>
         </div>
-        <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1">
-          <div className="flex items-center space-x-1">
-            <div className="text-sm">
-              <span className="text-green-600 font-medium">
-                {getAvailableSlots(mountain)}
-              </span>
-              <span className="text-gray-500"> spots available</span>
+        {!isDisabled && (
+          <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1 z-20">
+            <div className="flex items-center space-x-1">
+              <div className="text-sm">
+                <span className="text-green-600 font-medium">
+                  {getAvailableSlots(mountain)}
+                </span>
+                <span className="text-gray-500"> spots available</span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="p-6">
@@ -122,9 +158,16 @@ export function MountainCard({ mountain }: MountainCardProps) {
           </div>
         </div>
 
-        <Link href={`/mountains/${mountain.id}`}>
-          <Button className="w-full bg-teal-600 hover:bg-teal-700">
-            View Details & Book
+        <Link
+          href={isDisabled ? "#" : `/mountains/${mountain.id}`}
+          onClick={(e) => isDisabled && e.preventDefault()}
+          className={isDisabled ? "pointer-events-none" : ""}
+        >
+          <Button
+            className={`w-full ${isDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-teal-600 hover:bg-teal-700"}`}
+            disabled={isDisabled}
+          >
+            {isDisabled ? "Unavailable" : "View Details & Book"}
           </Button>
         </Link>
       </div>

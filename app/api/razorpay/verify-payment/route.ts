@@ -165,6 +165,108 @@ export async function POST(request: NextRequest) {
 
     await updateDoc(docRef, { id: docRef.id });
 
+    // 5.5: CRITICAL - Reduce slot capacity after successful booking
+    console.log("🔄 [SLOT REDUCTION] Starting slot update:", {
+      productId: orderData.booking.id,
+      slotId: orderData.slotDetails?.id,
+      date: orderData.slotDetails?.date,
+      participants: orderData.participants,
+      timestamp: new Date().toISOString()
+    });
+
+    try {
+      // Import Firebase Admin SDK for transaction
+      const { adminDb } = await import("@/lib/firebase-admin");
+
+      const collection = orderData.booking.type === "trekking" ? "mountains" : "tourist-packages";
+      const docRef = adminDb.collection(collection).doc(orderData.booking.id);
+
+      await adminDb.runTransaction(async (transaction) => {
+        const doc = await transaction.get(docRef);
+
+        if (!doc.exists) {
+          throw new Error("Product document not found");
+        }
+
+        const data = doc.data();
+        const availableDates = data?.availableDates || [];
+
+        // Find the date and slot
+        const searchDate = orderData.slotDetails?.originalDate || orderData.slotDetails?.date;
+        const dateIndex = availableDates.findIndex((d: any) => d.date === searchDate);
+
+        if (dateIndex === -1) {
+          throw new Error(`Date ${searchDate} not found`);
+        }
+
+        const slotIndex = availableDates[dateIndex].slots.findIndex(
+          (s: any) => s.id === orderData.slotDetails?.id
+        );
+
+        if (slotIndex === -1) {
+          throw new Error(`Slot ${orderData.slotDetails?.id} not found`);
+        }
+
+        // Get current slot data
+        const slot = availableDates[dateIndex].slots[slotIndex];
+        const newBookedCount = slot.bookedParticipants + orderData.participants;
+
+        // Double-check capacity (safety check)
+        if (newBookedCount > slot.maxParticipants) {
+          console.error("❌ [SLOT REDUCTION] Overbooking detected!", {
+            current: slot.bookedParticipants,
+            adding: orderData.participants,
+            max: slot.maxParticipants,
+            would_be: newBookedCount
+          });
+          throw new Error("Overbooking prevented - slot is now full");
+        }
+
+        // Update the bookedParticipants
+        availableDates[dateIndex].slots[slotIndex].bookedParticipants = newBookedCount;
+
+        // Update the document
+        transaction.update(docRef, {
+          availableDates,
+          lastUpdated: new Date().toISOString()
+        });
+
+        console.log("✅ [SLOT REDUCTION] Slot updated successfully:", {
+          previousBooked: slot.bookedParticipants,
+          newBooked: newBookedCount,
+          remaining: slot.maxParticipants - newBookedCount,
+          bookingId: bookingId
+        });
+      });
+
+    } catch (slotError: any) {
+      // Log error but don't fail the payment
+      // Booking is already created, slot update failed
+      console.error("❌ [SLOT REDUCTION] Failed to update slot:", {
+        error: slotError.message,
+        bookingId: bookingId,
+        productId: orderData.booking.id,
+        slotId: orderData.slotDetails?.id
+      });
+
+      // Log to a failure collection for manual review
+      try {
+        const { adminDb } = await import("@/lib/firebase-admin");
+        await adminDb.collection("slot-update-failures").add({
+          bookingId: bookingId,
+          productId: orderData.booking.id,
+          productType: orderData.booking.type,
+          slotId: orderData.slotDetails?.id,
+          date: orderData.slotDetails?.date,
+          participants: orderData.participants,
+          error: slotError.message,
+          timestamp: new Date().toISOString()
+        });
+      } catch (logError) {
+        console.error("Failed to log slot update failure:", logError);
+      }
+    }
+
     // 6. Update order status to confirmed
     await updateDoc(orderDocRef, {
       status: "confirmed",
