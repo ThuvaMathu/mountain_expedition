@@ -13,6 +13,47 @@ import {
   Search,
 } from "lucide-react";
 
+// Standardized date formatter for CSV export
+const formatDateForExport = (dateString: string | undefined): string => {
+  if (!dateString) return "N/A";
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  } catch {
+    return dateString;
+  }
+};
+
+// Calculate amount breakdown from total
+const calculateAmountBreakdown = (booking: TBooking) => {
+  const total = booking.amount;
+  const currency = booking.currency as "INR" | "USD";
+
+  let base = 0;
+  let fee = 0;
+
+  if (currency === "INR") {
+    // INR: total = base * (1 + 0.02 * 1.18) = base * 1.0236
+    base = total / 1.0236;
+    fee = total - base;
+  } else if (currency === "USD") {
+    // USD: total = base * 1.029 + 0.3
+    base = (total - 0.3) / 1.029;
+    fee = total - base;
+  }
+
+  return {
+    baseAmount: parseFloat(base.toFixed(2)),
+    serviceFee: parseFloat(fee.toFixed(2)),
+    totalAmount: parseFloat(total.toFixed(2))
+  };
+};
+
 interface BookingExportProps {
   bookings: TBooking[];
   mountains: Map<string, any>;
@@ -128,7 +169,9 @@ export function BookingExport({
       "Date",
       "Time",
       "Status",
-      "Amount",
+      "Base Amount",
+      "Service Fee",
+      "Total Amount",
       "Currency",
       "Created Date",
     ];
@@ -148,6 +191,8 @@ export function BookingExport({
     const csvContent = [
       headers.join(","),
       ...filtered.map((booking) => {
+        const amounts = calculateAmountBreakdown(booking);
+
         let row = [
           booking.bookingId,
           booking.booking.type,
@@ -156,12 +201,14 @@ export function BookingExport({
           booking.customerInfo.organizer.email,
           booking.customerInfo.organizer.country,
           booking.participants,
-          booking.slotDetails?.date || "N/A",
+          formatDateForExport(booking.slotDetails?.date),
           booking.slotDetails?.time || "N/A",
           booking.status,
-          booking.amount,
+          amounts.baseAmount,
+          amounts.serviceFee,
+          amounts.totalAmount,
           booking.currency,
-          new Date(booking.createdAt).toLocaleDateString(),
+          formatDateForExport(new Date(booking.createdAt).toDateString()),
         ];
 
         if (exportFilters.includeContactInfo) {
@@ -206,7 +253,10 @@ export function BookingExport({
       "Passport",
       "Phone",
       "Emergency Contact",
-      "Amount (Per Booking)",
+      "Base Amount",
+      "Service Fee",
+      "Total Amount",
+      "Currency",
       "Status",
     ];
 
@@ -217,11 +267,13 @@ export function BookingExport({
     const rows: string[] = [];
 
     filtered.forEach((booking) => {
+      const amounts = calculateAmountBreakdown(booking);
+
       let organizerRow = [
         booking.bookingId,
         booking.booking.type,
         booking.mountainName,
-        booking.slotDetails?.date || "N/A",
+        formatDateForExport(booking.slotDetails?.date),
         "Organizer",
         `"${booking.customerInfo.organizer.name}"`,
         booking.customerInfo.organizer.email,
@@ -229,7 +281,10 @@ export function BookingExport({
         booking.customerInfo.organizer.passport,
         booking.customerInfo.organizer.phone,
         `"${booking.customerInfo.organizer.emergencyContact}"`,
-        booking.amount,
+        amounts.baseAmount,
+        amounts.serviceFee,
+        amounts.totalAmount,
+        booking.currency,
         booking.status,
       ];
 
@@ -245,7 +300,7 @@ export function BookingExport({
             booking.bookingId,
             booking.booking.type,
             booking.mountainName,
-            booking.slotDetails?.date || "N/A",
+            formatDateForExport(booking.slotDetails?.date),
             "Member",
             `"${member.name}"`,
             member.email,
@@ -254,6 +309,9 @@ export function BookingExport({
             member.phone,
             `"${member.emergencyContact}"`,
             "0",
+            "0",
+            "0",
+            booking.currency,
             booking.status,
           ];
 
@@ -364,6 +422,8 @@ export function BookingExport({
         if (!monthlyStats.has(monthKey)) {
           monthlyStats.set(monthKey, {
             month: monthKey,
+            totalBaseRevenue: 0,
+            totalServiceFee: 0,
             totalRevenue: 0,
             totalBookings: 0,
             totalParticipants: 0,
@@ -374,7 +434,11 @@ export function BookingExport({
         }
 
         const stats = monthlyStats.get(monthKey);
-        stats.totalRevenue += booking.amount;
+        const amounts = calculateAmountBreakdown(booking);
+
+        stats.totalBaseRevenue += amounts.baseAmount;
+        stats.totalServiceFee += amounts.serviceFee;
+        stats.totalRevenue += amounts.totalAmount;
         stats.totalBookings++;
         stats.totalParticipants += booking.participants;
         if (booking.booking.type === "trekking") {
@@ -388,12 +452,14 @@ export function BookingExport({
 
     const headers = [
       "Month",
-      "Total Revenue (USD)",
+      "Base Revenue",
+      "Service Fee Revenue",
+      "Total Revenue",
       "Total Bookings",
       "Trekking Bookings",
       "Tour Bookings",
       "Total Participants",
-      "Average Booking Value (USD)",
+      "Average Booking Value",
     ];
 
     const csvContent = [
@@ -403,6 +469,8 @@ export function BookingExport({
         .map((stats: any) =>
           [
             stats.month,
+            stats.totalBaseRevenue.toFixed(2),
+            stats.totalServiceFee.toFixed(2),
             stats.totalRevenue.toFixed(2),
             stats.totalBookings,
             stats.trekkingBookings,

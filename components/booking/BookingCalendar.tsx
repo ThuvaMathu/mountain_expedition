@@ -6,7 +6,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Calendar, Users, CreditCard, Clock } from "lucide-react";
 import { useCurrencyStore } from "@/stores/currency-store";
-import { serviceFeeCal } from "@/lib/service-fee-cal";
 import { formatCurrency } from "@/lib/utils";
 import { getSlotAvailability, shouldShowSlot } from "@/lib/utils/slot-utils";
 
@@ -64,8 +63,9 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
   };
   const participantCount = Number(participants.split(" ")[0]);
   const totalParticipantPrice = getCurrencyValue()! * participantCount;
-  const serviceFee = serviceFeeCal(currency, totalParticipantPrice);
-  const totalPrice = getCurrencyValue()! * participantCount + serviceFee;
+  // Note: Base price already includes all fees (GST, taxes, processing charges)
+  // No additional service fee calculation needed
+  const totalPrice = totalParticipantPrice;
 
   return (
     <div className="space-y-6">
@@ -184,10 +184,31 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
           <span className="text-gray-600">Base price × {participantCount}</span>
           <span>{formatCurrency(totalParticipantPrice, currency)}</span>
         </div>
+
+        {/* Currency-specific tax/fee clarification note */}
+        {currency === "INR" && (
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mt-2 mb-2">
+            <p className="text-xs text-blue-800">
+              <span className="font-semibold">Note:</span> Base price already includes all applicable fees, GST (18%), and payment processing charges.
+            </p>
+          </div>
+        )}
+
+        {currency === "USD" && (
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mt-2 mb-2">
+            <p className="text-xs text-blue-800">
+              <span className="font-semibold">Note:</span> Base price already includes all fees, taxes, and payment processing charges.
+            </p>
+          </div>
+        )}
+
+        {/* Service fee line temporarily hidden per requirements
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-600">Service fee</span>
           <span>{formatCurrency(serviceFee, currency)}</span>
         </div>
+        */}
+
         <div className="border-t pt-2 mt-2">
           <div className="flex justify-between items-center font-semibold text-lg">
             <span>Total</span>

@@ -511,6 +511,9 @@ export default function MountainManagement() {
               className="max-w-xs text-teal-700 font-medium"
               prefix="₹"
             />
+            <p className="mt-2 text-xs text-teal-600">
+              + Service fees, GST, and processing charges
+            </p>
           </div>
           <div>
             <label className="block text-lg font-medium text-teal-700 mb-1">
@@ -522,6 +525,27 @@ export default function MountainManagement() {
               placeholder="e.g., 2800"
               className="max-w-xs text-teal-700 font-medium"
             />
+            <p className="mt-2 text-xs text-teal-600">
+              + Service fees and processing charges
+            </p>
+          </div>
+        </div>
+
+        {/* Info banner explaining complete fee structure */}
+        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start">
+            <svg className="h-5 w-5 text-amber-600 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            <div className="flex-1">
+              <h4 className="text-sm font-semibold text-amber-900 mb-1">Pricing Information</h4>
+              <ul className="text-xs text-amber-800 space-y-1">
+                <li>• <strong>Base Price:</strong> Per-person base price for this package.</li>
+                <li>• <strong>INR:</strong> 2% service fee + 18% GST on fee + payment charges added at checkout.</li>
+                <li>• <strong>USD:</strong> 2.9% service fee + $0.30 + international payment charges added at checkout.</li>
+                <li>• <strong>Display:</strong> Customers see total (base + all fees) during checkout.</li>
+              </ul>
+            </div>
           </div>
         </div>
         {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

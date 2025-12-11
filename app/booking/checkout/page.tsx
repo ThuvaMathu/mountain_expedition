@@ -12,7 +12,6 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import ParticipantGroupForm from "@/components/booking/pertisipants-fields";
 import { v4 as uuidv4 } from "uuid";
 import { useCurrencyStore } from "@/stores/currency-store";
-import { serviceFeeCal } from "@/lib/service-fee-cal";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { TermsCheckbox } from "@/components/booking/TermsCheckbox";
@@ -258,8 +257,9 @@ export default function CheckoutPage() {
   const currentCount = customerInfo.members.length + 1;
   const unitPrice = getCurrencyValue();
   const basePrice = unitPrice! * currentCount;
-  const serviceFee = serviceFeeCal(currency, basePrice);
-  const totalAmount = basePrice + serviceFee;
+  // Note: Base price already includes all fees (GST, taxes, processing charges)
+  // No additional service fee calculation needed
+  const totalAmount = basePrice;
   //console.log("booking:", bookingDetails);
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -374,10 +374,31 @@ export default function CheckoutPage() {
                     {unitPrice && formatCurrency(basePrice, currency)}
                   </span>
                 </div>
+
+                {/* Currency-specific tax/fee clarification note */}
+                {currency === "INR" && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mt-2">
+                    <p className="text-xs text-blue-800">
+                      <span className="font-semibold">Note:</span> Base price already includes all applicable fees, GST (18%), and payment processing charges.
+                    </p>
+                  </div>
+                )}
+
+                {currency === "USD" && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mt-2">
+                    <p className="text-xs text-blue-800">
+                      <span className="font-semibold">Note:</span> Base price already includes all fees, taxes, and payment processing charges.
+                    </p>
+                  </div>
+                )}
+
+                {/* Service fee line temporarily hidden per requirements
                 <div className="flex justify-between">
                   <span className="text-gray-600">Service fee</span>
                   <span>{formatCurrency(serviceFee, currency)}</span>
                 </div>
+                */}
+
                 <div className="border-t pt-2 mt-2">
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>

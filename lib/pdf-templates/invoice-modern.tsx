@@ -240,8 +240,36 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
     });
   };
 
-  const serviceFee = booking.amount * 0.05; // Assuming 5% service fee
-  const baseAmount = booking.amount - serviceFee;
+  // Use breakdown from booking if available, otherwise calculate
+  const calculateBreakdown = () => {
+    if (booking.baseAmount && booking.serviceFee) {
+      return {
+        baseAmount: booking.baseAmount,
+        serviceFee: booking.serviceFee,
+      };
+    }
+
+    // Fallback calculation for old bookings
+    const total = booking.amount;
+    const currency = booking.currency?.trim().toUpperCase();
+    let base = 0;
+    let fee = 0;
+
+    if (currency === "INR") {
+      base = total / 1.0236;
+      fee = total - base;
+    } else if (currency === "USD") {
+      base = (total - 0.3) / 1.029;
+      fee = total - base;
+    }
+
+    return {
+      baseAmount: parseFloat(base.toFixed(2)),
+      serviceFee: parseFloat(fee.toFixed(2)),
+    };
+  };
+
+  const { baseAmount, serviceFee } = calculateBreakdown();
 
   return (
     <Document>
@@ -410,7 +438,9 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
           </View>
 
           <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.col1]}>Service Fee</Text>
+            <Text style={[styles.tableCell, styles.col1]}>
+              Service Fee (incl. GST/taxes)
+            </Text>
             <Text style={[styles.tableCell, styles.col2]}>1</Text>
             <Text style={[styles.tableCell, styles.col3]}>
               {formatCurrency(serviceFee, booking.currency)}
@@ -421,19 +451,19 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
         {/* Total Section */}
         <View style={styles.totalSection}>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Subtotal:</Text>
+            <Text style={styles.totalLabel}>Base Amount:</Text>
             <Text style={styles.totalValue}>
               {formatCurrency(baseAmount, booking.currency)}
             </Text>
           </View>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Service Fee:</Text>
+            <Text style={styles.totalLabel}>Service Fee (incl. GST/taxes):</Text>
             <Text style={styles.totalValue}>
               {formatCurrency(serviceFee, booking.currency)}
             </Text>
           </View>
           <View style={styles.grandTotalRow}>
-            <Text style={styles.grandTotalLabel}>Total Paid:</Text>
+            <Text style={styles.grandTotalLabel}>Total Amount Paid:</Text>
             <Text style={styles.grandTotalValue}>
               {formatCurrency(booking.amount, booking.currency)}
             </Text>

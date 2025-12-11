@@ -135,6 +135,8 @@ type TBooking = {
   id: string;
   booking: BookingProductType;
   amount: number;
+  baseAmount?: number; // Base price without service fee
+  serviceFee?: number; // Service fee charged
   bookingId: string;
   createdAt: string; // timestamp → use Date type
   currency: string;

@@ -104,7 +104,31 @@ export async function POST(request: NextRequest) {
       console.log("⚠️ Using default template: modern");
     }
 
-    // 2. Create booking object using data from Firestore order (trusted source)
+    // 2. Calculate amount breakdown for transparency
+    const calculateBreakdown = (total: number, currency: string) => {
+      let base = 0;
+      let fee = 0;
+
+      if (currency === "INR") {
+        // INR: total = base * (1 + 0.02 * 1.18) = base * 1.0236
+        base = total / 1.0236;
+        fee = total - base;
+      } else if (currency === "USD") {
+        // USD: total = base * 1.029 + 0.3
+        base = (total - 0.3) / 1.029;
+        fee = total - base;
+      }
+
+      return {
+        baseAmount: parseFloat(base.toFixed(2)),
+        serviceFee: parseFloat(fee.toFixed(2)),
+        totalAmount: parseFloat(total.toFixed(2))
+      };
+    };
+
+    const breakdown = calculateBreakdown(orderData.amount, orderData.currency);
+
+    // 3. Create booking object using data from Firestore order (trusted source)
     const booking: TBooking = {
       id: "",
       bookingId,
@@ -115,6 +139,8 @@ export async function POST(request: NextRequest) {
       participants: orderData.participants,
       customerInfo: orderData.customerInfo,
       amount: orderData.amount, // Already in correct unit from order
+      baseAmount: breakdown.baseAmount, // Base price for transparency
+      serviceFee: breakdown.serviceFee, // Service fee for transparency
       currency: orderData.currency,
       status: "confirmed",
       paymentMethod: "razorpay",
@@ -125,7 +151,7 @@ export async function POST(request: NextRequest) {
       pdfPath: "",
     };
 
-    // 3. Generate PDF invoice
+    // 4. Generate PDF invoice
     let pdfBuffer: Buffer;
     try {
       console.log(`📄 Generating PDF with template: ${templateType}`);
@@ -142,7 +168,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 4. Upload PDF to Firebase Storage
+    // 5. Upload PDF to Firebase Storage
     let pdfUrl = "";
     let pdfPath = "";
     try {
@@ -156,7 +182,7 @@ export async function POST(request: NextRequest) {
       // Continue without PDF URL - don't fail the booking
     }
 
-    // 5. Save booking to Firestore with PDF URL
+    // 6. Save booking to Firestore with PDF URL
     booking.pdfUrl = pdfUrl;
     booking.pdfPath = pdfPath;
 
