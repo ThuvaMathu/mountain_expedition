@@ -74,21 +74,30 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
           <Calendar className="h-5 w-5 mr-2" /> Select Date
         </h3>
         <div className="space-y-2">
-          {product.availableDates.map((slot) => (
-            <div
-              key={slot.date}
-              className={`w-full p-2 text-left rounded-lg border transition-colors 
-                      border-gray-200 hover:border-gray-300
-                    `}
-            >
-              <div className="font-medium">
-                {new Date(slot.date).toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </div>
+          {product.availableDates.map((slot) => {
+            // Check if date is in the past
+            const isPastDate = new Date(slot.date) < new Date();
+
+            return (
+              <div
+                key={slot.date}
+                className={`w-full p-2 text-left rounded-lg border transition-colors ${
+                  isPastDate
+                    ? "border-gray-200 bg-gray-100 opacity-60"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div className={`font-medium flex items-center gap-2 ${isPastDate ? "text-gray-400" : ""}`}>
+                  {new Date(slot.date).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                  {isPastDate && (
+                    <span className="text-xs text-red-600 font-medium bg-red-50 px-2 py-0.5 rounded">(Past Date)</span>
+                  )}
+                </div>
               {slot.slots.map((timeSlot) => {
                 // Get availability status for this slot
                 const availability = getSlotAvailability(
@@ -101,16 +110,19 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
                   return null;
                 }
 
+                // Disable slot if date is in the past or slot is full
+                const isSlotDisabled = isPastDate || availability.status === "full";
+
                 return (
                   <div key={timeSlot.id} className="my-1">
                     <button
-                      onClick={() => setSelectedDate(timeSlot.id)}
-                      disabled={availability.status === "full"}
+                      onClick={() => !isPastDate && setSelectedDate(timeSlot.id)}
+                      disabled={isSlotDisabled}
                       className={`w-full p-3 text-left rounded-lg border transition-colors ${
-                        selectedDate === timeSlot.id
+                        selectedDate === timeSlot.id && !isPastDate
                           ? "border-teal-600 bg-teal-50"
                           : "border-gray-200 hover:border-gray-300"
-                      } ${availability.status === "full" ? "opacity-50 cursor-not-allowed" : ""}`}
+                      } ${isSlotDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       <div className="flex w-full justify-between items-center gap-2">
                         <div className="flex items-center gap-2">
@@ -158,7 +170,8 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
                 );
               })}
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

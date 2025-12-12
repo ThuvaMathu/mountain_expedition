@@ -92,37 +92,50 @@ export function TouristBooking({ tourist, category }: TouristBookingProps) {
             Available Dates
           </label>
           <div className="grid gap-2 max-h-60 overflow-y-auto">
-            {tourist.availableDates?.map((dateOption) => (
-              <button
-                key={dateOption.date}
-                onClick={() => {
-                  setSelectedDate(dateOption.date);
-                  setSelectedSlot("");
-                }}
-                className={`p-3 text-left border rounded-lg transition-colors ${
-                  selectedDate === dateOption.date
-                    ? "border-teal-600 bg-teal-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4 text-teal-600" />
-                    <span className="font-medium">
-                      {new Date(dateOption.date).toLocaleDateString("en-US", {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+            {tourist.availableDates?.map((dateOption) => {
+              // Check if date is in the past
+              const isPastDate = new Date(dateOption.date) < new Date();
+
+              return (
+                <button
+                  key={dateOption.date}
+                  onClick={() => {
+                    if (!isPastDate) {
+                      setSelectedDate(dateOption.date);
+                      setSelectedSlot("");
+                    }
+                  }}
+                  disabled={isPastDate}
+                  className={`p-3 text-left border rounded-lg transition-colors ${
+                    isPastDate
+                      ? "border-gray-200 bg-gray-100 opacity-50 cursor-not-allowed"
+                      : selectedDate === dateOption.date
+                      ? "border-teal-600 bg-teal-50"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Calendar className={`h-4 w-4 ${isPastDate ? "text-gray-400" : "text-teal-600"}`} />
+                      <span className={`font-medium ${isPastDate ? "text-gray-400" : ""}`}>
+                        {new Date(dateOption.date).toLocaleDateString("en-US", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
+                      {isPastDate && (
+                        <span className="text-xs text-red-600 font-medium">(Past Date)</span>
+                      )}
+                    </div>
+                    <span className={`text-sm ${isPastDate ? "text-gray-400" : "text-gray-600"}`}>
+                      {dateOption.slots.length} time slots
                     </span>
                   </div>
-                  <span className="text-sm text-gray-600">
-                    {dateOption.slots.length} time slots
-                  </span>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </div>
 

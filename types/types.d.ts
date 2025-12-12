@@ -69,6 +69,7 @@ type TMountainType = {
   groupSize: string;
   included: string[];
   notIncluded: string[];
+  highlights?: string[];
   availableDates: Array<{
     date: string;
     slots: TTimeSlot[];

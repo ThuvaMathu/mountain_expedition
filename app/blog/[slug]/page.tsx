@@ -173,11 +173,30 @@ export default async function BlogPostPage({
                 <Calendar className="h-5 w-5 mr-2" />
                 <span>
                   {post.createdAt
-                    ? new Date(post.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
+                    ? (() => {
+                        // Handle Firestore Timestamp format
+                        let dateObj: Date;
+                        if (typeof post.createdAt === "object" && "seconds" in post.createdAt) {
+                          dateObj = new Date((post.createdAt as any).seconds * 1000);
+                        } else {
+                          dateObj = new Date(post.createdAt);
+                        }
+
+                        // Check if date is valid
+                        if (isNaN(dateObj.getTime())) {
+                          return new Date().toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          });
+                        }
+
+                        return dateObj.toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        });
+                      })()
                     : ""}
                 </span>
               </div>

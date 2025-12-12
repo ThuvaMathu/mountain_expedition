@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -21,15 +21,20 @@ import {
   Globe,
   Plane,
   AlertTriangle,
+  Download,
 } from "lucide-react";
 import { isFirebaseConfigured, db } from "@/lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
 import { getAvailableSlots } from "@/lib/utils";
 import { useCurrencyStore } from "@/stores/currency-store";
 import { BookingCalendar } from "@/components/booking/BookingCalendar";
+import { pdf } from "@react-pdf/renderer";
+import { BrochureTemplate } from "@/lib/pdf-templates/brochure-template";
+import { toast } from "react-toastify";
 
 export default function TouristDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const [touristPackage, setTouristPackage] = useState<TMountainType | null>(
     null
   );
@@ -38,7 +43,41 @@ export default function TouristDetailPage() {
   );
   const [selectedImage, setSelectedImage] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const { loadCurrency, formatedValue, getCurrencyValue } = useCurrencyStore();
+
+  // Handle brochure download
+  const handleDownloadBrochure = async () => {
+    if (!touristPackage) return;
+
+    setIsDownloading(true);
+    try {
+      // Generate PDF
+      const blob = await pdf(<BrochureTemplate mountain={touristPackage} />).toBlob();
+
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${touristPackage.name.replace(/\s+/g, "_")}_Brochure.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success("Brochure downloaded successfully!");
+    } catch (error) {
+      console.error("Error downloading brochure:", error);
+      toast.error("Failed to download brochure. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  // Handle contact expert
+  const handleContactExpert = () => {
+    router.push("/contact");
+  };
 
   // Check if event is disabled or outdated
   const isDisabled = useMemo(() => {
@@ -474,10 +513,29 @@ export default function TouristDetailPage() {
                   >
                     Check Availability & Book
                   </Button>
-                  <Button variant="outline" className="w-full">
-                    Download Brochure
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleDownloadBrochure}
+                    disabled={isDownloading}
+                  >
+                    {isDownloading ? (
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-teal-600 mr-2"></div>
+                        Generating...
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download Brochure
+                      </div>
+                    )}
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleContactExpert}
+                  >
                     Contact Travel Expert
                   </Button>
                 </div>

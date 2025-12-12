@@ -7,7 +7,7 @@ import {
   Font,
   Image,
 } from "@react-pdf/renderer";
-
+import logoImg from "@/assets/logo.png";
 import { COMPANY_INFO } from "@/seo/config";
 
 // Register fonts (optional - using default fonts)
@@ -24,10 +24,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   header: {
-    marginBottom: 30,
+    marginBottom: 20,
     borderBottom: 3,
     borderBottomColor: "#0d9488",
-    paddingBottom: 15,
+    paddingBottom: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     objectFit: "contain",
   },
   companyName: {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 12,
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    marginBottom: 6,
+    marginBottom: 4,
   },
   label: {
     width: "35%",
@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   table: {
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 8,
+    marginBottom: 12,
   },
   tableHeader: {
     flexDirection: "row",
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   totalSection: {
-    marginTop: 20,
-    paddingTop: 15,
+    marginTop: 10,
+    paddingTop: 10,
     borderTop: 2,
     borderTopColor: "#0d9488",
   },
@@ -164,10 +164,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   footer: {
-    marginTop: 40,
+    marginTop: 20,
     borderTop: 1,
     borderTopColor: "#e5e7eb",
-    paddingTop: 15,
+    paddingTop: 10,
   },
   footerText: {
     fontSize: 8,
@@ -229,7 +229,9 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
     return safeCurrency === "INR" ? formatted.replace("₹", "Rs.") : formatted;
   };
 
-  const formatDate = (date: string | { seconds: number; nanoseconds: number }) => {
+  const formatDate = (
+    date: string | { seconds: number; nanoseconds: number }
+  ) => {
     // Handle Firestore Timestamp format
     let dateObj: Date;
     if (typeof date === "object" && "seconds" in date) {
@@ -268,13 +270,13 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Text style={styles.companyName}>Tamil Adventure Treckking Club</Text>
+            <Text style={styles.companyName}>
+              Tamil Adventure Treckking Club
+            </Text>
             <Text style={styles.invoiceTitle}>BOOKING INVOICE</Text>
           </View>
-          <Image
-            style={styles.logo}
-            src="/logos/logo.png"
-          />
+          {/* Logo - using absolute URL for better compatibility */}
+          <Image style={styles.logo} src={logoImg.src} />
         </View>
 
         {/* Invoice Details */}
@@ -354,52 +356,6 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
           </View>
         </View>
 
-        {/* Participants List */}
-        {booking.customerInfo.members.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>
-              Participants ({booking.participants})
-            </Text>
-            {/* Organizer */}
-            <View style={styles.participantItem}>
-              <Text style={styles.participantName}>
-                {booking.customerInfo.organizer.name} (Organizer)
-              </Text>
-              <Text style={styles.participantDetails}>
-                Email: {booking.customerInfo.organizer.email}
-              </Text>
-              <Text style={styles.participantDetails}>
-                Phone: {booking.customerInfo.organizer.phone}
-              </Text>
-              {booking.customerInfo.organizer.passport && (
-                <Text style={styles.participantDetails}>
-                  Passport: {booking.customerInfo.organizer.passport}
-                </Text>
-              )}
-            </View>
-
-            {/* Members */}
-            {booking.customerInfo.members.map((member, index) => (
-              <View key={index} style={styles.participantItem}>
-                <Text style={styles.participantName}>
-                  {member.name} (Member {index + 1})
-                </Text>
-                <Text style={styles.participantDetails}>
-                  Email: {member.email}
-                </Text>
-                <Text style={styles.participantDetails}>
-                  Phone: {member.phone}
-                </Text>
-                {member.passport && (
-                  <Text style={styles.participantDetails}>
-                    Passport: {member.passport}
-                  </Text>
-                )}
-              </View>
-            ))}
-          </View>
-        )}
-
         {/* Pricing Table */}
         <View style={styles.table}>
           <Text style={styles.sectionTitle}>Pricing Breakdown</Text>
@@ -432,9 +388,19 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
               {formatCurrency(totalAmount, booking.currency)}
             </Text>
           </View>
-          <View style={{ marginTop: 10, padding: 10, backgroundColor: "#f0f9ff", borderRadius: 4 }}>
-            <Text style={{ fontSize: 8, color: "#1e40af", textAlign: "center" }}>
-              Note: Total amount includes all applicable fees, GST (18%), taxes, and payment processing charges.
+          <View
+            style={{
+              marginTop: 10,
+              padding: 10,
+              backgroundColor: "#f0f9ff",
+              borderRadius: 4,
+            }}
+          >
+            <Text
+              style={{ fontSize: 8, color: "#1e40af", textAlign: "center" }}
+            >
+              Note: Total amount includes all applicable fees, GST (18%), taxes,
+              and payment processing charges.
             </Text>
           </View>
         </View>
