@@ -8,14 +8,14 @@ import { serviceFeeCal } from "@/lib/service-fee-cal";
 type PriceValidationError = {
   isValid: false;
   expectedAmount: 0;
-  breakdown: { basePrice: 0; serviceFee: 0; total: 0 };
+  breakdown: { basePrice: 0; total: 0 };
   error: string;
 };
 
 const createErrorResponse = (error: string): PriceValidationError => ({
   isValid: false,
   expectedAmount: 0,
-  breakdown: { basePrice: 0, serviceFee: 0, total: 0 },
+  breakdown: { basePrice: 0, total: 0 },
   error,
 });
 
@@ -88,7 +88,6 @@ export async function calculateExpectedAmount(params: {
   expectedAmount: number;
   breakdown: {
     basePrice: number;
-    serviceFee: number;
     total: number;
   };
   error?: string;
@@ -137,15 +136,14 @@ export async function calculateExpectedAmount(params: {
 
     // Calculate amounts
     const basePrice = unitPrice * params.participants;
-    const serviceFee = serviceFeeCal(params.currency, basePrice);
-    const total = basePrice + serviceFee;
+    //const serviceFee = serviceFeeCal(params.currency, basePrice);
+    const total = basePrice; // + serviceFee;
 
     return {
       isValid: true,
       expectedAmount: total,
       breakdown: {
         basePrice,
-        serviceFee,
         total,
       },
     };

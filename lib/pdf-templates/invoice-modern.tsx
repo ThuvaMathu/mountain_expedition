@@ -164,10 +164,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   footer: {
-    position: "absolute",
-    bottom: 40,
-    left: 40,
-    right: 40,
+    marginTop: 40,
     borderTop: 1,
     borderTopColor: "#e5e7eb",
     paddingTop: 15,
@@ -232,44 +229,33 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
     return safeCurrency === "INR" ? formatted.replace("₹", "Rs.") : formatted;
   };
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("en-GB", {
+  const formatDate = (date: string | { seconds: number; nanoseconds: number }) => {
+    // Handle Firestore Timestamp format
+    let dateObj: Date;
+    if (typeof date === "object" && "seconds" in date) {
+      dateObj = new Date(date.seconds * 1000);
+    } else {
+      dateObj = new Date(date);
+    }
+
+    // Check if date is valid
+    if (isNaN(dateObj.getTime())) {
+      return new Date().toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    }
+
+    return dateObj.toLocaleDateString("en-GB", {
       day: "numeric",
       month: "short",
       year: "numeric",
     });
   };
 
-  // Use breakdown from booking if available, otherwise calculate
-  const calculateBreakdown = () => {
-    if (booking.baseAmount && booking.serviceFee) {
-      return {
-        baseAmount: booking.baseAmount,
-        serviceFee: booking.serviceFee,
-      };
-    }
-
-    // Fallback calculation for old bookings
-    const total = booking.amount;
-    const currency = booking.currency?.trim().toUpperCase();
-    let base = 0;
-    let fee = 0;
-
-    if (currency === "INR") {
-      base = total / 1.0236;
-      fee = total - base;
-    } else if (currency === "USD") {
-      base = (total - 0.3) / 1.029;
-      fee = total - base;
-    }
-
-    return {
-      baseAmount: parseFloat(base.toFixed(2)),
-      serviceFee: parseFloat(fee.toFixed(2)),
-    };
-  };
-
-  const { baseAmount, serviceFee } = calculateBreakdown();
+  // Total amount already includes all fees (GST, taxes, processing charges)
+  const totalAmount = booking.amount;
 
   return (
     <Document>
@@ -427,45 +413,28 @@ export const InvoiceModern: React.FC<InvoiceModernProps> = ({ booking }) => {
 
           <View style={styles.tableRow}>
             <Text style={[styles.tableCell, styles.col1]}>
-              {booking.mountainName} - Base Price
+              {booking.mountainName} - Expedition Package
             </Text>
             <Text style={[styles.tableCell, styles.col2]}>
               {booking.participants}
             </Text>
             <Text style={[styles.tableCell, styles.col3]}>
-              {formatCurrency(baseAmount, booking.currency)}
-            </Text>
-          </View>
-
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.col1]}>
-              Service Fee (incl. GST/taxes)
-            </Text>
-            <Text style={[styles.tableCell, styles.col2]}>1</Text>
-            <Text style={[styles.tableCell, styles.col3]}>
-              {formatCurrency(serviceFee, booking.currency)}
+              {formatCurrency(totalAmount, booking.currency)}
             </Text>
           </View>
         </View>
 
         {/* Total Section */}
         <View style={styles.totalSection}>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Base Amount:</Text>
-            <Text style={styles.totalValue}>
-              {formatCurrency(baseAmount, booking.currency)}
-            </Text>
-          </View>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Service Fee (incl. GST/taxes):</Text>
-            <Text style={styles.totalValue}>
-              {formatCurrency(serviceFee, booking.currency)}
-            </Text>
-          </View>
           <View style={styles.grandTotalRow}>
             <Text style={styles.grandTotalLabel}>Total Amount Paid:</Text>
             <Text style={styles.grandTotalValue}>
-              {formatCurrency(booking.amount, booking.currency)}
+              {formatCurrency(totalAmount, booking.currency)}
+            </Text>
+          </View>
+          <View style={{ marginTop: 10, padding: 10, backgroundColor: "#f0f9ff", borderRadius: 4 }}>
+            <Text style={{ fontSize: 8, color: "#1e40af", textAlign: "center" }}>
+              Note: Total amount includes all applicable fees, GST (18%), taxes, and payment processing charges.
             </Text>
           </View>
         </View>
