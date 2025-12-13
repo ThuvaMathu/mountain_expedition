@@ -42,3 +42,4 @@ try {
 
 export const adminDb = getFirestore(adminApp, "eb-tamil-adventures");
 export const adminStorage = getStorage(adminApp);
+export { adminApp };

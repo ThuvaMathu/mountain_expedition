@@ -1,5 +1,6 @@
 import { type NextRequest } from "next/server";
-import * as admin from "firebase-admin";
+import { getAuth } from "firebase-admin/auth";
+import { adminApp } from "./firebase-admin";
 
 /**
  * Extract Firebase ID token from Authorization header
@@ -20,9 +21,10 @@ export function extractAuthToken(request: NextRequest): string | null {
  */
 export async function verifyAuthToken(
   token: string
-): Promise<admin.auth.DecodedIdToken | null> {
+): Promise<import("firebase-admin/auth").DecodedIdToken | null> {
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
+    const auth = getAuth(adminApp);
+    const decodedToken = await auth.verifyIdToken(token);
     return decodedToken;
   } catch (error) {
     console.error("Token verification failed:", error);
