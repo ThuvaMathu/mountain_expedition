@@ -139,21 +139,16 @@ export async function POST(request: NextRequest) {
     // STEP 5.5: Validate slot availability before payment
     console.log("🔍 Validating slot availability...");
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
-      const validateResponse = await fetch(`${baseUrl}/api/booking/validate-slot`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: mountainId,
-          productType: type || "trekking",
-          slotId: slotDetails?.id,
-          date: slotDetails?.originalDate || slotDetails?.date || date,
-          participants
-        })
+      const { validateSlotAvailability } = await import("@/lib/slot-validation");
+      const validation = await validateSlotAvailability({
+        productId: mountainId,
+        productType: type || "trekking",
+        slotId: slotDetails?.id,
+        date: slotDetails?.originalDate || slotDetails?.date || date,
+        participants
       });
 
-      if (!validateResponse.ok) {
-        const validation = await validateResponse.json();
+      if (!validation.available) {
         console.error("❌ [CREATE ORDER] Slot validation failed:", validation.message);
         return NextResponse.json({
           error: "SLOT_UNAVAILABLE",
@@ -162,7 +157,6 @@ export async function POST(request: NextRequest) {
         }, { status: 400 });
       }
 
-      await validateResponse.json();
       console.log("✅ [CREATE ORDER] Slot validated, proceeding with order creation");
     } catch (slotError) {
       console.error("❌ [CREATE ORDER] Slot validation error:", slotError);

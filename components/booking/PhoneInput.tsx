@@ -21,6 +21,7 @@ interface PhoneInputProps {
 
 // Comprehensive list of country codes (sorted alphabetically by country name)
 const COUNTRY_CODES: CountryCode[] = [
+  { code: "IN", name: "India", dialCode: "+91", flag: "🇮🇳" },
   { code: "AF", name: "Afghanistan", dialCode: "+93", flag: "🇦🇫" },
   { code: "AL", name: "Albania", dialCode: "+355", flag: "🇦🇱" },
   { code: "DZ", name: "Algeria", dialCode: "+213", flag: "🇩🇿" },
@@ -50,7 +51,12 @@ const COUNTRY_CODES: CountryCode[] = [
   { code: "CM", name: "Cameroon", dialCode: "+237", flag: "🇨🇲" },
   { code: "CA", name: "Canada", dialCode: "+1", flag: "🇨🇦" },
   { code: "CV", name: "Cape Verde", dialCode: "+238", flag: "🇨🇻" },
-  { code: "CF", name: "Central African Republic", dialCode: "+236", flag: "🇨🇫" },
+  {
+    code: "CF",
+    name: "Central African Republic",
+    dialCode: "+236",
+    flag: "🇨🇫",
+  },
   { code: "TD", name: "Chad", dialCode: "+235", flag: "🇹🇩" },
   { code: "CL", name: "Chile", dialCode: "+56", flag: "🇨🇱" },
   { code: "CN", name: "China", dialCode: "+86", flag: "🇨🇳" },
@@ -90,7 +96,6 @@ const COUNTRY_CODES: CountryCode[] = [
   { code: "HK", name: "Hong Kong", dialCode: "+852", flag: "🇭🇰" },
   { code: "HU", name: "Hungary", dialCode: "+36", flag: "🇭🇺" },
   { code: "IS", name: "Iceland", dialCode: "+354", flag: "🇮🇸" },
-  { code: "IN", name: "India", dialCode: "+91", flag: "🇮🇳" },
   { code: "ID", name: "Indonesia", dialCode: "+62", flag: "🇮🇩" },
   { code: "IR", name: "Iran", dialCode: "+98", flag: "🇮🇷" },
   { code: "IQ", name: "Iraq", dialCode: "+964", flag: "🇮🇶" },
@@ -264,7 +269,9 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     }
 
     // Update the full phone number - normalize spaces
-    const fullNumber = `${country.dialCode}${sanitizedPhone ? " " + sanitizedPhone : ""}`;
+    const fullNumber = `${country.dialCode}${
+      sanitizedPhone ? " " + sanitizedPhone : ""
+    }`;
     onChange(fullNumber);
   };
 
@@ -285,14 +292,18 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     setPhoneNumber(sanitized);
 
     // Update the full phone number - normalize spaces
-    const fullNumber = `${selectedCountry.dialCode}${sanitized ? " " + sanitized : ""}`;
+    const fullNumber = `${selectedCountry.dialCode}${
+      sanitized ? " " + sanitized : ""
+    }`;
     console.log("📞 Phone number updated:", fullNumber);
     onChange(fullNumber);
   };
 
   const handleBlur = () => {
     const sanitizedPhone = phoneNumber.trim();
-    const fullNumber = `${selectedCountry.dialCode}${sanitizedPhone ? " " + sanitizedPhone : ""}`;
+    const fullNumber = `${selectedCountry.dialCode}${
+      sanitizedPhone ? " " + sanitizedPhone : ""
+    }`;
     if (onBlur) {
       onBlur(fullNumber);
     }
@@ -322,7 +333,9 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
               error ? "border-red-500" : ""
             }`}
           >
-            <span className="text-base leading-none">{selectedCountry.flag}</span>
+            <span className="text-base leading-none">
+              {selectedCountry.flag}
+            </span>
             <span className="text-xs font-medium whitespace-nowrap">
               {selectedCountry.dialCode}
             </span>
