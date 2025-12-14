@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Lock, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
+import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, Check, X } from "lucide-react";
 import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
 import { auth, isFirebaseConfigured } from "@/lib/firebase";
 import { getFirebaseErrorMessage } from "@/lib/firebase-errors";
@@ -26,6 +26,17 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const oobCode = searchParams.get("oobCode");
+
+  // Password validation criteria
+  const passwordValidation = {
+    minLength: password.length >= 8,
+    hasUpperCase: /[A-Z]/.test(password),
+    hasSymbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+    hasTwoDigits: (password.match(/\d/g) || []).length >= 2,
+  };
+
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
+  const doPasswordsMatch = password === confirmPassword && confirmPassword.length > 0;
 
   useEffect(() => {
     const verifyCode = async () => {
@@ -62,13 +73,13 @@ export default function ResetPasswordPage() {
     setError("");
 
     // Validation
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
+    if (!isPasswordValid) {
+      setError("Please meet all password requirements.");
       setIsLoading(false);
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (!doPasswordsMatch) {
       setError("Passwords do not match. Please try again.");
       setIsLoading(false);
       return;
@@ -220,7 +231,7 @@ export default function ResetPasswordPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10"
-                  placeholder="Enter new password (min. 6 characters)"
+                  placeholder="Enter new password"
                 />
                 <button
                   type="button"
@@ -234,6 +245,55 @@ export default function ResetPasswordPage() {
                   )}
                 </button>
               </div>
+
+              {/* Password Requirements */}
+              {password.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Password must contain:</p>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      {passwordValidation.minLength ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={`text-xs ${passwordValidation.minLength ? 'text-green-600' : 'text-gray-600'}`}>
+                        At least 8 characters
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordValidation.hasUpperCase ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={`text-xs ${passwordValidation.hasUpperCase ? 'text-green-600' : 'text-gray-600'}`}>
+                        At least one uppercase letter (A-Z)
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordValidation.hasSymbol ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={`text-xs ${passwordValidation.hasSymbol ? 'text-green-600' : 'text-gray-600'}`}>
+                        At least one special character (!@#$%^&*...)
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordValidation.hasTwoDigits ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={`text-xs ${passwordValidation.hasTwoDigits ? 'text-green-600' : 'text-gray-600'}`}>
+                        At least two numbers (0-9)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
@@ -268,12 +328,29 @@ export default function ResetPasswordPage() {
                   )}
                 </button>
               </div>
+
+              {/* Password Match Indicator */}
+              {confirmPassword.length > 0 && (
+                <div className="mt-2">
+                  {doPasswordsMatch ? (
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-600" />
+                      <span className="text-xs text-green-600">Passwords match</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <X className="h-4 w-4 text-red-500" />
+                      <span className="text-xs text-red-500">Passwords do not match</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <Button
               type="submit"
-              disabled={isLoading}
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+              disabled={isLoading || !isPasswordValid || !doPasswordsMatch}
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center">

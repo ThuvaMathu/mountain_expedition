@@ -40,7 +40,7 @@ export function getFirebaseErrorMessage(error: any): string {
       return 'This sign-in method is not enabled. Please contact support.';
 
     case 'auth/weak-password':
-      return 'Password is too weak. Please use at least 6 characters with a mix of letters and numbers.';
+      return 'Password is too weak. Please use at least 8 characters with one uppercase letter, one special character, and two numbers.';
 
     // Password reset errors
     case 'auth/expired-action-code':

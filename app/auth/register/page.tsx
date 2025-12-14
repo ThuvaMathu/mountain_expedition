@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, Check, X } from "lucide-react";
 import AppLogo from "@/components/ui/app-logo";
 
 export default function RegisterPage() {
@@ -23,19 +23,30 @@ export default function RegisterPage() {
   const { register, loginWithGoogle } = useAuth();
   const router = useRouter();
 
+  // Password validation criteria
+  const passwordValidation = {
+    minLength: password.length >= 8,
+    hasUpperCase: /[A-Z]/.test(password),
+    hasSymbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+    hasTwoDigits: (password.match(/\d/g) || []).length >= 2,
+  };
+
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
+  const doPasswordsMatch = password === confirmPassword && confirmPassword.length > 0;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    if (!isPasswordValid) {
+      setError("Please meet all password requirements");
       setIsLoading(false);
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
+    if (!doPasswordsMatch) {
+      setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
@@ -171,6 +182,55 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+
+              {/* Password Requirements */}
+              {password.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Password must contain:</p>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      {passwordValidation.minLength ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={`text-xs ${passwordValidation.minLength ? 'text-green-600' : 'text-gray-600'}`}>
+                        At least 8 characters
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordValidation.hasUpperCase ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={`text-xs ${passwordValidation.hasUpperCase ? 'text-green-600' : 'text-gray-600'}`}>
+                        At least one uppercase letter (A-Z)
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordValidation.hasSymbol ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={`text-xs ${passwordValidation.hasSymbol ? 'text-green-600' : 'text-gray-600'}`}>
+                        At least one special character (!@#$%^&*...)
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {passwordValidation.hasTwoDigits ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={`text-xs ${passwordValidation.hasTwoDigits ? 'text-green-600' : 'text-gray-600'}`}>
+                        At least two numbers (0-9)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
@@ -205,6 +265,23 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+
+              {/* Password Match Indicator */}
+              {confirmPassword.length > 0 && (
+                <div className="mt-2">
+                  {doPasswordsMatch ? (
+                    <div className="flex items-center gap-2">
+                      <Check className="h-4 w-4 text-green-600" />
+                      <span className="text-xs text-green-600">Passwords match</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <X className="h-4 w-4 text-red-500" />
+                      <span className="text-xs text-red-500">Passwords do not match</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="flex items-center">
@@ -238,8 +315,8 @@ export default function RegisterPage() {
 
             <Button
               type="submit"
-              disabled={isLoading}
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3"
+              disabled={isLoading || !isPasswordValid || !doPasswordsMatch}
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center">
