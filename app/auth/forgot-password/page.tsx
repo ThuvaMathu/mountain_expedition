@@ -11,6 +11,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Mountain, Mail, ArrowLeft } from "lucide-react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth, isFirebaseConfigured } from "@/lib/firebase";
+import { getFirebaseErrorMessage } from "@/lib/firebase-errors";
 import AppLogo from "@/components/ui/app-logo";
 
 export default function ForgotPasswordPage() {
@@ -37,10 +38,8 @@ export default function ForgotPasswordPage() {
         "Password reset email sent! Check your inbox and follow the instructions."
       );
     } catch (error: any) {
-      setError(
-        error.message ||
-          "Failed to send password reset email. Please try again."
-      );
+      const errorMessage = getFirebaseErrorMessage(error);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

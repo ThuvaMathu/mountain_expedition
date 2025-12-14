@@ -12,6 +12,7 @@ import {
 } from "firebase/auth";
 import { auth, db, isFirebaseConfigured } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { getFirebaseErrorMessage } from "@/lib/firebase-errors";
 
 interface AuthUser extends User {
   isAdmin?: boolean;
@@ -81,7 +82,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.error("Login error:", error);
-      throw error;
+      const errorMessage = getFirebaseErrorMessage(error);
+      throw new Error(errorMessage);
     }
   };
 
@@ -108,7 +110,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     } catch (error) {
       console.error("Registration error:", error);
-      throw error;
+      const errorMessage = getFirebaseErrorMessage(error);
+      throw new Error(errorMessage);
     }
   };
 
@@ -135,7 +138,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error("Google login error:", error);
-      throw error;
+      const errorMessage = getFirebaseErrorMessage(error);
+      throw new Error(errorMessage);
     }
   };
 
