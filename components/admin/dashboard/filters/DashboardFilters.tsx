@@ -97,7 +97,7 @@ export function DashboardFilters({
           {items
             .filter((item) => {
               if (filters.type === "mountains") return item.type === "mountain";
-              if (filters.type === "tours") return item.type === "tour";
+              if (filters.type === "tour") return item.type === "tour";
               return true;
             })
             .map((item) => (
@@ -114,10 +114,8 @@ export function DashboardFilters({
           className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
         >
           <option value="all">All Time</option>
-          <option value="today">Today</option>
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
           <option value="upcoming">Upcoming</option>
+          <option value="past">Past</option>
         </select>
       </div>
     </div>

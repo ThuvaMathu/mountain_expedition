@@ -235,47 +235,54 @@ export function AdminDashboard() {
     bookings.forEach((booking) => {
       const bookingType = booking.booking?.type;
       const itemId = booking.booking?.id;
+      const currency = booking.currency || "USD";
+      const amount = booking.amount || 0;
+
+      // Helper for updating stats
+      const updateStats = (map: Map<string, any>, id: string, name: string) => {
+        if (!map.has(id)) {
+          map.set(id, {
+            name: name || "Unknown",
+            bookings: 0,
+            revenueUSD: 0,
+            revenueINR: 0,
+            totalRankValue: 0, // Normalized value for ranking
+          });
+        }
+        const stats = map.get(id);
+        stats.bookings++;
+        if (booking.status === "confirmed") {
+          if (currency === "USD") {
+            stats.revenueUSD += amount;
+            stats.totalRankValue += amount;
+          } else {
+            stats.revenueINR += amount;
+            stats.totalRankValue += amount / 80; // Rough conversion for ranking
+          }
+        }
+      };
 
       // For trekking bookings
       if (bookingType === "trekking" && itemId) {
-        if (!mountainStats.has(itemId)) {
-          mountainStats.set(itemId, {
-            name: booking.mountainName || "Unknown",
-            bookings: 0,
-            revenue: 0,
-          });
-        }
-        const stats = mountainStats.get(itemId);
-        stats.bookings++;
-        if (booking.status === "confirmed") {
-          stats.revenue += booking.amount || 0;
-        }
+        updateStats(mountainStats, itemId, booking.mountainName);
       }
       // For tour bookings
       else if (bookingType === "tour" && itemId) {
-        if (!tourStats.has(itemId)) {
-          tourStats.set(itemId, {
-            name: booking.mountainName || "Unknown",
-            bookings: 0,
-            revenue: 0,
-          });
-        }
-        const stats = tourStats.get(itemId);
-        stats.bookings++;
-        if (booking.status === "confirmed") {
-          stats.revenue += booking.amount || 0;
-        }
+        updateStats(tourStats, itemId, booking.mountainName);
       }
     });
 
     // Sort and get top 4
     const topMountains = Array.from(mountainStats.values())
-      .sort((a, b) => b.revenue - a.revenue)
+      .sort((a, b) => b.totalRankValue - a.totalRankValue)
       .slice(0, 4);
 
     const topTours = Array.from(tourStats.values())
-      .sort((a, b) => b.revenue - a.revenue)
+      .sort((a, b) => b.totalRankValue - a.totalRankValue)
       .slice(0, 4);
+
+    console.log("Top Mountains Data:", topMountains);
+    console.log("Top Tours Data:", topTours);
 
     setTopMountains(topMountains);
     setTopTours(topTours);
@@ -288,21 +295,38 @@ export function AdminDashboard() {
     bookings.forEach((booking) => {
       const email = booking.customerInfo?.organizer?.email || booking.userEmail;
       const name = booking.customerInfo?.organizer?.name || "Unknown User";
+      const currency = booking.currency || "USD";
+      const amount = booking.amount || 0;
 
       if (!userMap.has(email)) {
-        userMap.set(email, { name, email, bookings: 0, revenue: 0 });
+        userMap.set(email, {
+          name,
+          email,
+          bookings: 0,
+          revenueUSD: 0,
+          revenueINR: 0,
+          totalRankValue: 0,
+        });
       }
 
       const user = userMap.get(email);
       user.bookings++;
       if (booking.status === "confirmed") {
-        user.revenue += booking.amount || 0;
+        if (currency === "USD") {
+          user.revenueUSD += amount;
+          user.totalRankValue += amount;
+        } else {
+          user.revenueINR += amount;
+          user.totalRankValue += amount / 80;
+        }
       }
     });
 
     const topUsers = Array.from(userMap.values())
-      .sort((a, b) => b.revenue - a.revenue)
+      .sort((a, b) => b.totalRankValue - a.totalRankValue)
       .slice(0, 4);
+
+    console.log("Top Active Users Data:", topUsers);
 
     setActiveUsers(topUsers);
   };
@@ -347,22 +371,19 @@ export function AdminDashboard() {
 
     // Date filter
     if (filters.dateRange !== "all") {
-      const now = new Date();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
       filtered = filtered.filter((b) => {
         if (!b.slotDetails?.date) return false;
         const bookingDate = new Date(b.slotDetails.date);
+        bookingDate.setHours(0, 0, 0, 0);
 
         switch (filters.dateRange) {
-          case "today":
-            return bookingDate.toDateString() === now.toDateString();
-          case "week":
-            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            return bookingDate >= weekAgo;
-          case "month":
-            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-            return bookingDate >= monthAgo;
           case "upcoming":
-            return bookingDate >= now;
+            return bookingDate >= today;
+          case "past":
+            return bookingDate < today;
           default:
             return true;
         }
