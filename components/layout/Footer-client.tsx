@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import {
   Facebook,
   Twitter,
@@ -43,6 +44,11 @@ export function FooterClient({
   if (hideRoutes.some((route) => pathname.startsWith(route))) {
     return null;
   }
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -166,20 +172,23 @@ export function FooterClient({
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link
-                href="/privacy"
+                href="/policy#privacy"
                 className="text-gray-400 hover:text-white text-sm transition-colors"
+                scroll={false}
               >
                 Privacy Policy
               </Link>
               <Link
-                href="/terms"
+                href="/policy#terms"
                 className="text-gray-400 hover:text-white text-sm transition-colors"
+                scroll={false}
               >
                 Terms of Service
               </Link>
               <Link
-                href="/cookies"
+                href="/policy#cookies"
                 className="text-gray-400 hover:text-white text-sm transition-colors"
+                scroll={false}
               >
                 Cookie Policy
               </Link>

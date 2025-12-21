@@ -18,6 +18,7 @@ export function formatCurrency(
   formatShort: boolean = false,
   fractionDigits: number = 1
 ): string {
+  const locale = currency === "INR" ? "en-IN" : "en-US";
   if (formatShort) {
     const absAmount = Math.abs(amount);
     let formatted = amount;
@@ -37,7 +38,7 @@ export function formatCurrency(
       suffix = "K";
     }
 
-    return `${new Intl.NumberFormat("en-US", {
+    return `${new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
       maximumFractionDigits: fractionDigits,
@@ -45,7 +46,7 @@ export function formatCurrency(
   }
 
   // Default full format
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
     maximumFractionDigits: fractionDigits,

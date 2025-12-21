@@ -44,6 +44,7 @@ export default function TouristDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showAllItinerary, setShowAllItinerary] = useState(false);
   const { loadCurrency, formatedValue, getCurrencyValue } = useCurrencyStore();
 
   // Handle brochure download
@@ -459,7 +460,10 @@ export default function TouristDetailPage() {
               Travel Itinerary
             </h2>
             <div className="space-y-4">
-              {touristPackage.itinerary.slice(0, 5).map((day) => (
+              {(showAllItinerary
+                ? touristPackage.itinerary
+                : touristPackage.itinerary.slice(0, 5)
+              ).map((day) => (
                 <div key={day.day} className="border-l-4 border-teal-600 pl-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-gray-900">
@@ -473,9 +477,17 @@ export default function TouristDetailPage() {
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="mt-6">
-              View Complete Itinerary
-            </Button>
+            {touristPackage.itinerary.length > 5 && (
+              <Button
+                variant="outline"
+                className="mt-6"
+                onClick={() => setShowAllItinerary(!showAllItinerary)}
+              >
+                {showAllItinerary
+                  ? "Show Less Itinerary"
+                  : "View Complete Itinerary"}
+              </Button>
+            )}
           </div>
         </div>
 

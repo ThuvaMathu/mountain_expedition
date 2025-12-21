@@ -160,7 +160,8 @@ export function TouristCard({ tourist, category }: TouristCardProps) {
           <div>
             <span className="text-2xl font-bold text-teal-600">
               {formatCurrency(
-                currency === "USD" ? tourist.priceUSD : tourist.priceINR
+                currency === "USD" ? tourist.priceUSD : tourist.priceINR,
+                currency
               )}
             </span>
             <span className="text-gray-500 text-sm ml-1">per person</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrencyStore } from "@/stores/currency-store";
 
 interface Filters {
   difficulty: string;
@@ -15,6 +16,7 @@ interface MountainFiltersProps {
 
 export function MountainFilters({ filters, setFilters }: MountainFiltersProps) {
   const { t } = useLanguage();
+  const { currency } = useCurrencyStore();
 
   const handleFilterChange = (key: keyof Filters, value: string) => {
     setFilters({ ...filters, [key]: value });
@@ -52,11 +54,14 @@ export function MountainFilters({ filters, setFilters }: MountainFiltersProps) {
         >
           <option value="all">{t("all_prices")}</option>
           <option value="budget">
-            {t("budget")} ({"< $2,000"})
+            {t("budget")} ({currency === "INR" ? "< ₹1,50,000" : "< $2,000"})
           </option>
-          <option value="mid">{t("mid_range")} ($2,000 - $10,000)</option>
+          <option value="mid">
+            {t("mid_range")}{" "}
+            ({currency === "INR" ? "₹1,50,000 - ₹8,00,000" : "$2,000 - $10,000"})
+          </option>
           <option value="premium">
-            {t("premium")} ({"> $10,000"})
+            {t("premium")} ({currency === "INR" ? "> ₹8,00,000" : "> $10,000"})
           </option>
         </select>
       </div>

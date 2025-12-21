@@ -127,16 +127,41 @@ export function TestimonialsCarousel({
     loadTestimonials();
   }, []);
 
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [mounted, setMounted] = useState(false);
+
+  // Resize handler to determine items per page
+  useEffect(() => {
+    setMounted(true);
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setItemsPerPage(1);
+      } else if (window.innerWidth < 1024) {
+        setItemsPerPage(2);
+      } else {
+        setItemsPerPage(3);
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // ... loadTestimonials ...
+  
   // Auto-play functionality
   useEffect(() => {
-    if (!isAutoPlaying || testimonials.length <= 1) return;
+    if (!isAutoPlaying || testimonials.length <= itemsPerPage) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, testimonials.length]);
+  }, [isAutoPlaying, testimonials.length, itemsPerPage]);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
@@ -149,77 +174,33 @@ export function TestimonialsCarousel({
     );
     setIsAutoPlaying(false);
   };
+  
+  // ... other handlers ...
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
     setIsAutoPlaying(false);
   };
 
-  if (loading) {
-    return (
-      <section className="py-16 bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="h-10 bg-gray-200 rounded-lg mb-4 animate-pulse"></div>
-            <div className="h-6 bg-gray-200 rounded-lg max-w-3xl mx-auto animate-pulse"></div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-xl shadow-lg p-6 animate-pulse"
-              >
-                <div className="h-8 w-8 bg-gray-200 rounded mb-4"></div>
-                <div className="flex items-center mb-4">
-                  {[1, 2, 3, 4, 5].map((j) => (
-                    <div
-                      key={j}
-                      className="h-5 w-5 bg-gray-200 rounded mr-1"
-                    ></div>
-                  ))}
-                </div>
-                <div className="space-y-2 mb-6">
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
-                  <div className="space-y-1 flex-1">
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/3"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
+  // Safe slice logic that wraps around
+  const visibleTestimonials = [];
+  if (testimonials.length > 0) {
+    for (let i = 0; i < itemsPerPage; i++) {
+        const index = (currentIndex + i) % testimonials.length;
+        if (testimonials[index]) {
+            visibleTestimonials.push(testimonials[index]);
+        }
+    }
   }
 
-  if (error) {
-    return (
-      <section className="py-16 bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <p className="text-red-600">{error}</p>
-            <button
-              onClick={loadTestimonials}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  const visibleTestimonials = testimonials
-    .slice(currentIndex, currentIndex + 3)
-    .concat(
-      testimonials.slice(0, Math.max(0, currentIndex + 3 - testimonials.length))
-    );
+  // Calculate grid columns dynamically
+  const gridClass = itemsPerPage === 1 
+    ? "grid-cols-1" 
+    : itemsPerPage === 2 
+      ? "grid-cols-1 md:grid-cols-2" 
+      : "grid-cols-1 md:grid-cols-3";
+    
+  if (!mounted) return null; // Prevent hydration mismatch
 
   return (
     <section className="py-16 bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-hidden">
@@ -231,7 +212,9 @@ export function TestimonialsCarousel({
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
+          {/* ... */}
+           {/* Header Content... */}
+             <div className="flex items-center justify-center mb-4">
             <Users className="h-8 w-8 text-teal-600 mr-3" />
             <h2 className="text-4xl font-bold text-gray-900">
               What Our Climbers Say
@@ -252,10 +235,10 @@ export function TestimonialsCarousel({
           </button>
         </div>
 
-        {/* Carousel Container */}
+          {/* Carousel Container */}
         <div className="relative">
           {/* Navigation Buttons */}
-          {testimonials.length > 3 && (
+          {testimonials.length > itemsPerPage && (
             <>
               <button
                 onClick={prevSlide}
@@ -276,8 +259,10 @@ export function TestimonialsCarousel({
           )}
 
           {/* Testimonials Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-500">
-            {visibleTestimonials.map((testimonial, index) => (
+          <div className={`grid ${gridClass} gap-8 transition-all duration-500`}>
+            {visibleTestimonials.map((testimonial, index) => {
+              if (!testimonial) return null;
+              return (
               <div
                 key={`${testimonial.id}-${index}`}
                 className="bg-white rounded-2xl shadow-lg p-8 relative transform hover:scale-105 transition-all duration-300 hover:shadow-2xl border border-gray-100"
@@ -339,19 +324,21 @@ export function TestimonialsCarousel({
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Pagination Dots */}
-          {testimonials.length > 3 && (
+          {testimonials.length > itemsPerPage && (
             <div className="flex justify-center mt-12 space-x-2">
-              {Array.from({ length: Math.ceil(testimonials.length / 3) }).map(
+              {Array.from({ length: Math.ceil(testimonials.length / itemsPerPage) }).map(
                 (_, index) => (
                   <button
                     key={index}
-                    onClick={() => goToSlide(index * 3)}
+                    onClick={() => goToSlide(index * itemsPerPage)}
                     className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                      Math.floor(currentIndex / 3) === index
+                       // Determine if the current index falls within this dot's range
+                       currentIndex >= index * itemsPerPage && currentIndex < (index + 1) * itemsPerPage
                         ? "bg-teal-700 w-8"
                         : "bg-gray-300 hover:bg-gray-400"
                     }`}

@@ -47,8 +47,20 @@ export default function TouristPackagesMain() {
     load().catch(console.error);
   }, []);
 
+  // Helper function to check if package is available
+  const isAvailable = (pkg: TMountainType) => {
+    if (pkg.status === "disabled" || pkg.status === "outdated") return false;
+    if (!pkg.availableDates || pkg.availableDates.length === 0) return false;
+    
+    const hasActiveDates = pkg.availableDates.some(dateObj => {
+      return new Date(dateObj.date) >= new Date();
+    });
+    
+    return hasActiveDates;
+  };
+
   useEffect(() => {
-    let filtered = touristPackages;
+    let filtered = touristPackages.filter(isAvailable); // Only filter available packages
 
     // Search filter
     if (searchTerm) {
@@ -290,6 +302,33 @@ export default function TouristPackagesMain() {
           </div>
         )}
 
+        {/* Unavailable Packages Section */}
+        {touristPackages.filter((p: TMountainType) => !isAvailable(p)).length > 0 && (
+          <div className="mt-16 pt-16 border-t">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Unavailable Tour Packages
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+                These packages are currently not available. Contact us for future availability and enquiries.
+              </p>
+              <Button
+                size="lg"
+                className="bg-teal-600 hover:bg-teal-700"
+                onClick={() => window.location.href = '/contact'}
+              >
+                Contact Us for Enquiries
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {touristPackages.filter((p: TMountainType) => !isAvailable(p)).map((pkg) => (
+                <TouristCard key={pkg.id} tourist={pkg} category={(pkg as any).category || "domestic"} />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Call to Action */}
         {filteredPackages.length > 0 && (
           <div className="mt-16 text-center bg-gradient-to-r from-teal-500 to-sky-700 rounded-xl p-8 text-white">
@@ -303,12 +342,16 @@ export default function TouristPackagesMain() {
               <Button
                 variant="outline"
                 className="bg-white text-teal-600 hover:bg-gray-100"
+                onClick={() => (window.location.href = "/contact")}
               >
                 Contact Our Experts
               </Button>
               <Button
                 variant="outline"
                 className="border-white text-white hover:bg-white hover:text-teal-600"
+                onClick={() =>
+                  (window.location.href = "/contact?subject=Custom+Package")
+                }
               >
                 Custom Package Request
               </Button>

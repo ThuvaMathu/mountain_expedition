@@ -292,6 +292,7 @@ Contact: ${COMPANY_INFO.contact.email}`,
         message:
           "Failed to send message. Please try again or contact us directly.",
         success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );

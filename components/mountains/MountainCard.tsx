@@ -20,7 +20,9 @@ export function MountainCard({ mountain }: MountainCardProps) {
     if (mountain.status === "outdated") return true;
 
     // Auto-detect: Check if all dates are in the past
-    const allDatesExpired = mountain.availableDates?.every(dateObj => {
+    if (!mountain.availableDates || mountain.availableDates.length === 0) return true;
+
+    const allDatesExpired = mountain.availableDates.every(dateObj => {
       return new Date(dateObj.date) < new Date();
     });
 
@@ -95,7 +97,7 @@ export function MountainCard({ mountain }: MountainCardProps) {
           </div>
         )}
 
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-4 left-4 z-20 flex flex-wrap gap-2 max-w-[calc(100%-8rem)]">
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
               mountain.difficulty
@@ -103,7 +105,21 @@ export function MountainCard({ mountain }: MountainCardProps) {
           >
             {mountain.difficulty}
           </span>
+        
+          {/* Category Badge */}
+          {mountain.category && (
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                mountain.category === "domestic"
+                  ? "bg-blue-100 text-blue-800"
+                  : "bg-purple-100 text-purple-800"
+              }`}
+            >
+              {mountain.category.charAt(0).toUpperCase() + mountain.category.slice(1)}
+            </span>
+          )}
         </div>
+
         {!isDisabled && (
           <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1 z-20">
             <div className="flex items-center space-x-1">
@@ -138,16 +154,17 @@ export function MountainCard({ mountain }: MountainCardProps) {
           <span className="text-sm">{mountain.bestSeason}</span>
         </div>
         <div className="flex items-center justify-between mb-4">
-          {/* <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-sm text-gray-600">
             <Star className="h-4 w-4 mr-1 text-yellow-400" />
             <span>
               {mountain.rating} ({mountain.totalReviews} reviews)
             </span>
-          </div> */}
+          </div>
           <div>
             <span className="text-2xl font-bold text-teal-600">
               {formatCurrency(
-                currency === "USD" ? mountain.priceUSD : mountain.priceINR
+                currency === "USD" ? mountain.priceUSD : mountain.priceINR,
+                currency
               )}
             </span>
             <span className="text-gray-500 text-sm ml-1">per person</span>

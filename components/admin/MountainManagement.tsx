@@ -142,8 +142,18 @@ export default function MountainManagement() {
     setNotice(null);
 
     try {
+      // Calculate total available slots
+      const totalAvailableSlots = form.availableDates?.reduce((total, date) => {
+        const slotsCallback = date.slots?.reduce((dTotal, slot) => {
+            const available = (slot.maxParticipants || 0) - (slot.bookedParticipants || 0);
+            return dTotal + (available > 0 ? available : 0);
+        }, 0) || 0;
+        return total + slotsCallback;
+      }, 0) || 0;
+
       const payload = {
         ...form,
+        availableSlots: totalAvailableSlots,
         //category, // Add category field
         updatedAt: serverTimestamp(),
       };

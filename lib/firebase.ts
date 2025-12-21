@@ -29,7 +29,8 @@ try {
   if (isFirebaseConfigured) {
     app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     auth = getAuth(app);
-    db = getFirestore(app, "eb-tamil-adventures");
+    db = getFirestore(app);
+    // db = getFirestore(app, "eb-tamil-adventures");
     storage = getStorage(app);
   }
 } catch (e) {

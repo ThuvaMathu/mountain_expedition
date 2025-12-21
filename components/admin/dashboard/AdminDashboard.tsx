@@ -375,8 +375,29 @@ export function AdminDashboard() {
       today.setHours(0, 0, 0, 0);
 
       filtered = filtered.filter((b) => {
-        if (!b.slotDetails?.date) return false;
-        const bookingDate = new Date(b.slotDetails.date);
+        let bookingDate: Date;
+
+        // Try to parse slotDetails.date first
+        if (b.slotDetails?.date) {
+          bookingDate = new Date(b.slotDetails.date);
+        } else if (b.createdAt) {
+          // Fallback to createdAt
+          if (
+            typeof b.createdAt === "object" &&
+            b.createdAt &&
+            "toDate" in b.createdAt
+          ) {
+            bookingDate = (b.createdAt as any).toDate(); // Firestore Timestamp
+          } else {
+            bookingDate = new Date(b.createdAt);
+          }
+        } else {
+          return false; // No date to filter by
+        }
+
+        // Validate date
+        if (isNaN(bookingDate.getTime())) return false;
+
         bookingDate.setHours(0, 0, 0, 0);
 
         switch (filters.dateRange) {

@@ -8,9 +8,12 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { StatsSection } from "@/components/home/StatsSection";
 import { TestimonialsCarousel } from "@/components/home/TestimonialsSection";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
+import { AwardsSection } from "@/components/home/AwardsSection"; // Added import
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 export const metadata = generateHomeMetadata();
+
+export const dynamic = "force-dynamic"; // Ensure dynamic rendering for stats/awards
 
 const isProduction = process.env.NEXT_PUBLIC_ENVIRONMENT === "production";
 
@@ -19,7 +22,7 @@ export default async function HomePage() {
 
   try {
     stats = await getStats("landing");
-    console.log("stats:", stats);
+    //console.log("stats:", stats);
   } catch (error) {
     console.error("Failed to load stats:", error);
     // Use default stats
@@ -50,6 +53,7 @@ export default async function HomePage() {
               <HeroSection stats={stats} />
               <FeaturedMountains />
               <WhyChooseUs />
+              <AwardsSection />
               <StatsSection stats={stats} />
               <TestimonialsCarousel />
             </main>

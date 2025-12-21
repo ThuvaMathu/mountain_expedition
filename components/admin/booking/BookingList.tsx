@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { updateDoc, doc, deleteDoc } from "firebase/firestore";
+import { updateDoc, doc, deleteDoc, getDoc } from "firebase/firestore";
 import {
   Calendar,
   Users,
@@ -70,13 +70,78 @@ export function BookingList({
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentBookings = filteredBookings.slice(startIndex, endIndex);
 
+  // Handle slot update
+  const handleSlotUpdate = async (
+    booking: TBooking,
+    action: "increment" | "decrement"
+  ) => {
+    if (!booking.booking?.id || !booking.slotDetails?.date || !db) return;
+
+    try {
+      const collectionName =
+        booking.booking.type === "tour" ? "tourist-packages" : "mountains";
+      const docRef = doc(db, collectionName, booking.booking.id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        let availableDates = data.availableDates || [];
+        let updated = false;
+
+        const updatedDates = availableDates.map((dateObj: any) => {
+          if (dateObj.date === booking.slotDetails!.date) {
+            const updatedSlots = dateObj.slots.map((slot: any) => {
+              if (slot.time === booking.slotDetails!.time) {
+                updated = true;
+                const change =
+                  action === "increment"
+                    ? booking.participants
+                    : -booking.participants;
+                const newBooked = (slot.bookedParticipants || 0) + change;
+                return {
+                  ...slot,
+                  bookedParticipants: Math.max(0, newBooked),
+                };
+              }
+              return slot;
+            });
+            return { ...dateObj, slots: updatedSlots };
+          }
+          return dateObj;
+        });
+
+        if (updated) {
+          await updateDoc(docRef, { availableDates: updatedDates });
+        }
+      }
+    } catch (error) {
+      console.error("Error updating slots:", error);
+    }
+  };
+
   // Update booking status
   const updateBookingStatus = async (bookingId: string, newStatus: string) => {
     try {
+      const bookingToUpdate = bookings.find((b) => b.id === bookingId);
+      if (!bookingToUpdate) return;
+
       if (isFirebaseConfigured && db) {
         await updateDoc(doc(db, "bookings", bookingId), {
           status: newStatus,
         });
+
+        // Handle slot updates
+        // If changing TO cancelled -> Decrement booked count (free up slots)
+        if (newStatus === "cancelled" && bookingToUpdate.status !== "cancelled") {
+          await handleSlotUpdate(bookingToUpdate, "decrement");
+        }
+        // If changing FROM cancelled -> Increment booked count (occupy slots)
+        else if (
+          bookingToUpdate.status === "cancelled" &&
+          newStatus !== "cancelled"
+        ) {
+          await handleSlotUpdate(bookingToUpdate, "increment");
+        }
       }
 
       // Update local state - use spread operator to create new array reference
@@ -779,12 +844,24 @@ export function BookingList({
                         type="number"
                         min="1"
                         value={editingBooking.participants}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          const newParticipants =
+                            parseInt(e.target.value) || 1;
+                          const oldParticipants = editingBooking.participants;
+                          // Calculate unit price based on current amount/participants
+                          // Avoid division by zero
+                          const unitPrice =
+                             oldParticipants > 0
+                              ? editingBooking.amount / oldParticipants
+                              : 0;
+                          
                           setEditingBooking({
                             ...editingBooking,
-                            participants: parseInt(e.target.value) || 1,
-                          })
-                        }
+                            participants: newParticipants,
+                             // Auto-update amount keeping unit price constant
+                            amount: unitPrice * newParticipants,
+                          });
+                        }}
                       />
                     </div>
                     <div>

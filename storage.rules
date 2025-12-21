@@ -1,0 +1,72 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is admin looking up Firestore user profile
+    // Using your actual database name: eb-tamil-adventures
+    function isAdmin() {
+      return isAuthenticated() && 
+             firestore.get(/databases/eb-tamil-adventures/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // IMPORTANT: Specific rules must come BEFORE catch-all rules
+    
+    // experience-images/ - Public read, Public write (for guest submissions)
+    match /experience-images/{allPaths=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // journey-images/
+    match /journey-images/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+    
+    // testimonials/ - Public read, Public write (for guest reviews)
+    match /testimonials/{allPaths=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // receipts/ - Authenticated users only
+    match /receipts/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // gallery/ - Public read, Admin write
+    match /gallery/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin(); 
+    }
+    
+    // mountains/ - Public read, Admin write
+    match /mountains/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // posts/ - Public read, Admin write
+    match /posts/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // tourist-packages/ - Public read, Admin write
+    match /tourist-packages/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Admin catch-all (MUST be last) - Admin has full access to everything else
+    match /{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

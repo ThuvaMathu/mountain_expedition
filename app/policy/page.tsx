@@ -9,7 +9,7 @@ export default function PolicyPage() {
         </h1>
 
         {/* Website Policy Section */}
-        <section className="mb-10">
+        <section id="terms" className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
             Website Policy
           </h2>
@@ -30,7 +30,7 @@ export default function PolicyPage() {
         </section>
 
         {/* Cookies Policy Section */}
-        <section className="mb-10">
+        <section id="cookies" className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
             Cookies Policy
           </h2>
@@ -77,7 +77,7 @@ export default function PolicyPage() {
         </section>
 
         {/* Personal Information Section */}
-        <section className="mb-10">
+        <section id="privacy" className="mb-10">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">
             Personal Information Collection & Use
           </h2>
@@ -86,13 +86,6 @@ export default function PolicyPage() {
               We collect personal information that you voluntarily provide when registering for treks,
               making bookings, or contacting us. This may include:
             </p>
-            <ul className="list-disc list-inside ml-4 space-y-2">
-              <li>Name, email address, and phone number</li>
-              <li>Billing and shipping addresses</li>
-              <li>Payment information</li>
-              <li>Emergency contact details</li>
-              <li>Medical information relevant to trekking activities</li>
-            </ul>
             <p>
               <strong>We use your personal information to:</strong>
             </p>

@@ -17,12 +17,14 @@ import { BookingManagement } from "@/components/admin/booking/BookingManagement"
 import { TestimonialManagement } from "@/components/admin/TestimonialManagement";
 import TourAndTravelManagement from "@/components/admin/TouristPackageManagement";
 import MountainManagement from "@/components/admin/MountainManagement";
+import { Menu, Settings } from "lucide-react";
 import { AdminDashboard } from "@/components/admin/dashboard/AdminDashboard";
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!loading) {
@@ -76,9 +78,28 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="flex relative overflow-hidden">
-      <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <main className="flex-1 ml-60 p-6 lg:p-8 overflow-x-hidden">
+    <div className="flex relative bg-gray-50 min-h-screen overflow-x-hidden">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b px-4 py-3 flex items-center justify-between shadow-sm h-16">
+        <div className="font-bold text-gray-900 flex items-center gap-2">
+          <Settings className="h-5 w-5 text-teal-600" /> Admin Panel
+        </div>
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="p-2 text-gray-600 hover:bg-gray-100 rounded-md"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+      </div>
+
+      <AdminSidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+
+      <main className="flex-1 md:ml-64 p-4 lg:p-8 pt-20 md:pt-8 transition-all duration-300 overflow-x-hidden min-w-0">
         <div className="max-w-7xl mx-auto">{renderContent()}</div>
       </main>
     </div>

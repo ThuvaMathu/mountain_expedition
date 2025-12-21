@@ -43,6 +43,8 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
     },
   ];
 
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
   useEffect(() => {
     setIsVisible(true);
     const timer = setInterval(
@@ -59,18 +61,38 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
     }
   };
 
+  const handleVideoLoad = () => {
+    setVideoLoaded(true);
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Video with Overlay */}
       <div className="absolute inset-0">
+        {/* Loader Image - Visible until video loads */}
+        <div 
+          className={`absolute inset-0 z-[1] transition-opacity duration-1000 ease-in-out ${
+            videoLoaded ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          <img
+            src="/heroloader.jpg"
+            alt="Hero Background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
         <video
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${
+            videoLoaded ? "opacity-100" : "opacity-0"
+          }`}
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
           poster="/images/hero-poster.jpg"
+          onLoadedData={handleVideoLoad}
         >
           <source src="/bg-videos/hero-video-hd.webm" type="video/webm" />
 
@@ -83,8 +105,8 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
             type="video/mp4"
           /> */}
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.1)_0%,transparent_50%)] animate-pulse" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60 z-[2]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.1)_0%,transparent_50%)] animate-pulse z-[2]" />
       </div>
 
       {/* Main Content */}
@@ -192,7 +214,7 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-16 sm:bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-3">
+      {/* <div className="absolute z-20 bottom-24 sm:bottom-32 left-1/2 transform -translate-x-1/2 flex space-x-3">
         {heroSlides.map((_, index) => (
           <button
             key={index}
@@ -205,11 +227,11 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
-      </div>
+      </div> */}
 
       {/* Scroll Down Indicator */}
       <div
-        className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
+        className="absolute z-20 bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
         onClick={scrollToNext}
       >
         <div className="flex flex-col items-center text-white/70 hover:text-white transition-colors">

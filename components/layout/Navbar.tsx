@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePathname } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +26,11 @@ export function Navbar() {
   const [isTouristDropdownOpen, setIsTouristDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
   const { language, toggleLanguage, t } = useLanguage();
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">

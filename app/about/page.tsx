@@ -131,18 +131,18 @@ export default function AboutPage() {
                 women, to face challenges and achieve victories.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <a
+                <Link
                   href="#timeline"
                   className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-white shadow-sm hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                 >
                   View Seven Summits Timeline
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#support"
                   className="inline-flex items-center justify-center rounded-md border border-teal-200 bg-white px-4 py-2 text-teal-700 hover:bg-teal-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                 >
                   Support Her Journey
-                </a>
+                </Link>
               </div>
             </div>
             <div className="relative">
@@ -189,12 +189,12 @@ export default function AboutPage() {
                   careers, and personal dreams.
                 </p>
                 <div className="mt-6">
-                  <a
+                  <Link
                     href="#goals"
                     className="inline-flex items-center rounded-md bg-teal-600 px-4 py-2 text-white shadow-sm hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                   >
                     See Vision & Goals
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -219,18 +219,18 @@ export default function AboutPage() {
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
-                <a
+                <Link
                   href="#timeline"
                   className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-white shadow-sm hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                 >
                   View Seven Summits Timeline
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#support"
                   className="inline-flex items-center justify-center rounded-md border border-teal-200 bg-white px-4 py-2 text-teal-700 hover:bg-teal-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                 >
                   Support Her Journey
-                </a>
+                </Link>
               </div>
             </div>
             <div className="relative">
@@ -436,18 +436,18 @@ export default function AboutPage() {
                   help shape the next generation of explorers.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
-                  <a
+                  <Link
                     href="#support"
                     className="inline-flex items-center rounded-md bg-teal-600 px-4 py-2 text-white shadow-sm hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                   >
                     Support Her Journey
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/contact"
                     className="inline-flex items-center rounded-md border border-teal-200 bg-white px-4 py-2 text-teal-700 hover:bg-teal-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                   >
                     Partner With Us
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -506,18 +506,18 @@ export default function AboutPage() {
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <a
+                  <Link
                     href="/blog"
                     className="inline-flex items-center rounded-md bg-white px-8 py-2 font-medium text-teal-800 shadow-sm hover:bg-teal-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                   >
                     Learn More
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/contact"
                     className="inline-flex items-center rounded-md border border-white/30 bg-transparent px-8 py-2 font-medium text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                   >
                     Get Involved
-                  </a>
+                  </Link>
                   {/* <a
                       href="mailto:hello@example.com?subject=Support%20Muthamizh%20Selvi%27s%20Initiatives"
                       className="inline-flex items-center rounded-md bg-teal-900/40 px-4 py-2 font-medium text-white hover:bg-teal-900/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"

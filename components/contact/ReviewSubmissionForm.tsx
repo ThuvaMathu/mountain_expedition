@@ -25,7 +25,6 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { ImageUploader } from "../global/image-uploader";
 import { processImages } from "@/lib/image-processor";
 
 interface FormData {
@@ -256,12 +255,12 @@ export default function ReviewSubmissionForm() {
     setIsSubmitting(true);
 
     try {
-      let imageUrl: string | undefined;
+      let imageUrl: string | null = null;
 
       // Upload image if provided
       if (formData.image) {
         try {
-          imageUrl = (await uploadImage(formData.image)) || "";
+          imageUrl = (await uploadImage(formData.image)) || null;
         } catch (error) {
           setErrors({ image: "Failed to upload image. Please try again." });
           setIsSubmitting(false);

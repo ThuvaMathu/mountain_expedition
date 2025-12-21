@@ -121,7 +121,7 @@ export const COMPANY_INFO = {
     facebook: "https://www.facebook.com/share/1FfpYofbwY/",
     instagram:
       "https://www.instagram.com/tamil_adventure_trekking_club?igsh=M2Vlbzk5MW92YXll",
-    twitter: "https://twitter.com/",
+    twitter: "https://twitter.com/tamiladventures",
     youtube: "https://youtube.com/@tamiladventures",
     linkedin: "https://linkedin.com/company/tamiladventures",
   },

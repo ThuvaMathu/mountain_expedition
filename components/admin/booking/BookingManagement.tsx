@@ -117,23 +117,46 @@ export function BookingManagement() {
       const now = new Date();
 
       filtered = filtered.filter((booking) => {
-        if (!booking.slotDetails?.date) return false;
+        let bookingDate: Date;
 
-        const bookingDate = new Date(booking.slotDetails.date);
+        if (booking.slotDetails?.date) {
+          bookingDate = new Date(booking.slotDetails.date);
+        } else if (booking.createdAt) {
+          if (
+            typeof booking.createdAt === "object" &&
+            booking.createdAt &&
+            "toDate" in booking.createdAt
+          ) {
+            bookingDate = (booking.createdAt as any).toDate();
+          } else {
+            bookingDate = new Date(booking.createdAt);
+          }
+        } else {
+          return false;
+        }
+
+        if (isNaN(bookingDate.getTime())) return false;
+
+        // Reset hours for comparison
+        bookingDate.setHours(0, 0, 0, 0);
+        const today = new Date(now);
+        today.setHours(0, 0, 0, 0);
 
         switch (dateFilter) {
           case "today":
-            return bookingDate.toDateString() === now.toDateString();
+            return bookingDate.getTime() === today.getTime();
           case "week":
-            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const weekAgo = new Date(today);
+            weekAgo.setDate(today.getDate() - 7);
             return bookingDate >= weekAgo;
           case "month":
-            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const monthAgo = new Date(today);
+            monthAgo.setDate(today.getDate() - 30);
             return bookingDate >= monthAgo;
           case "upcoming":
-            return bookingDate >= now;
+            return bookingDate >= today;
           case "past":
-            return bookingDate < now;
+            return bookingDate < today;
           default:
             return true;
         }

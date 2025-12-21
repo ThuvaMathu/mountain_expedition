@@ -406,7 +406,7 @@ export function TouristBooking({ tourist, category }: TouristBookingProps) {
           <div className="flex justify-between items-center">
             <span className="text-lg font-medium">Total Amount:</span>
             <span className="text-2xl font-bold text-teal-600">
-              {formatCurrency(totalPrice)}
+              {formatCurrency(totalPrice, currency)}
             </span>
           </div>
         </div>

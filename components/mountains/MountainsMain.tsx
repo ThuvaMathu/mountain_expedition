@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { MountainCard } from "@/components/mountains/MountainCard";
 import { MountainFilters } from "@/components/mountains/MountainFilters";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCurrencyStore } from "@/stores/currency-store";
 import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +17,7 @@ import { organizationSchema } from "@/seo/schemas";
 //export const metadata = generateMountainsMetadata();
 export default function MountainsMain() {
   const { t } = useLanguage();
+  const { currency } = useCurrencyStore();
   const [mountains, setMountains] = useState<TMountainType[]>([]);
   const [filteredMountains, setFilteredMountains] = useState<TMountainType[]>(
     []
@@ -48,9 +50,21 @@ export default function MountainsMain() {
   useEffect(() => {
     load().catch(console.error);
   }, []);
+  // Helper function to check if mountain is available
+  const isAvailable = (mountain: TMountainType) => {
+    if (mountain.status === "disabled" || mountain.status === "outdated") return false;
+    if (!mountain.availableDates || mountain.availableDates.length === 0) return false;
+    
+    const hasActiveDates = mountain.availableDates.some(dateObj => {
+      return new Date(dateObj.date) >= new Date();
+    });
+    
+    return hasActiveDates;
+  };
 
   useEffect(() => {
-    let filtered = mountains;
+    let filtered = mountains.filter(isAvailable); // Only filter available mountains
+    
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(
@@ -67,25 +81,53 @@ export default function MountainsMain() {
       );
     }
 
+    // Season filter
+    if (filters.season !== "all") {
+      const seasonMap: Record<string, string[]> = {
+        spring: ["spring", "march", "april", "may"],
+        summer: ["summer", "june", "july", "august"],
+        autumn: ["autumn", "september", "october", "november"],
+        winter: ["winter", "december", "january", "february"],
+      };
+
+      filtered = filtered.filter((mountain) => {
+        const mountainSeason = mountain.bestSeason?.toLowerCase() || "";
+        const keywords = seasonMap[filters.season] || [filters.season];
+        return keywords.some((keyword) => mountainSeason.includes(keyword));
+      });
+    }
+
+    // Price range filter
     // Price range filter
     if (filters.priceRange !== "all") {
+      const isINR = currency === "INR";
+      const low = isINR ? 150000 : 2000;
+      const high = isINR ? 800000 : 10000;
+
       switch (filters.priceRange) {
         case "budget":
-          filtered = filtered.filter((mountain) => mountain.price < 2000);
+          filtered = filtered.filter(
+            (mountain) => (isINR ? mountain.priceINR : mountain.priceUSD) < low
+          );
           break;
         case "mid":
           filtered = filtered.filter(
-            (mountain) => mountain.price >= 2000 && mountain.price < 10000
+            (mountain) => {
+              const price = isINR ? mountain.priceINR : mountain.priceUSD;
+              return price >= low && price < high;
+            }
           );
           break;
         case "premium":
-          filtered = filtered.filter((mountain) => mountain.price >= 10000);
+          filtered = filtered.filter(
+            (mountain) => (isINR ? mountain.priceINR : mountain.priceUSD) >= high
+          );
           break;
       }
     }
 
     setFilteredMountains(filtered);
-  }, [searchTerm, filters, mountains]);
+  }, [searchTerm, filters, mountains, currency]);
 
   return (
     <>
@@ -164,6 +206,33 @@ export default function MountainsMain() {
             >
               {t("clear_filters")}
             </Button>
+          </div>
+        )}
+
+        {/* Unavailable Expeditions Section */}
+        {mountains.filter(m => !isAvailable(m)).length > 0 && (
+          <div className="mt-16 pt-16 border-t">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Unavailable Expeditions
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+                These expeditions are currently not available. Contact us for future availability and enquiries.
+              </p>
+              <Button
+                size="lg"
+                className="bg-teal-600 hover:bg-teal-700"
+                onClick={() => window.location.href = '/contact'}
+              >
+                Contact Us for Enquiries
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {mountains.filter(m => !isAvailable(m)).map((mountain) => (
+                <MountainCard key={mountain.id} mountain={mountain} />
+              ))}
+            </div>
           </div>
         )}
       </main>

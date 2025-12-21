@@ -70,7 +70,7 @@ export function BlogManagement() {
       setPosts([]);
       return;
     }
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "posts"), orderBy("date", "desc"));
     const snap = await getDocs(q);
     setPosts(
       snap.docs.map((d) => {
@@ -122,7 +122,7 @@ export function BlogManagement() {
   const save = async () => {
     setLoading(true);
     try {
-      const payload: any = {
+      const basePayload: any = {
         slug: form.slug || slugify(form.title || Date.now().toString()),
         title: form.title,
         content: blogContent,
@@ -132,7 +132,6 @@ export function BlogManagement() {
         date: form.date,
         published: form.published || false,
         mainImageUrl: form.mainImageUrl || "",
-        createdAt: serverTimestamp(),
       };
 
       if (!isFirebaseConfigured || !db) {
@@ -140,12 +139,12 @@ export function BlogManagement() {
         if (editingId) {
           setPosts((prev) =>
             prev.map((p) =>
-              p.id === editingId ? { ...payload, id: editingId } : p
+              p.id === editingId ? { ...basePayload, id: editingId } : p
             )
           );
         } else {
           setPosts((prev) => [
-            { ...payload, id: `demo_${Date.now()}` },
+            { ...basePayload, createdAt: new Date(), id: `demo_${Date.now()}` },
             ...prev,
           ]);
         }
@@ -154,9 +153,17 @@ export function BlogManagement() {
       }
 
       if (editingId) {
-        await updateDoc(doc(db, "posts", editingId), payload);
+        // Update: set updatedAt
+        await updateDoc(doc(db, "posts", editingId), {
+           ...basePayload,
+           updatedAt: serverTimestamp() 
+        });
       } else {
-        await addDoc(collection(db, "posts"), payload);
+        // Create: set createdAt
+        await addDoc(collection(db, "posts"), { 
+            ...basePayload,
+            createdAt: serverTimestamp() 
+        });
       }
       await load();
       reset();

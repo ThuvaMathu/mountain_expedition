@@ -38,6 +38,7 @@ export default function MountainDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [showBooking, setShowBooking] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showAllItinerary, setShowAllItinerary] = useState(false);
   const { loadCurrency, formatedValue, getCurrencyValue } = useCurrencyStore();
 
   // Handle brochure download
@@ -274,7 +275,12 @@ export default function MountainDetailPage() {
                 <Clock className="h-6 w-6 text-teal-600" />
                 <div>
                   <div className="font-medium text-gray-900">Duration</div>
-                  <div className="text-gray-600">{mountain.duration}</div>
+                  <div className="text-gray-600">
+                    {mountain.duration === "0 days 0 nights" ||
+                    !mountain.duration
+                      ? "Duration varies"
+                      : mountain.duration}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
@@ -338,7 +344,10 @@ export default function MountainDetailPage() {
               Expedition Itinerary
             </h2>
             <div className="space-y-4">
-              {mountain.itinerary.slice(0, 5).map((day) => (
+              {(showAllItinerary
+                ? mountain.itinerary
+                : mountain.itinerary.slice(0, 5)
+              ).map((day) => (
                 <div key={day.day} className="border-l-4 border-teal-600 pl-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-gray-900">
@@ -352,9 +361,17 @@ export default function MountainDetailPage() {
                 </div>
               ))}
             </div>
-            <Button variant="outline" className="mt-6">
-              View Complete Itinerary
-            </Button>
+            {mountain.itinerary.length > 5 && (
+              <Button
+                variant="outline"
+                className="mt-6"
+                onClick={() => setShowAllItinerary(!showAllItinerary)}
+              >
+                {showAllItinerary
+                  ? "Show Less Itinerary"
+                  : "View Complete Itinerary"}
+              </Button>
+            )}
           </div>
         </div>
 

@@ -225,7 +225,7 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
         <div className="border-t pt-2 mt-2">
           <div className="flex justify-between items-center font-semibold text-lg">
             <span>Total</span>
-            <span>{formatCurrency(totalPrice)}</span>
+            <span>{formatCurrency(totalPrice, currency)}</span>
           </div>
         </div>
       </div>

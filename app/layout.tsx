@@ -12,6 +12,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 const isDevelopment = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Tamil Adventure Treckking Club - Global Mountain Expedition Booking",
   description:
