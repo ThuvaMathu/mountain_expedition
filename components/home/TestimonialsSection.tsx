@@ -1,379 +1,219 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Star, Quote, ChevronLeft, ChevronRight, Users } from "lucide-react";
-import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
-import { useRouter } from "next/navigation";
 
-interface Testimonial {
-  id: string;
-  name: string;
-  location: string;
-  mountain?: string;
-  rating: number;
-  text: string;
-  image?: string;
-  status: "pending" | "approved" | "rejected";
-  createdAt: any;
-}
+import React, { useState, useEffect, useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
+import { Star, Users, MapPin, Mountain, Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-interface TestimonialsCarouselProps {
-  onGiveReviewClick?: () => void;
-}
-
-export function TestimonialsCarousel({
-  onGiveReviewClick,
-}: TestimonialsCarouselProps) {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const router = useRouter();
-  // Fallback testimonials for when Firebase is not configured
-  const fallbackTestimonials: Testimonial[] = [
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      location: "California, USA",
-      mountain: "Mount Kilimanjaro",
-      rating: 5,
-      text: "Tamil Adventure Treckking Club made my dream of climbing Kilimanjaro come true. The guides were incredible, and I felt safe every step of the way. Highly recommended!",
-      image: "/placeholder.svg?height=80&width=80",
-      status: "approved",
-      createdAt: new Date(),
-    },
-    {
-      id: "2",
-      name: "Michael Chen",
-      location: "Singapore",
-      mountain: "Everest Base Camp",
-      rating: 5,
-      text: "The Everest Base Camp trek was life-changing. The organization was flawless, and the team's expertise showed throughout the journey.",
-      image: "/placeholder.svg?height=80&width=80",
-      status: "approved",
-      createdAt: new Date(),
-    },
-    {
-      id: "3",
-      name: "Emma Rodriguez",
-      location: "Madrid, Spain",
-      mountain: "Aconcagua",
-      rating: 5,
-      text: "Professional, safe, and absolutely amazing experience. The Tamil Adventure Treckking Club team went above and beyond to ensure our success on Aconcagua.",
-      image: "/placeholder.svg?height=80&width=80",
-      status: "approved",
-      createdAt: new Date(),
-    },
-    {
-      id: "4",
-      name: "James Wilson",
-      location: "London, UK",
-      mountain: "Mont Blanc",
-      rating: 5,
-      text: "An unforgettable adventure! The team's professionalism and attention to detail made this challenging climb both safe and enjoyable.",
-      image: "/placeholder.svg?height=80&width=80",
-      status: "approved",
-      createdAt: new Date(),
-    },
-    {
-      id: "5",
-      name: "Priya Sharma",
-      location: "Mumbai, India",
-      mountain: "Annapurna Circuit",
-      rating: 5,
-      text: "The most beautiful and well-organized trek I've ever experienced. Every moment was carefully planned and executed to perfection.",
-      image: "/placeholder.svg?height=80&width=80",
-      status: "approved",
-      createdAt: new Date(),
-    },
-  ];
-
-  const loadTestimonials = async () => {
-    if (!isFirebaseConfigured || !db) {
-      setTestimonials(fallbackTestimonials);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const q = query(
-        collection(db, "testimonials"),
-        where("status", "==", "approved"),
-        orderBy("createdAt", "desc")
-      );
-
-      const snapshot = await getDocs(q);
-      const loadedTestimonials = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Testimonial[];
-
-      if (loadedTestimonials.length === 0) {
-        setTestimonials(fallbackTestimonials);
-      } else {
-        setTestimonials(loadedTestimonials);
-      }
-    } catch (err) {
-      console.error("Error loading testimonials:", err);
-      setError("Failed to load testimonials");
-      setTestimonials(fallbackTestimonials);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadTestimonials();
-  }, []);
-
-  const [itemsPerPage, setItemsPerPage] = useState(3);
-  const [mounted, setMounted] = useState(false);
-
-  // Resize handler to determine items per page
-  useEffect(() => {
-    setMounted(true);
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setItemsPerPage(1);
-      } else if (window.innerWidth < 1024) {
-        setItemsPerPage(2);
-      } else {
-        setItemsPerPage(3);
-      }
-    };
-
-    // Initial check
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // ... loadTestimonials ...
-  
-  // Auto-play functionality
-  useEffect(() => {
-    if (!isAutoPlaying || testimonials.length <= itemsPerPage) return;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, testimonials.length, itemsPerPage]);
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    setIsAutoPlaying(false);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length
-    );
-    setIsAutoPlaying(false);
-  };
-  
-  // ... other handlers ...
-
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
-    setIsAutoPlaying(false);
-  };
-
-  // Safe slice logic that wraps around
-  const visibleTestimonials = [];
-  if (testimonials.length > 0) {
-    for (let i = 0; i < itemsPerPage; i++) {
-        const index = (currentIndex + i) % testimonials.length;
-        if (testimonials[index]) {
-            visibleTestimonials.push(testimonials[index]);
-        }
-    }
+const testimonials = [
+  {
+    id: 1,
+    name: "Sarah Johnson",
+    role: "Everest Trekker",
+    image: "/placeholder-nwzb1.png", 
+    text: "Tamil Adventure Trekking Club made my dream of climbing Kilimanjaro come true. The guides were incredible, and I felt safe every step of the way. Highly recommended!",
+    rating: 5,
+    date: "28 OCT",
+    mountain: "Kilimanjaro"
+  },
+  {
+    id: 2,
+    name: "Michael Chen",
+    role: "Mountain Enthusiast",
+    image: "/placeholder-83tbi.png",
+    text: "The Everest Base Camp trek was life-changing. The organization was flawless, and the team's expertise showed throughout the journey.",
+    rating: 5,
+    date: "15 NOV",
+    mountain: "Everest Base Camp"
+  },
+  {
+    id: 3,
+    name: "Emma Rodriguez",
+    role: "Adventure Seeker",
+    image: "/placeholder-7fo4z.png",
+    text: "Professional, safe, and absolutely amazing experience. The team went above and beyond to ensure our success on Aconcagua.",
+    rating: 5,
+    date: "02 DEC",
+    mountain: "Aconcagua"
+  },
+  {
+    id: 4,
+    name: "James Wilson",
+    role: "Alpinist",
+    image: "/placeholder-nwzb1.png",
+    text: "An unforgettable adventure! The team's professionalism and attention to detail made this challenging climb both safe and enjoyable.",
+    rating: 5,
+    date: "10 DEC",
+    mountain: "Mont Blanc"
+  },
+  {
+    id: 5,
+    name: "Priya Sharma",
+    role: "Nature Lover",
+    image: "/placeholder-83tbi.png",
+    text: "The most beautiful and well-organized trek I've ever experienced. Every moment was carefully planned and executed to perfection.",
+    rating: 5,
+    date: "20 DEC",
+    mountain: "Annapurna"
   }
+];
 
-  // Calculate grid columns dynamically
-  const gridClass = itemsPerPage === 1 
-    ? "grid-cols-1" 
-    : itemsPerPage === 2 
-      ? "grid-cols-1 md:grid-cols-2" 
-      : "grid-cols-1 md:grid-cols-3";
-    
-  if (!mounted) return null; // Prevent hydration mismatch
+export function TestimonialsCarousel() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    loop: true,
+    slidesToScroll: 1,
+    containScroll: "trimSnaps"
+  }, [
+    Autoplay({ delay: 5000, stopOnInteraction: false })
+  ]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setActiveIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+  }, [emblaApi, onSelect]);
 
   return (
-    <section className="py-16 bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-100 rounded-full opacity-20"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-teal-100 rounded-full opacity-20"></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="text-center mb-12">
-          {/* ... */}
-           {/* Header Content... */}
-             <div className="flex items-center justify-center mb-4">
-            <Users className="h-8 w-8 text-teal-600 mr-3" />
-            <h2 className="text-4xl font-bold text-gray-900">
-              What Our Climbers Say
-            </h2>
-          </div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Don't just take our word for it. Here's what our adventurers have to
-            say about their experiences.
-          </p>
-
-          {/* Give Review Button */}
-          <button
-            onClick={() => router.push("/review")}
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-gradient-to-r from-teal-800 to-teal-600 cursor-pointer transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
-          >
-            <Star className="h-5 w-5 mr-2" />
-            Share Your Experience
-          </button>
+    <section className="py-24 bg-white relative overflow-hidden">
+        {/* Background Decorative Map/Pattern */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
         </div>
 
-          {/* Carousel Container */}
-        <div className="relative">
-          {/* Navigation Buttons */}
-          {testimonials.length > itemsPerPage && (
-            <>
-              <button
-                onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-teal-700 hover:shadow-xl transition-all duration-200"
-                aria-label="Previous testimonials"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-
-              <button
-                onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-teal-700 hover:shadow-xl transition-all duration-200"
-                aria-label="Next testimonials"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            </>
-          )}
-
-          {/* Testimonials Grid */}
-          <div className={`grid ${gridClass} gap-8 transition-all duration-500`}>
-            {visibleTestimonials.map((testimonial, index) => {
-              if (!testimonial) return null;
-              return (
-              <div
-                key={`${testimonial.id}-${index}`}
-                className="bg-white rounded-2xl shadow-lg p-8 relative transform hover:scale-105 transition-all duration-300 hover:shadow-2xl border border-gray-100"
-              >
-                {/* Quote Icon */}
-                <div className="absolute -top-4 left-8">
-                  <div className="w-8 h-8 bg-gradient-to-r from-teal-700 to-teal-600 rounded-full flex items-center justify-center">
-                    <Quote className="h-4 w-4 text-white" />
-                  </div>
-                </div>
-
-                {/* Rating Stars */}
-                <div className="flex items-center mb-6 mt-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-5 w-5 ${
-                        i < testimonial.rating
-                          ? "text-yellow-400 fill-current"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                  <span className="ml-2 text-sm text-gray-500">
-                    ({testimonial.rating}/5)
-                  </span>
-                </div>
-
-                {/* Review Text */}
-                <p className="text-gray-700 mb-6 leading-relaxed text-lg">
-                  "{testimonial.text}"
-                </p>
-
-                {/* Mountain Badge */}
-                {testimonial.mountain && (
-                  <div className="inline-block px-3 py-1 bg-gradient-to-r from-blue-100 to-teal-100 text-blue-700 rounded-full text-sm font-medium mb-6">
-                    {testimonial.mountain}
-                  </div>
-                )}
-
-                {/* User Info */}
-                <div className="flex items-center">
-                  <img
-                    src={
-                      testimonial.image || "/placeholder.svg?height=60&width=60"
-                    }
-                    alt={testimonial.name}
-                    className="w-14 h-14 rounded-full object-cover mr-4 border-2 border-gray-200"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/placeholder.svg?height=60&width=60";
-                    }}
-                  />
-                  <div>
-                    <div className="font-bold text-gray-900 text-lg">
-                      {testimonial.name}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Header Stats Section - Matches Reference */}
+        <div className="flex flex-col lg:flex-row justify-between items-center mb-20 gap-10">
+            {/* Trusted By */}
+            <div className="flex items-center gap-6">
+                <div className="relative">
+                    <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
+                        <img src="/mountaineer-female-teal.png" alt="Trust" className="w-full h-full object-cover" />
                     </div>
-                    <div className="text-gray-600">{testimonial.location}</div>
-                  </div>
+                     <div className="absolute -top-2 -right-2">
+                         <span className="flex items-center justify-center w-8 h-8 bg-orange-500 rounded-full text-white text-xs">
+                             <Users className="w-4 h-4" />
+                         </span>
+                     </div>
                 </div>
-              </div>
-              );
-            })}
-          </div>
-
-          {/* Pagination Dots */}
-          {testimonials.length > itemsPerPage && (
-            <div className="flex justify-center mt-12 space-x-2">
-              {Array.from({ length: Math.ceil(testimonials.length / itemsPerPage) }).map(
-                (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index * itemsPerPage)}
-                    className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                       // Determine if the current index falls within this dot's range
-                       currentIndex >= index * itemsPerPage && currentIndex < (index + 1) * itemsPerPage
-                        ? "bg-teal-700 w-8"
-                        : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                    aria-label={`Go to testimonial group ${index + 1}`}
-                  />
-                )
-              )}
+                <div>
+                    <h3 className="text-2xl font-bold text-gray-900 leading-tight">
+                        Trusted by <span className="text-teal-600 underline decoration-teal-300 decoration-4 underline-offset-4">500+</span> <br/>
+                        happy adventurers.
+                    </h3>
+                </div>
             </div>
-          )}
+
+            {/* Guides Count */}
+            <div className="flex items-center gap-4 border-l-2 border-gray-100 pl-8 hidden md:flex">
+                <div>
+                     <h3 className="text-4xl font-bold text-gray-900">50+</h3>
+                     <p className="text-sm text-gray-500 font-medium">Expert Guides <br/> for your journey.</p>
+                </div>
+            </div>
+
+            {/* Rating */}
+             <div className="flex items-center gap-4 border-l-2 border-gray-100 pl-8">
+                <div>
+                     <h3 className="text-4xl font-bold text-gray-900">4.9</h3>
+                     <div className="flex items-center gap-1 my-1">
+                         {[1,2,3,4,5].map(i => (
+                             <Star key={i} className="w-4 h-4 text-orange-400 fill-current" />
+                         ))}
+                     </div>
+                     <p className="text-sm text-gray-500 font-medium">1,200 Ratings</p>
+                </div>
+            </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex items-center px-6 py-3 bg-white rounded-full shadow-lg">
-            <div className="flex items-center space-x-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-teal-700">
-                  {testimonials.length}
+        {/* Carousel */}
+        <div className="overflow-hidden -mx-4 px-4 py-8" ref={emblaRef}>
+          <div className="flex gap-6">
+            {testimonials.map((item) => (
+              <div 
+                key={item.id} 
+                className="flex-[0_0_100%] md:flex-[0_0_45%] lg:flex-[0_0_32%] min-w-0"
+              >
+                <div className="bg-white rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 h-full flex flex-col justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
+                    
+                    {/* Header: Avatar & Name */}
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-gray-100 shrink-0">
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                            <h4 className="text-lg font-bold text-gray-900">{item.name}</h4>
+                            <p className="text-sm text-gray-500">{item.role}</p>
+                        </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="mb-6 flex-grow">
+                        <p className="text-gray-600 leading-relaxed text-[15px]">
+                            "{item.text}"
+                        </p>
+                    </div>
+
+                     {/* Mountain Tag */}
+                     <div className="flex items-center gap-2 mb-6">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-50 text-teal-700 text-xs font-semibold rounded-md">
+                            <Mountain className="w-3 h-3" />
+                            {item.mountain}
+                        </span>
+                     </div>
+
+
+                    {/* Footer: Rating & Date */}
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                        <div className="flex items-center gap-1">
+                            <span className="font-bold text-gray-900 mr-2">{item.rating.toFixed(1)}</span>
+                            {[...Array(5)].map((_, i) => (
+                                <Star key={i} className={cn("w-4 h-4", i < item.rating ? "text-orange-400 fill-current" : "text-gray-200")} />
+                            ))}
+                        </div>
+                        <div className="px-3 py-1 bg-gray-900 text-white text-xs font-bold rounded-lg">
+                            {item.date}
+                        </div>
+                    </div>
                 </div>
-                <div className="text-sm text-gray-600">Happy Climbers</div>
               </div>
-              <div className="h-8 w-px bg-gray-300"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-teal-600">
-                  {(
-                    testimonials.reduce((acc, t) => acc + t.rating, 0) /
-                    testimonials.length
-                  ).toFixed(1)}
-                </div>
-                <div className="text-sm text-gray-600">Average Rating</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
+
+        {/* Carousel Indicators */}
+        <div className="flex justify-center gap-2 mt-8">
+            {testimonials.map((_, idx) => (
+                <button
+                    key={idx}
+                    className={cn(
+                        "w-2 h-2 rounded-full transition-all duration-300",
+                        idx === activeIndex ? "w-8 bg-teal-600" : "bg-gray-300"
+                    )}
+                    onClick={() => emblaApi?.scrollTo(idx)}
+                    aria-label={`Go to slide ${idx + 1}`}
+                />
+            ))}
+        </div>
+
       </div>
     </section>
   );
 }
+

@@ -153,7 +153,7 @@ export function Awards2() {
             </span>
           )}
 
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-teal-700 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-teal-700 transition-colors">
             {award.title}
           </h3>
 
@@ -163,7 +163,7 @@ export function Awards2() {
             </p>
           )}
 
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="text-gray-700 leading-relaxed">
             {award.description}
           </p>
         </div>
@@ -179,10 +179,10 @@ export function Awards2() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-100 mb-4">
             <Trophy className="w-8 h-8 text-teal-600" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl mb-4">
             Awards & Recognition
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="text-gray-600 max-w-3xl mx-auto">
             Recognition from national and international organizations for
             mountaineering achievements and leadership in adventure sports
           </p>
@@ -192,7 +192,7 @@ export function Awards2() {
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <Mountain className="w-6 h-6 text-teal-600" />
-            <h3 className="text-2xl font-bold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900">
               National Records
             </h3>
           </div>
@@ -205,7 +205,7 @@ export function Awards2() {
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <Award className="w-6 h-6 text-teal-600" />
-            <h3 className="text-2xl font-bold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900">
               Government Recognition
             </h3>
           </div>
@@ -218,7 +218,7 @@ export function Awards2() {
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <Medal className="w-6 h-6 text-teal-600" />
-            <h3 className="text-2xl font-bold text-gray-900">Media Awards</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Media Awards</h3>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {awardsData.media.map(renderAwardCard)}
@@ -229,7 +229,7 @@ export function Awards2() {
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-6">
             <Trophy className="w-6 h-6 text-teal-600" />
-            <h3 className="text-2xl font-bold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900">
               International Recognition
             </h3>
           </div>
@@ -242,7 +242,7 @@ export function Awards2() {
         <div>
           <div className="flex items-center gap-3 mb-6">
             <Award className="w-6 h-6 text-teal-600" />
-            <h3 className="text-2xl font-bold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900">
               Community & Foundation Awards
             </h3>
           </div>

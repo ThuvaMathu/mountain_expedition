@@ -8,7 +8,9 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { StatsSection } from "@/components/home/StatsSection";
 import { TestimonialsCarousel } from "@/components/home/TestimonialsSection";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
+import { HeroAboutSection } from "@/components/home/HeroAboutSection";
 import { AwardsSection } from "@/components/home/AwardsSection"; // Added import
+import { ExploreSection } from "@/components/home/ExploreSection";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 export const metadata = generateHomeMetadata();
@@ -51,10 +53,10 @@ export default async function HomePage() {
           <>
             <main>
               <HeroSection stats={stats} />
-              <FeaturedMountains />
-              <WhyChooseUs />
+              <ExploreSection />
+             
+              <FeaturedMountains /> <HeroAboutSection />
               <AwardsSection />
-              <StatsSection stats={stats} />
               <TestimonialsCarousel />
             </main>
           </>

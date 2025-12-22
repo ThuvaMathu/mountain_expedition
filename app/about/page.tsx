@@ -169,7 +169,7 @@ export default function AboutPage() {
                 />
               </div>
               <div className="order-1 md:order-2">
-                <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+                <h2 className="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                   Her Journey: Breaking Fear
                 </h2>
                 <p className="mt-4 text-gray-700">
