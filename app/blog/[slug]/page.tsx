@@ -31,10 +31,15 @@ interface TBlogPostSEO {
 
 // ✅ Pre-generate all blog post pages
 export async function generateStaticParams() {
-  const snapshot = await adminDb.collection("posts").get();
-  return snapshot.docs.map((doc) => ({
-    slug: doc.data().slug,
-  }));
+  try {
+    const snapshot = await adminDb.collection("posts").get();
+    return snapshot.docs.map((doc) => ({
+      slug: doc.data().slug || doc.id,
+    }));
+  } catch (error) {
+    console.error("Error generating static params for blog:", error);
+    return []; // Return empty array if Firebase is unavailable
+  }
 }
 
 // ✅ Optionally set metadata dynamically for SEO
@@ -174,29 +179,29 @@ export default async function BlogPostPage({
                 <span>
                   {post.createdAt
                     ? (() => {
-                        // Handle Firestore Timestamp format
-                        let dateObj: Date;
-                        if (typeof post.createdAt === "object" && "seconds" in post.createdAt) {
-                          dateObj = new Date((post.createdAt as any).seconds * 1000);
-                        } else {
-                          dateObj = new Date(post.createdAt);
-                        }
+                      // Handle Firestore Timestamp format
+                      let dateObj: Date;
+                      if (typeof post.createdAt === "object" && "seconds" in post.createdAt) {
+                        dateObj = new Date((post.createdAt as any).seconds * 1000);
+                      } else {
+                        dateObj = new Date(post.createdAt);
+                      }
 
-                        // Check if date is valid
-                        if (isNaN(dateObj.getTime())) {
-                          return new Date().toLocaleDateString("en-GB", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          });
-                        }
-
-                        return dateObj.toLocaleDateString("en-GB", {
+                      // Check if date is valid
+                      if (isNaN(dateObj.getTime())) {
+                        return new Date().toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "long",
                           year: "numeric",
                         });
-                      })()
+                      }
+
+                      return dateObj.toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      });
+                    })()
                     : ""}
                 </span>
               </div>

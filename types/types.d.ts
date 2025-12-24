@@ -8,6 +8,7 @@ type TBlogPost = {
   tags: string[];
   published: boolean;
   mainImageUrl?: string;
+  thumbnailUrl?: string; // Optimized thumbnail for blog cards
   createdAt?: any;
 };
 
@@ -20,6 +21,7 @@ type TBlogPostForm = {
   date: string;
   published: boolean;
   mainImageUrl?: string;
+  thumbnailUrl?: string; // Optimized thumbnail for blog cards
 };
 
 type Mountain = {
@@ -55,6 +57,7 @@ type TMountainType = {
   difficulty: "Beginner" | "Intermediate" | "Advanced" | "Expert";
   bestSeason: string;
   imageUrl: string[];
+  thumbnailUrl?: string; // Optimized thumbnail
   price: number;
   priceUSD: number;
   priceINR: number;
@@ -158,6 +161,7 @@ type TBooking = {
 type TJourneyImage = {
   id: string;
   url: string;
+  thumbnailUrl?: string; // Optimized thumbnail for gallery grid
   title: string;
   uploadedAt: any;
 };
@@ -169,13 +173,14 @@ type TExperienceSubmission = {
   mountainName: string;
   rating: number;
   images: string[];
+  thumbnails?: string[]; // Optimized thumbnails for each image
   status: "pending" | "approved" | "rejected";
   submittedAt: Timestamp | Date;
   userName: string;
   userEmail: string;
 };
 
-type TStatSection = "landing" | "international" | "domestic";
+type TStatSection = "landing" | "international" | "domestic" | "gallery";
 
 type TStat = {
   id?: string;

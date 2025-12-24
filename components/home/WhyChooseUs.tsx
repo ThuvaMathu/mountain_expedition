@@ -1,73 +1,94 @@
-import { Shield, Award, Users, Clock, Mountain, Heart } from "lucide-react";
+import { Shield, Map, Compass, Gem } from "lucide-react";
+import { ImageLoader } from "../ui/image-loader";
+import { SlideUp, StaggerContainer, StaggerItem, FadeIn } from "../ui/motion-wrapper";
 
 export function WhyChooseUs() {
   const features = [
     {
+      id: "01",
+      icon: Map,
+      title: "Explore the Nature",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+      color: "text-orange-500",
+      bgColor: "bg-orange-50",
+    },
+    {
+      id: "02",
+      icon: Compass,
+      title: "Tour Guide",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+      color: "text-orange-500",
+      bgColor: "bg-orange-50",
+    },
+    {
+      id: "03",
       icon: Shield,
-      title: "Safety First",
+      title: "Hidden Gems",
       description:
-        "Our experienced guides prioritize your safety with comprehensive risk management and emergency protocols.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+      color: "text-orange-500",
+      bgColor: "bg-orange-50",
     },
     {
-      icon: Award,
-      title: "Expert Guides",
+      id: "04",
+      icon: Gem,
+      title: "Simple Booking",
       description:
-        "Professional mountaineers with decades of experience on the world's most challenging peaks.",
-    },
-    {
-      icon: Users,
-      title: "Small Groups",
-      description:
-        "Intimate group sizes ensure personalized attention and a better climbing experience.",
-    },
-    {
-      icon: Clock,
-      title: "24/7 Support",
-      description:
-        "Round-the-clock support before, during, and after your expedition.",
-    },
-    {
-      icon: Mountain,
-      title: "Premium Equipment",
-      description:
-        "Top-quality gear and equipment provided for all expeditions.",
-    },
-    {
-      icon: Heart,
-      title: "Passion Driven",
-      description:
-        "We share your passion for adventure and are committed to making your dreams come true.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+      color: "text-orange-500",
+      bgColor: "bg-orange-50",
     },
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Why Choose Tamil Adventure Treckking Club?
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            With over 15 years of experience, we've helped thousands of
-            adventurers achieve their mountaineering goals safely and
-            successfully.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div key={index} className="text-center p-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-teal-100 rounded-full mb-4">
-                <feature.icon className="h-8 w-8 text-teal-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {feature.description}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left Column: Heading & Grid */}
+          <div>
+            <SlideUp className="mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
+                Adventure Is Just<br />One Click Away
+              </h2>
+              <p className="text-gray-600 text-lg max-w-lg">
+                Curated luxury escapes designed to recharge your soul. From serene beaches to five-star retreats, we'll get you there in style.
               </p>
-            </div>
-          ))}
+            </SlideUp>
+
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {features.map((feature) => (
+                <StaggerItem
+                  key={feature.id}
+                  className="bg-white rounded-3xl p-8 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100"
+                >
+                  <div className="flex justify-between items-start mb-6">
+                    <div className={`w-12 h-12 ${feature.bgColor} rounded-full flex items-center justify-center`}>
+                      <feature.icon className={`h-6 w-6 ${feature.color}`} />
+                    </div>
+                    <span className="text-gray-400 font-semibold">{feature.id}</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </div>
+
+          <FadeIn className="relative h-[600px] rounded-[40px] overflow-hidden shadow-2xl">
+            <ImageLoader
+              src="/images/posters/poster-34.jpg"
+              fallbackSrc="/images/posters/poster-adventure.jpg"
+              alt="Tropical Paradise"
+              height="h-full"
+              className="w-full h-full object-cover"
+            />
+          </FadeIn>
         </div>
       </div>
     </section>

@@ -43,6 +43,7 @@ export function StatsManagement() {
     landing: [],
     international: [],
     domestic: [],
+    gallery: [],
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<{
@@ -168,16 +169,15 @@ export function StatsManagement() {
       {/* Section Tabs */}
       <div className="border-b border-gray-200">
         <div className="flex gap-4">
-          {(["landing", "international", "domestic"] as TStatSection[]).map(
+          {(["landing", "international", "domestic", "gallery"] as TStatSection[]).map(
             (section) => (
               <button
                 key={section}
                 onClick={() => setActiveSection(section)}
-                className={`px-4 py-2 font-medium border-b-2 transition-colors capitalize ${
-                  activeSection === section
-                    ? "border-teal-600 text-teal-600"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
-                }`}
+                className={`px-4 py-2 font-medium border-b-2 transition-colors capitalize ${activeSection === section
+                  ? "border-teal-600 text-teal-600"
+                  : "border-transparent text-gray-600 hover:text-gray-900"
+                  }`}
               >
                 {section}
               </button>

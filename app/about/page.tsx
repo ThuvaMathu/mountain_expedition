@@ -1,11 +1,19 @@
 import { staticGalleryImages } from "@/lib/data/static-images";
 import Link from "next/link";
+import Image from "next/image";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { localBusinessSchema, organizationSchema } from "@/seo/schemas";
 import { generateAboutMetadata } from "@/seo/metadata/about";
-import { Awards2 } from "./awards";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
+import { LoadingAwards } from "./LoadingAwards";
+
+// Dynamic import for Awards component to reduce initial bundle size
+const Awards2 = dynamic(() => import("./awards").then(mod => ({ default: mod.Awards2 })), {
+  loading: () => <LoadingAwards />,
+  ssr: true,
+});
+
 export const metadata = generateAboutMetadata();
 
 export default function AboutPage() {
@@ -85,37 +93,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-teal-50 to-white" />
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
-            {/* <div>
-                <span className="inline-flex items-center rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-700 ring-1 ring-inset ring-teal-200">
-                  Seven Summits Pioneer
-                </span>
-                <h1 className="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-                  N. Muthamizh Selvi
-                </h1>
-                <p className="mt-3 text-lg text-gray-700">
-                  Also known as {'"'}Muthamil Selvi Narayanan{'"'}, she made
-                  history as the first person from Tamil Nadu to complete the
-                  Seven Summits, culminating with Denali on June 16, 2025.
-                  Reported by leading media, this milestone stands as a
-                  testament to resilience, leadership, and purpose-driven
-                  exploration.
-                </p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <a
-                    href="#timeline"
-                    className="inline-flex items-center justify-center rounded-md bg-teal-600 px-4 py-2 text-white shadow-sm hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
-                  >
-                    View Seven Summits Timeline
-                  </a>
-                  <a
-                    href="#support"
-                    className="inline-flex items-center justify-center rounded-md border border-teal-200 bg-white px-4 py-2 text-teal-700 hover:bg-teal-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
-                  >
-                    Support Her Journey
-                  </a>
-                </div>
-              </div> */}
-            <div>
+            <SlideUp>
               <span className="inline-flex items-center rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-700 ring-1 ring-inset ring-teal-200">
                 The Global Peak Warrior
               </span>
@@ -144,14 +122,18 @@ export default function AboutPage() {
                   Support Her Journey
                 </Link>
               </div>
-            </div>
-            <div className="relative">
-              <img
+            </SlideUp>
+            <FadeIn className="relative">
+              <Image
                 src="/mountaineer-female-teal.png"
                 alt="Portrait of N. Muthamizh Selvi on a snowy summit"
+                width={1200}
+                height={800}
+                priority
                 className="aspect-[3/2] w-full rounded-xl object-cover shadow-lg ring-1 ring-gray-200"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
-            </div>
+            </FadeIn>
           </div>
         </section>
       </header>
@@ -161,14 +143,17 @@ export default function AboutPage() {
         <section className="border-t border-gray-100 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
             <div className="grid gap-10 md:grid-cols-2 md:gap-14 ">
-              <div className="order-2 md:order-1 relative overflow-hidden rounded-xl ring-1 ring-gray-200">
-                <img
+              <FadeIn className="order-2 md:order-1 relative overflow-hidden rounded-xl ring-1 ring-gray-200">
+                <Image
                   src="/mountaineer-crevasse-rescue.png"
                   alt="Training and preparation on glacier terrain"
+                  width={800}
+                  height={1000}
                   className="h-full w-full object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
-              </div>
-              <div className="order-1 md:order-2">
+              </FadeIn>
+              <SlideUp className="order-1 md:order-2">
                 <h2 className="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                   Her Journey: Breaking Fear
                 </h2>
@@ -196,13 +181,13 @@ export default function AboutPage() {
                     See Vision & Goals
                   </Link>
                 </div>
-              </div>
+              </SlideUp>
             </div>
           </div>
         </section>
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
-            <div>
+            <SlideUp>
               <h1 className="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
                 Explore, Inspire, Conquer
               </h1>
@@ -232,20 +217,23 @@ export default function AboutPage() {
                   Support Her Journey
                 </Link>
               </div>
-            </div>
-            <div className="relative">
-              <img
+            </SlideUp>
+            <FadeIn className="relative">
+              <Image
                 src="/logos/logo.png"
-                alt="Portrait of N. Muthamizh Selvi on a snowy summit"
+                alt="Tamil Adventure Trekking Club Logo"
+                width={800}
+                height={533}
                 className="aspect-[3/2] w-full rounded-xl object-contain shadow-lg ring-1 ring-gray-200"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
-            </div>
+            </FadeIn>
           </div>
         </section>
         {/* Seven Summits Timeline */}
         <section id="timeline" className="border-t border-gray-100 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-            <div className="md:flex md:items-end md:justify-between">
+            <SlideUp className="md:flex md:items-end md:justify-between">
               <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                 Seven Summits Timeline
               </h2>
@@ -253,10 +241,10 @@ export default function AboutPage() {
                 A focused, time-bound journey across continents, executed with
                 precision logistics and safety-first decision-making.
               </p>
-            </div>
-            <ol className="mt-10 space-y-8">
+            </SlideUp>
+            <StaggerContainer as="ol" className="mt-10 space-y-8">
               {timeline.map((item, idx) => (
-                <li key={idx} className="relative pl-8">
+                <StaggerItem as="li" key={idx} className="relative pl-8">
                   <span className="absolute left-0 top-2 block h-5 w-5 rounded-full bg-teal-600 ring-4 ring-teal-100" />
                   <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -272,9 +260,9 @@ export default function AboutPage() {
                     </div>
                     <p className="mt-2 text-gray-700">{item.summary}</p>
                   </div>
-                </li>
+                </StaggerItem>
               ))}
-            </ol>
+            </StaggerContainer>
           </div>
         </section>
 
@@ -282,7 +270,7 @@ export default function AboutPage() {
         <section className="border-t border-gray-100 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
             <div className="grid gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+              <SlideUp className="lg:col-span-2">
                 <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                   Denali: The Ultimate Test of Will
                 </h2>
@@ -303,8 +291,8 @@ export default function AboutPage() {
                   from preparation, courage, and a relentless focus on the
                   mission.
                 </p>
-              </div>
-              <div className="rounded-xl border border-teal-200 bg-teal-50 p-6">
+              </SlideUp>
+              <FadeIn className="rounded-xl border border-teal-200 bg-teal-50 p-6">
                 <h3 className="text-lg font-semibold text-teal-900">
                   Achievement Highlights
                 </h3>
@@ -324,7 +312,7 @@ export default function AboutPage() {
                     tallest peaks.
                   </li>
                 </ul>
-              </div>
+              </FadeIn>
             </div>
           </div>
         </section>
@@ -332,11 +320,13 @@ export default function AboutPage() {
         {/* Achievements */}
         <section className="border-t border-gray-100 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              Achievements & Records
-            </h2>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <SlideUp>
+              <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+                Achievements & Records
+              </h2>
+            </SlideUp>
+            <StaggerContainer className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <StaggerItem className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="text-lg font-semibold text-gray-900">
                   Fastest Indian Woman to Conquer
                 </h3>
@@ -345,8 +335,8 @@ export default function AboutPage() {
                   tallest peaks on all seven continents) in just 2 years and 25
                   days.
                 </p>
-              </div>
-              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              </StaggerItem>
+              <StaggerItem className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="text-lg font-semibold text-gray-900">
                   First Tamil Woman on Everest
                 </h3>
@@ -354,8 +344,8 @@ export default function AboutPage() {
                   Became the first woman from Tamil Nadu to successfully stand
                   atop Mount Everest (8848 m) on May 23, 2023.
                 </p>
-              </div>
-              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              </StaggerItem>
+              <StaggerItem className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="text-lg font-semibold text-gray-900">
                   Seven Summits Pioneer
                 </h3>
@@ -363,8 +353,8 @@ export default function AboutPage() {
                   Achieved the complete Seven Summits feat, concluding the
                   historic journey on Denali (6190 m) on June 16, 2025.
                 </p>
-              </div>
-              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              </StaggerItem>
+              <StaggerItem className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="text-lg font-semibold text-gray-900">
                   Author & Storyteller
                 </h3>
@@ -373,8 +363,8 @@ export default function AboutPage() {
                   narrating her Everest expedition and mountaineering
                   accomplishments.
                 </p>
-              </div>
-              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              </StaggerItem>
+              <StaggerItem className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="text-lg font-semibold text-gray-900">
                   Professional Interpreter
                 </h3>
@@ -383,8 +373,8 @@ export default function AboutPage() {
                   (Freelancer), balancing a rigorous career with her
                   expeditions.
                 </p>
-              </div>
-              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              </StaggerItem>
+              <StaggerItem className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="text-lg font-semibold text-gray-900">
                   Inspirational Mission
                 </h3>
@@ -393,8 +383,8 @@ export default function AboutPage() {
                   challenges head-on, in line with her mantra of courage and
                   discipline.
                 </p>
-              </div>
-            </div>
+              </StaggerItem>
+            </StaggerContainer>
           </div>
         </section>
 
@@ -404,7 +394,7 @@ export default function AboutPage() {
         <section id="goals" className="border-t border-gray-100 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
             <div className="grid gap-8 lg:grid-cols-2">
-              <div>
+              <SlideUp>
                 <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                   Goals & Vision
                 </h2>
@@ -425,8 +415,8 @@ export default function AboutPage() {
                     first-time mountaineers to thrive outdoors.
                   </li>
                 </ul>
-              </div>
-              <div className="rounded-xl border border-teal-200 bg-teal-50 p-6">
+              </SlideUp>
+              <FadeIn className="rounded-xl border border-teal-200 bg-teal-50 p-6">
                 <h3 className="text-lg font-semibold text-teal-900">
                   How You Can Help
                 </h3>
@@ -449,7 +439,7 @@ export default function AboutPage() {
                     Partner With Us
                   </Link>
                 </div>
-              </div>
+              </FadeIn>
             </div>
           </div>
         </section>
@@ -457,7 +447,7 @@ export default function AboutPage() {
         {/* Media & Gallery */}
         <section className="border-t border-gray-100 bg-white">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-            <div className="md:flex md:items-end md:justify-between">
+            <SlideUp className="md:flex md:items-end md:justify-between">
               <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                 Media & Gallery
               </h2>
@@ -465,17 +455,23 @@ export default function AboutPage() {
                 Coverage highlights include major outlets such as Times of
                 India. Explore moments from training climbs to summit pushes.
               </p>
-            </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            </SlideUp>
+            <StaggerContainer className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {staticGalleryImages.slice(0, 8).map((img, i) => (
-                <img
+                <StaggerItem
                   key={i}
-                  src={img.src}
-                  alt={img.title}
-                  className="h-48 w-full rounded-lg object-cover ring-1 ring-gray-200"
-                />
+                  className="rounded-lg overflow-hidden ring-1 ring-gray-200 shadow-sm hover:shadow-lg transition-all relative h-48"
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.title}
+                    fill
+                    className="object-cover transition-transform duration-500 hover:scale-110"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  />
+                </StaggerItem>
               ))}
-            </div>{" "}
+            </StaggerContainer>
             <div className="text-center mt-12">
               <Link href="/gallery">
                 <Button
@@ -493,7 +489,7 @@ export default function AboutPage() {
         {/* Support / Get Involved */}
         <section id="support" className="border-t border-gray-100 bg-gray-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-            <div className="rounded-2xl bg-gradient-to-br from-teal-600 to-teal-700 p-8 sm:p-10 text-white shadow-lg">
+            <FadeIn className="rounded-2xl bg-gradient-to-br from-teal-600 to-teal-700 p-8 sm:p-10 text-white shadow-lg">
               <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
                 <div>
                   <h2 className="text-2xl font-bold sm:text-3xl">
@@ -526,7 +522,7 @@ export default function AboutPage() {
                     </a> */}
                 </div>
               </div>
-            </div>
+            </FadeIn>
             <p className="mt-4 text-center text-sm text-gray-500">
               For press and speaking engagements, please reach out via the
               contact page.

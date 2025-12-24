@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -17,16 +15,10 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import {
-  ref as storageRef,
-  uploadBytesResumable,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
-import { Save, Trash2, Edit3, ImageIcon, Upload, X } from "lucide-react";
+import { Save, Trash2, Edit3 } from "lucide-react";
 import dynamic from "next/dynamic";
 import RichTextEditor from "./rich-text-editor";
-import { processImages } from "@/lib/image-processor";
+import { ImageUploader } from "@/components/global/image-uploader";
 
 // const RichTextEditor = dynamic(() => import("./rich-text-editor"), {
 //   ssr: false,
@@ -41,6 +33,7 @@ const emptyPost: TBlogPostForm = {
   date: new Date().toISOString().slice(0, 10),
   published: false,
   mainImageUrl: "",
+  thumbnailUrl: "", // NEW: Thumbnail support
 };
 
 function slugify(input: string) {
@@ -59,9 +52,6 @@ export function BlogManagement() {
   const [tagsInput, setTagsInput] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const canUseStorage = useMemo(() => isFirebaseConfigured && !!storage, []);
 
@@ -86,6 +76,7 @@ export function BlogManagement() {
           date: v.date || new Date().toISOString().slice(0, 10),
           published: !!v.published,
           mainImageUrl: v.mainImageUrl || "",
+          thumbnailUrl: v.thumbnailUrl || "", // NEW: Load thumbnail
           createdAt: v.createdAt,
         };
       })
@@ -102,9 +93,9 @@ export function BlogManagement() {
       slug: f.title ? slugify(f.title) : "",
       tags: tagsInput
         ? tagsInput
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean)
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
         : [],
     }));
   }, [tagsInput, form.title]);
@@ -114,9 +105,6 @@ export function BlogManagement() {
     setBlogContent("");
     setTagsInput("");
     setEditingId(null);
-    setUploading(false);
-    setUploadProgress(0);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const save = async () => {
@@ -132,6 +120,7 @@ export function BlogManagement() {
         date: form.date,
         published: form.published || false,
         mainImageUrl: form.mainImageUrl || "",
+        thumbnailUrl: form.thumbnailUrl || "", // NEW: Save thumbnail
       };
 
       if (!isFirebaseConfigured || !db) {
@@ -155,14 +144,14 @@ export function BlogManagement() {
       if (editingId) {
         // Update: set updatedAt
         await updateDoc(doc(db, "posts", editingId), {
-           ...basePayload,
-           updatedAt: serverTimestamp() 
+          ...basePayload,
+          updatedAt: serverTimestamp()
         });
       } else {
         // Create: set createdAt
-        await addDoc(collection(db, "posts"), { 
-            ...basePayload,
-            createdAt: serverTimestamp() 
+        await addDoc(collection(db, "posts"), {
+          ...basePayload,
+          createdAt: serverTimestamp()
         });
       }
       await load();
@@ -200,6 +189,7 @@ export function BlogManagement() {
       date: p.createdAt,
       published: !!p.published,
       mainImageUrl: p.mainImageUrl || "",
+      thumbnailUrl: p.thumbnailUrl || "", // NEW: Load thumbnail for editing
     };
     console.log("Editing post:", p, "temp:", temp);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -228,82 +218,6 @@ export function BlogManagement() {
       console.error(e);
       alert("Delete failed");
     }
-  };
-
-  const handleSelectFile = () => {
-    fileInputRef.current?.click();
-  };
-
-  const onFileChange: React.ChangeEventHandler<HTMLInputElement> = async (
-    e
-  ) => {
-    const files = e.target.files?.[0];
-    if (!files) return;
-
-    if (!canUseStorage || !storage) {
-      return;
-    }
-
-    try {
-      const processedFile = await processImages(files, {
-        aspectRatio: "16:9",
-        targetSizeKB: 350,
-      });
-      // Show preview immediately
-      const file = processedFile[0];
-      const localUrl = URL.createObjectURL(file);
-      setForm((f) => ({ ...f, mainImageUrl: localUrl }));
-
-      setUploading(true);
-      setUploadProgress(0);
-      const key = `blog/main-images/${Date.now()}_${file.name.replace(
-        /\s+/g,
-        "_"
-      )}`;
-      const refObj = storageRef(storage, key);
-      const task = uploadBytesResumable(refObj, file);
-
-      task.on(
-        "state_changed",
-        (snap) => {
-          const pct = (snap.bytesTransferred / snap.totalBytes) * 100;
-          setUploadProgress(Number(pct.toFixed(0)));
-        },
-        (err) => {
-          console.error(err);
-          alert("Upload failed");
-          setUploading(false);
-        },
-        async () => {
-          const url = await getDownloadURL(task.snapshot.ref);
-          setForm((f) => ({ ...f, mainImageUrl: url }));
-          setUploading(false);
-        }
-      );
-    } catch (e) {
-      console.error(e);
-      alert("Upload failed");
-      setUploading(false);
-    }
-  };
-
-  const removeImage = async () => {
-    if (!form.mainImageUrl) return;
-    if (!confirm("Remove main image?")) return;
-
-    // Try delete from storage if it's a Firebase URL
-    if (canUseStorage && storage && form.mainImageUrl.startsWith("https://")) {
-      try {
-        // We cannot directly map URL to path in all cases; attempt best-effort by refFromURL
-        const refFromUrl = (await import("firebase/storage")).ref;
-        const r = refFromUrl(storage, form.mainImageUrl);
-        await deleteObject(r);
-      } catch {
-        // Ignore if not deletable
-      }
-    }
-    setForm((f) => ({ ...f, mainImageUrl: "" }));
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -387,66 +301,21 @@ export function BlogManagement() {
             Keep it under 160 characters.
           </p>
         </div>
-        {/* Main image uploader */}
+        {/* Main image uploader with thumbnail generation */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Main Image
           </label>
-          <div className="flex flex-col md:flex-row gap-4 items-start">
-            <div className="relative w-full md:w-72 aspect-[16/10] overflow-hidden rounded-lg border bg-gray-50">
-              {form.mainImageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={form.mainImageUrl || "/placeholder.svg"}
-                  alt="Main"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="h-full w-full flex items-center justify-center text-gray-400">
-                  <ImageIcon className="h-10 w-10" />
-                </div>
-              )}
-              {uploading ? (
-                <div className="absolute inset-x-0 bottom-0 h-1 bg-gray-200">
-                  <div
-                    className="h-full bg-teal-600 transition-all"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
-              ) : null}
-            </div>
-
-            <div className="flex gap-2">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={onFileChange}
-                className="hidden"
-              />
-              <Button
-                type="button"
-                onClick={handleSelectFile}
-                className="bg-teal-600 hover:bg-teal-700"
-              >
-                <Upload className="h-4 w-4 mr-2" />{" "}
-                {form.mainImageUrl ? "Replace Image" : "Upload Image"}
-              </Button>
-              {form.mainImageUrl ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={removeImage}
-                  className="bg-transparent"
-                >
-                  <X className="h-4 w-4 mr-2" /> Remove
-                </Button>
-              ) : null}
-            </div>
-          </div>
+          <ImageUploader
+            isMulti={false}
+            bucketName="blog/main-images"
+            onImageUpload={(urls) => setForm(f => ({ ...f, mainImageUrl: urls[0] || "" }))}
+            initialUrls={form.mainImageUrl ? [form.mainImageUrl] : []}
+            generateThumbnail={true}
+            onThumbnailGenerated={(url) => setForm(f => ({ ...f, thumbnailUrl: url }))}
+          />
           <p className="mt-2 text-xs text-gray-500">
-            Recommended aspect ratio 16:10 or 16:9. Images are stored in
-            Firebase Storage when configured.
+            Recommended aspect ratio 16:10 or 16:9. Thumbnail will be generated automatically for faster page loads.
           </p>
         </div>
 

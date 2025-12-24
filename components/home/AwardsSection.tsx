@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FadeIn, SlideUp } from "../ui/motion-wrapper";
 
 // Combined awards data for the carousel
 const allAwards = [
@@ -55,25 +57,14 @@ const allAwards = [
 export function AwardsSection() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
-    align: "center",
-    containScroll: "trimSnaps",
+    align: "start",
+    skipSnaps: false,
+    dragFree: false,
   }, [
-    Autoplay({ delay: 4000, stopOnInteraction: false })
+    Autoplay({ delay: 3000, stopOnInteraction: false, rootNode: (emblaRoot) => emblaRoot.parentElement })
   ]);
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
-  }, [emblaApi, onSelect]);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -81,66 +72,63 @@ export function AwardsSection() {
   return (
     <section className="py-20 bg-gray-50 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <SlideUp className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Awards & Recognition
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Celebrating excellence and historic achievements in mountaineering across the globe.
           </p>
-        </div>
+        </SlideUp>
 
         <div className="relative max-w-7xl mx-auto">
           {/* Carousel Viewport */}
-          <div className="overflow-hidden py-10" ref={emblaRef}>
-            <div className="flex touch-pan-y">
-              {allAwards.map((award, index) => {
-                const isSelected = index === selectedIndex;
-                return (
-                  <div
-                    key={index}
-                    className="flex-[0_0_80%] md:flex-[0_0_40%] lg:flex-[0_0_30%] min-w-0 px-4 transition-all duration-500 ease-out"
-                    style={{
-                      transform: isSelected ? "scale(1.1)" : "scale(0.9)",
-                      opacity: isSelected ? 1 : 0.7,
-                      zIndex: isSelected ? 10 : 1,
-                    }}
-                  >
-                    <div className={cn(
-                      "relative h-[400px] rounded-2xl overflow-hidden shadow-lg transition-shadow duration-300",
-                      isSelected ? "shadow-2xl ring-4 ring-teal-500/20" : ""
-                    )}>
-                      {/* Image */}
-                      <img
-                        src={award.image}
-                        alt={award.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      
-                      {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+          <FadeIn>
+            <div className="overflow-hidden py-10" ref={emblaRef}>
+              <div className="flex touch-pan-y">
+                {allAwards.map((award, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="flex-[0_0_80%] md:flex-[0_0_40%] lg:flex-[0_0_30%] min-w-0 px-4"
+                    >
+                      <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group">
+                        {/* Image */}
 
-                      {/* Content */}
-                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white text-center transform transition-transform duration-300">
-                        <span className="inline-block px-3 py-1 bg-teal-600 text-xs font-semibold rounded-full mb-3">
-                          {award.category}
-                        </span>
-                        <h3 className="text-2xl font-bold mb-1 leading-tight">
-                          {award.title}
-                        </h3>
-                        <p className="text-gray-300 text-sm font-medium mb-2">
-                          {award.subtitle}
-                        </p>
-                        <p className="text-gray-400 text-xs uppercase tracking-widest">
-                          {award.date}
-                        </p>
+
+                        <Image
+                          src={award.image}
+                          alt={award.title}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          sizes="(max-width: 768px) 80vw, (max-width: 1200px) 40vw, 30vw"
+                        />
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+
+                        {/* Content */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white text-center transform transition-transform duration-300 translate-y-2 group-hover:translate-y-0">
+                          <span className="inline-block px-3 py-1 bg-teal-600 text-xs font-semibold rounded-full mb-3">
+                            {award.category}
+                          </span>
+                          <h3 className="text-2xl font-bold mb-1 leading-tight">
+                            {award.title}
+                          </h3>
+                          <p className="text-gray-300 text-sm font-medium mb-2">
+                            {award.subtitle}
+                          </p>
+                          <p className="text-gray-400 text-xs uppercase tracking-widest">
+                            {award.date}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </FadeIn>
 
           {/* Navigation Buttons */}
           <div className="flex justify-center items-center gap-6 mt-8">
@@ -161,7 +149,7 @@ export function AwardsSection() {
           </div>
         </div>
       </div>
-    </section>
+    </section >
   );
 }
 

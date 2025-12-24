@@ -15,6 +15,9 @@ const isDevelopment = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://tamiladventuretrekkingclub.com"
+  ),
   title: "Tamil Adventure Treckking Club - Global Mountain Expedition Booking",
   description:
     "Book your next mountain adventure with Tamil Adventure Treckking Club. Explore the Seven Summits, Himalayas, and Indian peaks with expert guides.",
@@ -30,15 +33,15 @@ export const metadata: Metadata = {
   generator: "v0.app",
   robots: isDevelopment
     ? {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
         index: false,
         follow: false,
-        nocache: true,
-        googleBot: {
-          index: false,
-          follow: false,
-          noimageindex: true,
-        },
-      }
+        noimageindex: true,
+      },
+    }
     : undefined,
 };
 
@@ -71,7 +74,7 @@ export default function RootLayout({
           draggable
           pauseOnHover
           theme="light"
-          //transition={""}
+        //transition={""}
         />
       </body>
     </html>

@@ -6,6 +6,8 @@ export interface ProcessImageOptions {
   aspectRatio?: AspectRatio; // ✅ optional
   targetSizeKB?: number;
   outputFormat?: "image/jpeg" | "image/png" | "image/webp";
+  width?: number;
+  height?: number;
 }
 
 /**
@@ -30,6 +32,8 @@ export async function processImages(
     aspectRatio = "original", // ✅ default: keep original size
     targetSizeKB = 250,
     outputFormat = "image/jpeg",
+    width,
+    height,
   }: ProcessImageOptions
 ): Promise<File[]> {
   console.log("Processing images ...");
@@ -43,8 +47,13 @@ export async function processImages(
       let targetWidth = imageBitmap.width;
       let targetHeight = imageBitmap.height;
 
-      // Override only if aspect ratio is provided
-      if (aspectRatio !== "original") {
+      // Override if explicit dimensions are provided
+      if (width && height) {
+        targetWidth = width;
+        targetHeight = height;
+      }
+      // Else check aspect ratio
+      else if (aspectRatio !== "original") {
         const preset = ASPECT_RATIO_SIZES[aspectRatio];
         targetWidth = preset.width;
         targetHeight = preset.height;

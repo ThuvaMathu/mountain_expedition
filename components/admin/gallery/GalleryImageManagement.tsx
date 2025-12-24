@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { db, storage, isFirebaseConfigured } from "@/lib/firebase";
+import { db, isFirebaseConfigured } from "@/lib/firebase";
 import {
   addDoc,
   collection,
@@ -12,22 +12,23 @@ import {
   getDocs,
   serverTimestamp,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Upload, Trash2 } from "lucide-react";
-import { processImages } from "@/lib/image-processor";
+import { ImageUploader } from "@/components/global/image-uploader";
 
 type GalleryItem = {
   id?: string;
   title: string;
   url: string;
+  thumbnailUrl?: string; // NEW: Optimized thumbnail
   mountainId?: string;
   createdAt?: any;
 };
 
 export function GalleryImageManagement() {
   const [items, setItems] = useState<GalleryItem[]>([]);
-  const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
 
@@ -58,26 +59,17 @@ export function GalleryImageManagement() {
   }, []);
 
   const upload = async () => {
-    if (!file) return;
+    if (!imageUrl) {
+      alert("Please upload an image first");
+      return;
+    }
     setLoading(true);
 
     try {
-      let url = "";
-      const processedFile = await processImages(file, {
-        aspectRatio: "original",
-        targetSizeKB: 250,
-      });
-      if (isFirebaseConfigured && storage) {
-        const storageRef = ref(storage, `gallery/${Date.now()}_${file.name}`);
-        await uploadBytes(storageRef, file);
-        url = await getDownloadURL(storageRef);
-      } else {
-        url = URL.createObjectURL(file); // demo blob URL
-      }
-
       const payload = {
-        title: title || file.name,
-        url,
+        title: title || "Gallery Image",
+        url: imageUrl,
+        thumbnailUrl: thumbnailUrl || "", // NEW: Save thumbnail
         createdAt: serverTimestamp(),
       };
 
@@ -91,8 +83,10 @@ export function GalleryImageManagement() {
         await loadGalleryItems();
       }
 
-      setFile(null);
+      // Reset form
       setTitle("");
+      setImageUrl("");
+      setThumbnailUrl("");
     } catch (e) {
       console.error(e);
       alert("Upload failed");
@@ -159,17 +153,7 @@ export function GalleryImageManagement() {
         <h2 className="text-lg font-semibold text-gray-900">
           Upload New Image
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image
-            </label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
-            />
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Title
@@ -177,23 +161,28 @@ export function GalleryImageManagement() {
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Optional title"
+              placeholder="Image title"
             />
           </div>
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Mountain ID (optional)
-            </label>
-            <Input
-              value={mountainId}
-              onChange={(e) => setMountainId(e.target.value)}
-              placeholder="Link to mountain"
-            />
-          </div> */}
         </div>
+
+        <div>
+          <ImageUploader
+            isMulti={false}
+            bucketName="gallery"
+            onImageUpload={(urls) => setImageUrl(urls[0] || "")}
+            initialUrls={imageUrl ? [imageUrl] : []}
+            generateThumbnail={true}
+            onThumbnailGenerated={(url) => setThumbnailUrl(url)}
+          />
+          <p className="mt-2 text-xs text-gray-500">
+            Thumbnail will be generated automatically for faster page loads.
+          </p>
+        </div>
+
         <Button
           onClick={upload}
-          disabled={!file || loading}
+          disabled={!imageUrl || loading}
           className="bg-teal-600 hover:bg-teal-700"
         >
           <Upload className="h-4 w-4 mr-2" />
@@ -217,7 +206,7 @@ export function GalleryImageManagement() {
                 className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow"
               >
                 <img
-                  src={item.url || "/placeholder.svg"}
+                  src={item.thumbnailUrl || item.url || "/placeholder.svg"}
                   alt={item.title}
                   className="w-full h-48 object-cover"
                 />
@@ -225,6 +214,11 @@ export function GalleryImageManagement() {
                   <div className="font-medium text-gray-900 mb-1">
                     {item.title}
                   </div>
+                  {item.thumbnailUrl && (
+                    <div className="text-xs text-teal-600 mb-2">
+                      ✓ Thumbnail optimized
+                    </div>
+                  )}
                   {item.mountainId && (
                     <div className="text-xs text-gray-600 mb-2">
                       Mountain: {item.mountainId}

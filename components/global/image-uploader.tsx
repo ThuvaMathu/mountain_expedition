@@ -17,6 +17,8 @@ interface ImageUploaderProps {
   bucketName: string;
   onImageUpload: (urls: string[]) => void;
   initialUrls?: string[];
+  generateThumbnail?: boolean;
+  onThumbnailGenerated?: (url: string) => void;
 }
 
 export const ImageUploader: React.FC<ImageUploaderProps> = ({
@@ -24,16 +26,20 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   bucketName,
   onImageUpload,
   initialUrls = [],
+  generateThumbnail = false,
+  onThumbnailGenerated,
 }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadedUrls, setUploadedUrls] = useState<string[]>([...initialUrls]);
+  const uploadedUrlsRef = useRef<string[]>([...initialUrls]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // ✅ Only update uploadedUrls when initialUrls actually changes
   useEffect(() => {
     setUploadedUrls([...initialUrls]);
+    uploadedUrlsRef.current = [...initialUrls];
   }, [initialUrls]);
 
   const handleFileSelect: React.ChangeEventHandler<HTMLInputElement> = async (
@@ -49,7 +55,42 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       setSelectedFiles((prev) => [...prev, ...fileList]);
     }
 
+    // Upload files sequentially or parallel? Parallel is fine.
+    // For thumbnail, we only generate for the FIRST image if no images exist yet, OR the first one in this batch.
+    // Let's generate for the first file in this batch if we don't have a thumbnail or just typically the first one.
+
+    // We will generate thumbnail for the first file in the list
+    if (generateThumbnail && onThumbnailGenerated && fileList.length > 0) {
+      // Process thumbnail in parallel
+      uploadThumbnail(fileList[0]).catch(console.error);
+    }
+
     await Promise.all(fileList.map((file) => uploadFile(file)));
+  };
+
+  const uploadThumbnail = async (file: File) => {
+    try {
+      console.log("Generating thumbnail...");
+      // Generate 500px width thumbnail (16:9 approx)
+      const processed = await processImages(file, {
+        width: 500,
+        height: 281, // 16:9 aspect ratio
+        targetSizeKB: 50, // Small size
+        outputFormat: "image/webp"
+      });
+
+      const key = `${bucketName}/thumbnails/${Date.now()}_thumb_${processed[0].name}`;
+      const refObj = storageRef(storage!, key);
+      await uploadBytesResumable(refObj, processed[0]);
+      const url = await getDownloadURL(refObj);
+
+      if (onThumbnailGenerated) {
+        onThumbnailGenerated(url);
+      }
+      console.log("Thumbnail generated:", url);
+    } catch (error) {
+      console.error("Thumbnail generation failed:", error);
+    }
   };
 
   const uploadFile = async (file: File) => {
@@ -84,8 +125,19 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
           async () => {
             const url = await getDownloadURL(task.snapshot.ref);
             const tempUrls = [...uploadedUrls, url];
-            onImageUpload(tempUrls);
-            setUploadedUrls(tempUrls);
+            // Note: In React state updates are async, so using callback form or ref is better if multiple updates happen fast.
+            // But for now, we rely on parent to handle source of truth or just local update. 
+            // Better: passing functional update to setUploadedUrls isn't enough because we need to call onImageUpload with new list.
+            // We'll trust the prop callback re-renders or we just append locally correctly.
+            // Actually, we should probably read the LATEST uploadedUrls. This simplistic logic has a race condition if multiple files upload at once.
+            // Fix: modify based on prev state.
+            // Update via Ref to avoid race conditions
+            const newUrls = [...uploadedUrlsRef.current, url];
+            uploadedUrlsRef.current = newUrls;
+
+            setUploadedUrls(newUrls);
+            onImageUpload(newUrls);
+
             setUploading(false);
             resolve();
           }
@@ -109,7 +161,8 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     } catch (e) {
       console.warn("Couldn't delete from storage:", e);
     }
-    const tempUrls = uploadedUrls.filter((_, i) => i !== index);
+    const tempUrls = uploadedUrlsRef.current.filter((_, i) => i !== index);
+    uploadedUrlsRef.current = tempUrls;
     setUploadedUrls(tempUrls);
     onImageUpload(tempUrls);
   };

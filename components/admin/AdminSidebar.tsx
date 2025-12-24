@@ -12,10 +12,10 @@ import {
   Settings,
   ClipboardList,
   Bus,
- // MessageSquare,
+  // MessageSquare,
   MessageSquare,
   X,
-  LogOut, 
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
 import AppLogo from "../ui/app-logo";
@@ -37,7 +37,7 @@ export function AdminSidebar({
     { id: "dashboard", label: "Dashboard", icon: BarChart3 },
     { id: "booking", label: "Bookings", icon: ClipboardList },
     { id: "trourist", label: "Tour & Travel", icon: Bus },
-    { id: "mountains", label: "Mountains", icon: Mountain },
+    { id: "mountains", label: "Trekking", icon: Mountain },
     { id: "blog", label: "Blog Posts", icon: FileText },
     { id: "gallery", label: "Gallery", icon: ImageIcon },
     { id: "stats", label: "Statistics", icon: BarChart2 },
@@ -58,15 +58,14 @@ export function AdminSidebar({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="h-full grid grid-rows-[auto_auto_minmax(0,1fr)_auto] bg-white border-r">
           <div className="p-4 border-b flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
-               <AppLogo isWithText={false} size="small" />
-               <span className="font-bold text-teal-700">Tamil Adventure</span>
+              <AppLogo isWithText={false} size="small" />
+              <span className="font-bold text-teal-700">Tamil Adventure</span>
             </Link>
             <button
               onClick={onClose}
@@ -75,9 +74,9 @@ export function AdminSidebar({
               <X className="h-6 w-6" />
             </button>
           </div>
-          
+
           <div className="px-6 py-4 border-b">
-             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
               <Settings className="h-4 w-4" /> Admin Panel
             </h2>
           </div>
@@ -90,11 +89,10 @@ export function AdminSidebar({
                   setActiveTab(item.id);
                   onClose(); // Close sidebar on selection (mobile)
                 }}
-                className={`w-full flex items-center px-6 py-3 text-left hover:bg-gray-50 transition-colors ${
-                  activeTab === item.id
+                className={`w-full flex items-center px-6 py-3 text-left hover:bg-gray-50 transition-colors ${activeTab === item.id
                     ? "bg-teal-50 text-teal-700 border-r-2 border-teal-600"
                     : "text-gray-700"
-                }`}
+                  }`}
               >
                 <item.icon className="h-5 w-5 mr-3 flex-shrink-0" />
                 {item.label}

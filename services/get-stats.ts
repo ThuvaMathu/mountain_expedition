@@ -1,7 +1,7 @@
 import { adminDb } from "@/lib/firebase-admin";
 import { defaultStats } from "./default-values";
 
-type StatSection = "landing" | "international" | "domestic";
+type StatSection = "landing" | "international" | "domestic" | "gallery";
 
 type TStat = {
   id?: string;
@@ -13,16 +13,26 @@ type TStat = {
 };
 
 export async function getStats(section: StatSection): Promise<TStat[]> {
-  try {
-    const statsRef = adminDb
-      .collection("stats")
-      .doc(section)
-      .collection("items");
+  // Return defaults immediately if Firebase is not configured
+  if (!adminDb) {
+    return defaultStats[section] || [];
+  }
 
+  try {
+    // Check if the document exists first to avoid NOT_FOUND errors
+    const docRef = adminDb.collection("stats").doc(section);
+    const doc = await docRef.get();
+    
+    if (!doc.exists) {
+      // Document doesn't exist, use defaults silently
+      return defaultStats[section] || [];
+    }
+
+    // Document exists, now get the items subcollection
+    const statsRef = docRef.collection("items");
     const snapshot = await statsRef.get();
 
     if (snapshot.empty) {
-      console.log(`No ${section} stats found, using defaults`);
       return defaultStats[section] || [];
     }
 
@@ -40,19 +50,23 @@ export async function getStats(section: StatSection): Promise<TStat[]> {
     });
 
     return stats.sort((a, b) => (a.order || 0) - (b.order || 0));
-  } catch (error) {
-    console.error(`Error fetching ${section} stats:`, error);
+  } catch (error: any) {
+    // Only log unexpected errors, NOT_FOUND is expected when collection doesn't exist
+    if (error?.code !== 5 && !error?.message?.includes("NOT_FOUND")) {
+      console.error(`Error fetching ${section} stats:`, error);
+    }
     return defaultStats[section] || [];
   }
 }
 
 // Helper to get all sections
 export async function getAllStats(): Promise<Record<StatSection, TStat[]>> {
-  const [landing, international, domestic] = await Promise.all([
+  const [landing, international, domestic, gallery] = await Promise.all([
     getStats("landing"),
     getStats("international"),
     getStats("domestic"),
+    getStats("gallery"),
   ]);
 
-  return { landing, international, domestic };
+  return { landing, international, domestic, gallery };
 }

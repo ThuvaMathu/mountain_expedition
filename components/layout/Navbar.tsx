@@ -16,6 +16,7 @@ import {
   MapPin,
   Plane,
   ChevronDown,
+  Compass,
 } from "lucide-react";
 import AppLogo from "../ui/app-logo";
 import { CurrencySelector } from "./navbar/currency-selector";
@@ -56,20 +57,14 @@ export function Navbar() {
             >
               {t("about")}
             </Link>
-            <Link
-              href="/mountains"
-              className="text-gray-700 hover:text-teal-600 transition-colors"
-            >
-              {t("mountains")}
-            </Link>
 
-            {/* Tourist Dropdown */}
+            {/* Adventures Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setIsTouristDropdownOpen(!isTouristDropdownOpen)}
                 className="flex items-center space-x-1 text-gray-700 hover:text-teal-600 transition-colors"
               >
-                <span>Tourist Packages</span>
+                <span>Adventures</span>
                 <ChevronDown className="h-4 w-4" />
               </button>
 
@@ -77,41 +72,28 @@ export function Navbar() {
                 <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-50">
                   <div className="py-2">
                     <Link
-                      href="/tourist"
+                      href="/tours"
                       className="flex items-center px-4 py-2 text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition-colors"
                       onClick={() => setIsTouristDropdownOpen(false)}
                     >
                       <Globe className="h-4 w-4 mr-3 text-teal-600" />
                       <div>
-                        <div className="font-medium">All Packages</div>
+                        <div className="font-medium">Tours</div>
                         <div className="text-xs text-gray-500">
-                          Browse all destinations
+                          Explore Global & Domestic
                         </div>
                       </div>
                     </Link>
                     <Link
-                      href="/tourist/domestic"
+                      href="/trekking"
                       className="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                       onClick={() => setIsTouristDropdownOpen(false)}
                     >
-                      <MapPin className="h-4 w-4 mr-3 text-blue-600" />
+                      <Mountain className="h-4 w-4 mr-3 text-blue-600" />
                       <div>
-                        <div className="font-medium">Domestic</div>
+                        <div className="font-medium">Trekking</div>
                         <div className="text-xs text-gray-500">
-                          Explore India
-                        </div>
-                      </div>
-                    </Link>
-                    <Link
-                      href="/tourist/international"
-                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
-                      onClick={() => setIsTouristDropdownOpen(false)}
-                    >
-                      <Plane className="h-4 w-4 mr-3 text-purple-600" />
-                      <div>
-                        <div className="font-medium">International</div>
-                        <div className="text-xs text-gray-500">
-                          Discover the world
+                          Mountain Expeditions
                         </div>
                       </div>
                     </Link>
@@ -132,15 +114,15 @@ export function Navbar() {
             >
               {t("blog")}
             </Link>
+            <Link
+              href="/Contact"
+              className="text-gray-700 hover:text-teal-600 transition-colors"
+            >
+              {t("Contact")}
+            </Link>
 
             {/* Currency Selector */}
             <CurrencySelector variant="desktop" />
-
-            {/* Language Toggle - Commented out as per original */}
-            {/* <Button variant="ghost" size="sm" onClick={toggleLanguage} className="flex items-center space-x-1">
-              <Globe className="h-4 w-4" />
-              <span>{language === "en" ? "EN" : "TA"}</span>
-            </Button> */}
 
             {/* User Selector */}
             <UserSelector variant="desktop" />
@@ -174,42 +156,33 @@ export function Navbar() {
                 {t("home")}
               </Link>
               <Link
-                href="/mountains"
+                href="/about"
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
                 onClick={() => setIsOpen(false)}
               >
-                {t("mountains")}
+                {t("about")}
               </Link>
-
-              {/* Mobile Tourist Package Links */}
+              {/* Mobile Adventures Links */}
               <div className="px-3 py-2">
                 <div className="text-gray-900 font-medium mb-2">
-                  Tourist Packages
+                  Adventures
                 </div>
                 <div className="pl-4 space-y-1">
                   <Link
-                    href="/tourist"
+                    href="/tours"
                     className="flex items-center py-1 text-gray-600 hover:text-teal-600"
                     onClick={() => setIsOpen(false)}
                   >
                     <Globe className="h-4 w-4 mr-2" />
-                    All Packages
+                    Tours
                   </Link>
                   <Link
-                    href="/tourist/domestic"
+                    href="/trekking"
                     className="flex items-center py-1 text-gray-600 hover:text-blue-600"
                     onClick={() => setIsOpen(false)}
                   >
-                    <MapPin className="h-4 w-4 mr-2" />
-                    Domestic
-                  </Link>
-                  <Link
-                    href="/tourist/international"
-                    className="flex items-center py-1 text-gray-600 hover:text-purple-600"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <Plane className="h-4 w-4 mr-2" />
-                    International
+                    <Mountain className="h-4 w-4 mr-2" />
+                    Trekking
                   </Link>
                 </div>
               </div>
@@ -229,28 +202,15 @@ export function Navbar() {
                 {t("blog")}
               </Link>
               <Link
-                href="/about"
+                href="/contact"
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
                 onClick={() => setIsOpen(false)}
               >
-                {t("about")}
+                {t("contact")}
               </Link>
 
               {/* Mobile Currency Selector */}
               <CurrencySelector variant="mobile" />
-
-              {/* Mobile Language Toggle */}
-              {/* <div className="px-3 py-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleLanguage}
-                  className="flex items-center space-x-1"
-                >
-                  <Globe className="h-4 w-4" />
-                  <span>{language === "en" ? "English" : "தமிழ்"}</span>
-                </Button>
-              </div> */}
 
               {/* Mobile User Selector */}
               <UserSelector variant="mobile" />

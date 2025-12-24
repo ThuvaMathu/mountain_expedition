@@ -85,6 +85,32 @@ export const defaultStats: Record<TStatSection, TStat[]> = {
       order: 3,
     },
   ],
+  gallery: [
+    {
+      id: "shared-stories",
+      title: "Shared Stories",
+      value: "500+",
+      description: "",
+      icon: "BookOpen",
+      order: 1,
+    },
+    {
+      id: "photos",
+      title: "Photos",
+      value: "2K+",
+      description: "",
+      icon: "Camera",
+      order: 2,
+    },
+    {
+      id: "mountains",
+      title: "Mountains",
+      value: "50+",
+      description: "",
+      icon: "Mountain",
+      order: 3,
+    },
+  ],
 };
 export const fallbackContactDetails: TContactDetails = {
   email: "info@tamiladventuretrekkingclub.com",

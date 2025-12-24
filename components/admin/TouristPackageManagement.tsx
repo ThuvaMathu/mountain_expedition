@@ -145,8 +145,8 @@ export default function TourAndTravelManagement() {
       // Calculate total available slots
       const totalAvailableSlots = form.availableDates?.reduce((total, date) => {
         const slotsCallback = date.slots?.reduce((dTotal, slot) => {
-            const available = (slot.maxParticipants || 0) - (slot.bookedParticipants || 0);
-            return dTotal + (available > 0 ? available : 0);
+          const available = (slot.maxParticipants || 0) - (slot.bookedParticipants || 0);
+          return dTotal + (available > 0 ? available : 0);
         }, 0) || 0;
         return total + slotsCallback;
       }, 0) || 0;
@@ -346,11 +346,10 @@ export default function TourAndTravelManagement() {
                   category: "domestic",
                 })
               }
-              className={`flex items-center justify-center space-x-2 p-4 rounded-lg border-2 transition-all ${
-                form.category === "domestic"
+              className={`flex items-center justify-center space-x-2 p-4 rounded-lg border-2 transition-all ${form.category === "domestic"
                   ? "border-teal-600 bg-teal-100 text-teal-700"
                   : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
-              }`}
+                }`}
             >
               <MapPin className="h-5 w-5" />
               <div className="text-left">
@@ -366,11 +365,10 @@ export default function TourAndTravelManagement() {
                   category: "international",
                 })
               }
-              className={`flex items-center justify-center space-x-2 p-4 rounded-lg border-2 transition-all ${
-                form.category === "international"
+              className={`flex items-center justify-center space-x-2 p-4 rounded-lg border-2 transition-all ${form.category === "international"
                   ? "border-teal-600 bg-teal-100 text-teal-700"
                   : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
-              }`}
+                }`}
             >
               <Plane className="h-5 w-5" />
               <div className="text-left">
@@ -681,6 +679,8 @@ export default function TourAndTravelManagement() {
           bucketName="tourist-packages"
           onImageUpload={(urls) => setForm({ ...form, imageUrl: urls })}
           initialUrls={initialUrls}
+          generateThumbnail={true}
+          onThumbnailGenerated={(url) => setForm((prev) => ({ ...prev, thumbnailUrl: url }))}
         />
       </div>
       {/* Available Dates & Time Slots Section */}
@@ -861,22 +861,20 @@ export default function TourAndTravelManagement() {
                             </div> */}
                             <div>
                               <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  slot.bookedParticipants >=
-                                  slot.maxParticipants
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${slot.bookedParticipants >=
+                                    slot.maxParticipants
                                     ? "bg-red-100 text-red-700"
                                     : slot.bookedParticipants >
                                       slot.maxParticipants * 0.8
-                                    ? "bg-yellow-100 text-yellow-700"
-                                    : "bg-green-100 text-green-700"
-                                }`}
+                                      ? "bg-yellow-100 text-yellow-700"
+                                      : "bg-green-100 text-green-700"
+                                  }`}
                               >
                                 {slot.bookedParticipants >= slot.maxParticipants
                                   ? "Full"
-                                  : `${
-                                      slot.maxParticipants -
-                                      slot.bookedParticipants
-                                    } spots left`}
+                                  : `${slot.maxParticipants -
+                                  slot.bookedParticipants
+                                  } spots left`}
                               </span>
                             </div>
                           </div>
@@ -928,8 +926,8 @@ export default function TourAndTravelManagement() {
           {loading
             ? "Saving..."
             : editingId
-            ? "Update Package"
-            : "Create Package"}
+              ? "Update Package"
+              : "Create Package"}
         </Button>
         {editingId && (
           <Button
@@ -943,15 +941,14 @@ export default function TourAndTravelManagement() {
         )}
         {notice && (
           <div
-            className={`text-sm px-3 py-2 rounded-md ${
-              notice.includes("success") ||
-              notice.includes("created") ||
-              notice.includes("updated")
+            className={`text-sm px-3 py-2 rounded-md ${notice.includes("success") ||
+                notice.includes("created") ||
+                notice.includes("updated")
                 ? "bg-green-100 text-green-700"
                 : notice.includes("Failed") || notice.includes("error")
-                ? "bg-red-100 text-red-700"
-                : "bg-blue-100 text-blue-700"
-            }`}
+                  ? "bg-red-100 text-red-700"
+                  : "bg-blue-100 text-blue-700"
+              }`}
           >
             {notice}
           </div>
@@ -1054,15 +1051,14 @@ export default function TourAndTravelManagement() {
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Difficulty:</span>
                       <span
-                        className={`font-medium px-2 py-0.5 rounded text-xs ${
-                          pkg.difficulty === "Beginner"
+                        className={`font-medium px-2 py-0.5 rounded text-xs ${pkg.difficulty === "Beginner"
                             ? "bg-green-100 text-green-700"
                             : pkg.difficulty === "Intermediate"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : pkg.difficulty === "Advanced"
-                            ? "bg-orange-100 text-orange-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
+                              ? "bg-yellow-100 text-yellow-700"
+                              : pkg.difficulty === "Advanced"
+                                ? "bg-orange-100 text-orange-700"
+                                : "bg-red-100 text-red-700"
+                          }`}
                       >
                         {pkg.difficulty}
                       </span>

@@ -26,8 +26,11 @@ export async function getContactDetails(): Promise<TContactDetails> {
         faqs: data.faqs || fallbackContactDetails.faqs,
       };
     }
-  } catch (error) {
-    console.error("Error fetching contact details:", error);
+  } catch (error: any) {
+    // Only log unexpected errors, NOT_FOUND is expected when document doesn't exist
+    if (error?.code !== 5 && error?.message !== "5 NOT_FOUND:") {
+      console.error("Error fetching contact details:", error);
+    }
   }
 
   return fallbackContactDetails;

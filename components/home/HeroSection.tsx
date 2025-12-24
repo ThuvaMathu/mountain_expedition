@@ -16,11 +16,11 @@ import {
   ImageIcon,
 } from "lucide-react";
 import { statIconMapper } from "@/services/icon-maper";
+import { motion } from "framer-motion";
 
 export function HeroSection({ stats }: { stats: TStat[] }) {
   const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
 
   const heroSlides = [
     {
@@ -46,7 +46,6 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
   const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true);
     const timer = setInterval(
       () => setCurrentSlide((prev) => (prev + 1) % heroSlides.length),
       6000
@@ -70,10 +69,9 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
       {/* Background Video with Overlay */}
       <div className="absolute inset-0">
         {/* Loader Image - Visible until video loads */}
-        <div 
-          className={`absolute inset-0 z-[1] transition-opacity duration-1000 ease-in-out ${
-            videoLoaded ? "opacity-0" : "opacity-100"
-          }`}
+        <div
+          className={`absolute inset-0 z-[1] transition-opacity duration-1000 ease-in-out ${videoLoaded ? "opacity-0" : "opacity-100"
+            }`}
         >
           <img
             src="/heroloader.jpg"
@@ -83,9 +81,8 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
         </div>
 
         <video
-          className={`w-full h-full object-cover transition-opacity duration-1000 ${
-            videoLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? "opacity-100" : "opacity-0"
+            }`}
           autoPlay
           loop
           muted
@@ -95,46 +92,60 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
           onLoadedData={handleVideoLoad}
         >
           <source src="/bg-videos/hero-video-hd.webm" type="video/webm" />
-
-          {/* <source
-            src="https://s3.ap-southeast-2.amazonaws.com/images.thuvarakan.info/hero-video-hd-1200.webm"
-            type="video/webm"
-          />
-          <source
-            src="https://s3.ap-southeast-2.amazonaws.com/images.thuvarakan.info/hero-video-hd-1200.mp4"
-            type="video/mp4"
-          /> */}
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60 z-[2]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.1)_0%,transparent_50%)] animate-pulse z-[2]" />
       </div>
 
       {/* Main Content */}
-      <div
-        className={`relative z-10 text-center text-white max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-1000 ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
+      <motion.div
+        key={currentSlide} // Key change triggers re-animation for text changes if we want, or keep it static? User likely wants the SLIDE content to animate.
+        // Actually, for a slideshow, text usually fades in/out. 
+        // Let's keep the container static but animate the text elements on slide change.
+        className="relative z-10 text-center text-white max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         {/* Highlight Badge */}
-        <div className="inline-flex items-center px-4 py-2 bg-teal-500/20 backdrop-blur-sm border border-teal-400/30 rounded-full mb-4 sm:mb-6 animate-bounce-subtle">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="inline-flex items-center px-4 py-2 bg-teal-500/20 backdrop-blur-sm border border-teal-400/30 rounded-full mb-4 sm:mb-6"
+        >
           <Compass className="h-4 w-4 mr-2 text-teal-300" />
           <span className="text-sm sm:text-base font-medium text-teal-200">
             {heroSlides[currentSlide].highlight}
           </span>
-        </div>
+        </motion.div>
 
         {/* Main Title with Responsive Typography */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight bg-gradient-to-r from-white via-gray-100 to-teal-200 bg-clip-text text-transparent animate-slide-up">
+        <motion.h1
+          key={`title-${currentSlide}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight bg-gradient-to-r from-white via-gray-100 to-teal-200 bg-clip-text text-transparent"
+        >
           {heroSlides[currentSlide].title}
-        </h1>
+        </motion.h1>
 
         {/* Subtitle */}
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-gray-200 max-w-3xl mx-auto leading-relaxed animate-slide-up animation-delay-200">
+        <motion.p
+          key={`sub-${currentSlide}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-gray-200 max-w-3xl mx-auto leading-relaxed"
+        >
           {heroSlides[currentSlide].subtitle}
-        </p>
+        </motion.p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-8 sm:mb-12 animate-slide-up animation-delay-400">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-8 sm:mb-12"
+        >
           <Link href="/mountains">
             <Button
               size="lg"
@@ -155,10 +166,15 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
               View Gallery
             </Button>
           </Link>
-        </div>
+        </motion.div>
 
         {/* Enhanced Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto animate-slide-up animation-delay-600">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto"
+        >
           {stats.map((stat, index) => {
             const IconComponent = stat.id ? statIconMapper[stat.id] : Mountain;
             return (
@@ -180,10 +196,15 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
               </div>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Adventure Features - Mobile Responsive */}
-        <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto opacity-90">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1 }}
+          className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto opacity-90"
+        >
           {[
             {
               icon: MapPin,
@@ -210,98 +231,24 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
               </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* Slide Indicators */}
-      {/* <div className="absolute z-20 bottom-24 sm:bottom-32 left-1/2 transform -translate-x-1/2 flex space-x-3">
-        {heroSlides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-              index === currentSlide
-                ? "bg-white scale-125 shadow-lg"
-                : "bg-white/50 hover:bg-white/70"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div> */}
+        </motion.div>
+      </motion.div>
 
       {/* Scroll Down Indicator */}
-      <div
-        className="absolute z-20 bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="absolute z-20 bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
         onClick={scrollToNext}
       >
-        <div className="flex flex-col items-center text-white/70 hover:text-white transition-colors">
+        <div className="flex flex-col items-center text-white/70 hover:text-white transition-colors animate-bounce">
           <span className="text-xs sm:text-sm mb-2 font-medium">
             Scroll Down
           </span>
           <ChevronDown className="h-5 w-5 sm:h-6 sm:w-6" />
         </div>
-      </div>
-
-      {/* Custom CSS for animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        @keyframes bounce-subtle {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-5px);
-          }
-        }
-
-        @keyframes slide-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-bounce-subtle {
-          animation: bounce-subtle 3s ease-in-out infinite;
-        }
-
-        .animate-slide-up {
-          animation: slide-up 0.8s ease-out forwards;
-        }
-
-        .animation-delay-200 {
-          animation-delay: 0.2s;
-          opacity: 0;
-        }
-
-        .animation-delay-400 {
-          animation-delay: 0.4s;
-          opacity: 0;
-        }
-
-        .animation-delay-600 {
-          animation-delay: 0.6s;
-          opacity: 0;
-        }
-      `}</style>
+      </motion.div>
     </section>
   );
 }

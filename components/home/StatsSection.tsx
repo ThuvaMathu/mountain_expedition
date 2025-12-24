@@ -1,5 +1,4 @@
 import { defaultStats } from "@/services/default-values";
-import { getStats } from "@/services/get-stats";
 import { statIconMapper } from "@/services/icon-maper";
 import { Mountain } from "lucide-react";
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Trophy, Award, Mountain, Medal } from "lucide-react";
 import { ImageLoader } from "@/components/ui/image-loader";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 type AwardRecord = {
   title: string;
   description: string;
@@ -122,7 +123,7 @@ const awardsData = {
 
 export function Awards2() {
   const renderAwardCard = (award: AwardRecord, index: number) => (
-    <div
+    <StaggerItem
       key={index}
       className="group relative bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
     >
@@ -134,6 +135,7 @@ export function Awards2() {
             alt={award.title}
             height="h-56"
             className=" object-cover group-hover:scale-110 transition-transform duration-500"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-teal-600/20 to-transparent" />
 
@@ -168,14 +170,14 @@ export function Awards2() {
           </p>
         </div>
       </div>
-    </div>
+    </StaggerItem>
   );
 
   return (
     <section className="border-t border-gray-100 bg-gradient-to-b from-white to-gray-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-20">
         {/* Header */}
-        <div className="text-center mb-16">
+        <SlideUp className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-100 mb-4">
             <Trophy className="w-8 h-8 text-teal-600" />
           </div>
@@ -186,73 +188,73 @@ export function Awards2() {
             Recognition from national and international organizations for
             mountaineering achievements and leadership in adventure sports
           </p>
-        </div>
+        </SlideUp>
 
         {/* National Records - Full Width Spotlight */}
         <div className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
+          <SlideUp className="flex items-center gap-3 mb-6">
             <Mountain className="w-6 h-6 text-teal-600" />
             <h3 className="text-lg font-semibold text-gray-900">
               National Records
             </h3>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          </SlideUp>
+          <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {awardsData.records.map(renderAwardCard)}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* Government Recognition */}
         <div className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
+          <SlideUp className="flex items-center gap-3 mb-6">
             <Award className="w-6 h-6 text-teal-600" />
             <h3 className="text-lg font-semibold text-gray-900">
               Government Recognition
             </h3>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          </SlideUp>
+          <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {awardsData.government.map(renderAwardCard)}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* Media Awards */}
         <div className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
+          <SlideUp className="flex items-center gap-3 mb-6">
             <Medal className="w-6 h-6 text-teal-600" />
             <h3 className="text-lg font-semibold text-gray-900">Media Awards</h3>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          </SlideUp>
+          <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {awardsData.media.map(renderAwardCard)}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* International Recognition */}
         <div className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
+          <SlideUp className="flex items-center gap-3 mb-6">
             <Trophy className="w-6 h-6 text-teal-600" />
             <h3 className="text-lg font-semibold text-gray-900">
               International Recognition
             </h3>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          </SlideUp>
+          <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {awardsData.international.map(renderAwardCard)}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* Community & Foundation Awards */}
         <div>
-          <div className="flex items-center gap-3 mb-6">
+          <SlideUp className="flex items-center gap-3 mb-6">
             <Award className="w-6 h-6 text-teal-600" />
             <h3 className="text-lg font-semibold text-gray-900">
               Community & Foundation Awards
             </h3>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          </SlideUp>
+          <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {awardsData.community.map(renderAwardCard)}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* Stats Summary */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-gray-200">
+        <FadeIn className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t border-gray-200">
           <div className="text-center">
             <div className="text-4xl font-bold text-teal-600 mb-2">12+</div>
             <div className="text-sm text-gray-600">Total Awards</div>
@@ -269,7 +271,7 @@ export function Awards2() {
             <div className="text-4xl font-bold text-teal-600 mb-2">2</div>
             <div className="text-sm text-gray-600">International</div>
           </div>
-        </div>
+        </FadeIn>
       </div>
     </section>
   );

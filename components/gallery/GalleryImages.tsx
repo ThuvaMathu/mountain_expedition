@@ -5,6 +5,7 @@ import ImageModal from "./ImageModal";
 import Pagination from "./Pagination";
 import Image from "next/image";
 import { ImageLoader } from "../ui/image-loader";
+import { SlideUp, StaggerContainer, StaggerItem } from "../ui/motion-wrapper";
 
 interface StaticImage {
   src: string;
@@ -46,7 +47,7 @@ export default function GalleryImages({
     })),
     ...galleryItems.map((item) => ({
       id: item.id,
-      src: item.url,
+      src: item.thumbnailUrl || item.url, // Use thumbnail for grid, fallback to full image
       title: item.title,
       type: "gallery" as const,
     })),
@@ -103,72 +104,78 @@ export default function GalleryImages({
   return (
     <section>
       {showTitle && (
-        <div className=" text-center mb-8">
-          <h2 className="text-2xl lg:text-3xl  font-bold text-gray-900 mb-2">
+        <SlideUp className="text-center mb-8">
+          <div className="inline-block">
+            <div className="h-1 w-20 bg-gradient-to-r from-teal-400 to-purple-500 rounded-full mb-4 mx-auto" />
+          </div>
+          <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
             Gallery Images
           </h2>
           <p className="text-gray-600">
             Professional photography showcasing mountain expeditions
           </p>
-        </div>
+          <div className="h-0.5 w-32 bg-gradient-to-r from-transparent via-teal-400 to-transparent rounded-full mt-4 mx-auto" />
+        </SlideUp>
       )}
 
-      {/* Image Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {/* Image Grid with Staggered Animation */}
+      <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentImages.map((image, index) => (
-          <div
-            key={image.id}
-            className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer"
-            onClick={() => handleImageClick(index)}
-          >
-            <div className="relative overflow-hidden">
-              <div className="relative w-full h-48  overflow-hidden">
-                <ImageLoader
-                  fill
-                  loading="lazy"
-                  src={image.src || "/placeholder.svg"}
-                  alt={image.title}
-                  className=" object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                <p className="font-medium text-sm truncate">{image.title}</p>
-              </div>
+          <StaggerItem key={image.id}>
+            <div
+              className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
+              onClick={() => handleImageClick(index)}
+            >
+              <div className="relative overflow-hidden">
+                <div className="relative w-full h-48 overflow-hidden">
+                  <ImageLoader
+                    fill
+                    loading="lazy"
+                    src={image.src || "/placeholder.svg"}
+                    alt={image.title}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="font-medium text-sm truncate">{image.title}</p>
+                </div>
 
-              {/* Hover overlay with click hint */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="bg-white bg-opacity-90 rounded-full p-3">
-                  <svg
-                    className="h-6 w-6 text-gray-700"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                    />
-                  </svg>
+                {/* Hover overlay with click hint */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="bg-white bg-opacity-90 rounded-full p-3 transform group-hover:scale-110 transition-transform duration-300">
+                    <svg
+                      className="h-6 w-6 text-gray-700"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="p-3">
-              <div className="text-gray-800 font-medium text-sm truncate">
-                {image.title}
-              </div>
-              {image.mountainId && (
-                <div className="text-xs text-gray-600 truncate mt-1">
-                  Mountain: {image.mountainId}
+              <div className="p-3">
+                <div className="text-gray-800 font-medium text-sm truncate group-hover:text-teal-600 transition-colors duration-200">
+                  {image.title}
                 </div>
-              )}
+                {image.mountainId && (
+                  <div className="text-xs text-gray-600 truncate mt-1">
+                    Mountain: {image.mountainId}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
 
       {/* Pagination */}
       <Pagination

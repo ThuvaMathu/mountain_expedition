@@ -1,18 +1,24 @@
+import dynamicLoader from "next/dynamic";
 import { getStats } from "@/services/get-stats";
 import { defaultStats } from "@/services/default-values";
 import { generateHomeMetadata } from "@/seo/metadata/home";
 import { organizationSchema } from "@/seo/schemas";
 import ComingSoonPage from "./sandbox/page";
-import { FeaturedMountains } from "@/components/home/FeaturedMountains";
 import { HeroSection } from "@/components/home/HeroSection";
-import { StatsSection } from "@/components/home/StatsSection";
-import { TestimonialsCarousel } from "@/components/home/TestimonialsSection";
-import { WhyChooseUs } from "@/components/home/WhyChooseUs";
-import { HeroAboutSection } from "@/components/home/HeroAboutSection";
-import { AwardsSection } from "@/components/home/AwardsSection"; // Added import
 import { ExploreSection } from "@/components/home/ExploreSection";
-import { Footer } from "@/components/layout/Footer";
+import { AdventureHero } from "@/components/home/AdventureHero";
 import { Navbar } from "@/components/layout/Navbar";
+
+// Lazy load below-the-fold components
+const FeaturedMountains = dynamicLoader(() => import("@/components/home/FeaturedMountains").then(mod => mod.FeaturedMountains));
+const WhyChooseUs = dynamicLoader(() => import("@/components/home/WhyChooseUs").then(mod => mod.WhyChooseUs));
+const HeroAboutSection = dynamicLoader(() => import("@/components/home/HeroAboutSection").then(mod => mod.HeroAboutSection));
+const AwardsSection = dynamicLoader(() => import("@/components/home/AwardsSection").then(mod => mod.AwardsSection));
+const HomeBlogSection = dynamicLoader(() => import("@/components/home/HomeBlogSection").then(mod => mod.HomeBlogSection));
+const VideoGallerySection = dynamicLoader(() => import("@/components/home/VideoGallerySection").then(mod => mod.VideoGallerySection));
+const TestimonialsCarousel = dynamicLoader(() => import("@/components/home/TestimonialsSection").then(mod => mod.TestimonialsCarousel));
+const PosterCarousel = dynamicLoader(() => import("@/components/home/PosterCarousel"));
+const Footer = dynamicLoader(() => import("@/components/layout/Footer").then(mod => mod.Footer));
 export const metadata = generateHomeMetadata();
 
 export const dynamic = "force-dynamic"; // Ensure dynamic rendering for stats/awards
@@ -54,10 +60,14 @@ export default async function HomePage() {
             <main>
               <HeroSection stats={stats} />
               <ExploreSection />
-             
-              <FeaturedMountains /> <HeroAboutSection />
+              <FeaturedMountains />
+              <WhyChooseUs />
+              <HeroAboutSection />
               <AwardsSection />
-              <TestimonialsCarousel />
+              <VideoGallerySection />
+              <TestimonialsCarousel /><PosterCarousel />
+              <HomeBlogSection />
+              <AdventureHero />
             </main>
           </>
         ) : (
