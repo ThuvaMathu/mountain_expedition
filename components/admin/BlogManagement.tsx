@@ -380,7 +380,11 @@ export function BlogManagement() {
                     <div>
                       <div className="font-semibold">{p.title}</div>
                       <div className="text-xs text-gray-600">
-                        {new Date(p.createdAt).toLocaleDateString()}
+                        {p.createdAt?.toDate
+                          ? p.createdAt.toDate().toLocaleDateString()
+                          : p.createdAt
+                            ? new Date(p.createdAt).toLocaleDateString()
+                            : "N/A"}
                       </div>
                     </div>
                     <div className="flex gap-2">

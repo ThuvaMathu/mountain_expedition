@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { statIconMapper } from "@/services/icon-maper";
 import { motion } from "framer-motion";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 export function HeroSection({ stats }: { stats: TStat[] }) {
   const { t } = useLanguage();
@@ -65,7 +66,7 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 sm:pt-0">
       {/* Background Video with Overlay */}
       <div className="absolute inset-0">
         {/* Loader Image - Visible until video loads */}
@@ -98,14 +99,15 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
       </div>
 
       {/* Main Content */}
-      <motion.div
-        key={currentSlide} // Key change triggers re-animation for text changes if we want, or keep it static? User likely wants the SLIDE content to animate.
+      <div
+        // Key change triggers re-animation for text changes if we want, or keep it static? User likely wants the SLIDE content to animate.
         // Actually, for a slideshow, text usually fades in/out. 
         // Let's keep the container static but animate the text elements on slide change.
-        className="relative z-10 text-center text-white max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="relative z-10 text-center text-white max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-24"
       >
         {/* Highlight Badge */}
         <motion.div
+          key={`badge-${currentSlide}`}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -177,6 +179,10 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
         >
           {stats.map((stat, index) => {
             const IconComponent = stat.id ? statIconMapper[stat.id] : Mountain;
+            // Parse numeric value from stat.value (e.g., "50+" -> 50)
+            const numericValue = parseInt(stat.value.replace(/[^0-9]/g, '')) || 0;
+            const suffix = stat.value.replace(/[0-9]/g, '');
+
             return (
               <div
                 key={index}
@@ -184,11 +190,22 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
               >
                 <div className="flex justify-center mb-3">
                   <IconComponent
-                    className={`h-6 w-6 sm:h-8 sm:w-8 text-teal-600 group-hover:animate-pulse`}
+                    className={`h-6 w-6 sm:h-8 sm:w-8 text-teal-400 group-hover:animate-pulse`}
                   />
                 </div>
                 <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  {stat.value}
+                  {numericValue > 0 ? (
+                    <>
+                      <NumberTicker
+                        value={numericValue}
+                        delay={0.6 + index * 0.1}
+                        className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+                      />
+                      {suffix}
+                    </>
+                  ) : (
+                    stat.value
+                  )}
                 </div>
                 <div className="text-xs sm:text-sm text-gray-300 font-medium">
                   {stat.title}
@@ -203,7 +220,7 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1 }}
-          className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto opacity-90"
+          className="mt-8 sm:mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto opacity-90"
         >
           {[
             {
@@ -216,6 +233,11 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
               icon: Award,
               text: "Certified Guides",
               desc: "Professional support",
+            },
+            {
+              icon: Star,
+              text: "5-Star Rated",
+              desc: "Excellent reviews",
             },
           ].map((feature, index) => {
             const IconComponent = feature.icon;
@@ -232,18 +254,18 @@ export function HeroSection({ stats }: { stats: TStat[] }) {
             );
           })}
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* Scroll Down Indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 1 }}
-        className="absolute z-20 bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
+        className="absolute z-20 bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
         onClick={scrollToNext}
       >
-        <div className="flex flex-col items-center text-white/70 hover:text-white transition-colors animate-bounce">
-          <span className="text-xs sm:text-sm mb-2 font-medium">
+        <div className="flex flex-col items-center text-white/80 hover:text-white transition-colors animate-bounce">
+          <span className="text-xs sm:text-sm mb-1 font-medium whitespace-nowrap">
             Scroll Down
           </span>
           <ChevronDown className="h-5 w-5 sm:h-6 sm:w-6" />

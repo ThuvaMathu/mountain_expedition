@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { User, Plus, Minus, Trash, X } from "lucide-react";
 import { participantGroupSchema } from "@/lib/schemas/participant-schema";
 import { z } from "zod";
@@ -70,145 +70,145 @@ const ParticipantFields: React.FC<{
   errors = {},
   onFieldBlur,
 }) => {
-  const updateField = (field: keyof ParticipantInfo, value: string) => {
-    onChange({ ...participant, [field]: value });
-  };
+    const updateField = (field: keyof ParticipantInfo, value: string) => {
+      onChange({ ...participant, [field]: value });
+    };
 
-  const handleBlur = (field: string, value: string) => {
-    if (onFieldBlur) {
-      onFieldBlur(field, value);
-    }
-  };
+    const handleBlur = (field: string, value: string) => {
+      if (onFieldBlur) {
+        onFieldBlur(field, value);
+      }
+    };
 
-  return (
-    <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-        <User className="h-5 w-5 mr-2" />
-        {title}
-        {isOrganizer && (
-          <span className="ml-2 text-sm bg-teal-100 text-teal-800 px-2 py-1 rounded-full">
-            Primary
-          </span>
-        )}
-      </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Full Name *
-          </label>
-          <Input
-            type="text"
-            value={participant.name}
-            onChange={(e) => updateField("name", e.target.value)}
-            onBlur={(e) => handleBlur("name", e.target.value)}
-            required
-            placeholder="Enter full name"
-            className={errors.name ? "border-red-500" : ""}
-          />
-          {errors.name && (
-            <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+    return (
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+          <User className="h-5 w-5 mr-2" />
+          {title}
+          {isOrganizer && (
+            <span className="ml-2 text-sm bg-teal-100 text-teal-800 px-2 py-1 rounded-full">
+              Primary
+            </span>
           )}
-        </div>
+        </h2>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Email Address *
-          </label>
-          <Input
-            type="email"
-            aria-label="email"
-            value={participant.email}
-            onChange={(e) => updateField("email", e.target.value)}
-            onBlur={(e) => handleBlur("email", e.target.value)}
-            required
-            placeholder="Enter email address"
-            className={errors.email ? "border-red-500" : ""}
-          />
-          {errors.email && (
-            <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-          )}
-        </div>
-
-        {category !== "domestic" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Country of Residence *
+              Full Name *
             </label>
             <Input
               type="text"
-              value={participant.country}
-              onChange={(e) => updateField("country", e.target.value)}
-              onBlur={(e) => handleBlur("country", e.target.value)}
+              value={participant.name}
+              onChange={(e) => updateField("name", e.target.value)}
+              onBlur={(e) => handleBlur("name", e.target.value)}
               required
-              placeholder="e.g., India"
-              className={errors.country ? "border-red-500" : ""}
+              placeholder="Enter full name"
+              className={errors.name ? "border-red-500" : ""}
             />
-            {errors.country && (
-              <p className="text-sm text-red-500 mt-1">{errors.country}</p>
+            {errors.name && (
+              <p className="text-sm text-red-500 mt-1">{errors.name}</p>
             )}
           </div>
-        )}
-        {category !== "domestic" && (
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Passport Number *
+              Email Address *
             </label>
             <Input
-              type="text"
-              value={participant.passport}
-              onChange={(e) => updateField("passport", e.target.value)}
-              onBlur={(e) => handleBlur("passport", e.target.value)}
+              type="email"
+              aria-label="email"
+              value={participant.email}
+              onChange={(e) => updateField("email", e.target.value)}
+              onBlur={(e) => handleBlur("email", e.target.value)}
               required
-              placeholder="e.g., N12345677"
-              className={errors.passport ? "border-red-500" : ""}
+              placeholder="Enter email address"
+              className={errors.email ? "border-red-500" : ""}
             />
-            {errors.passport && (
-              <p className="text-sm text-red-500 mt-1">{errors.passport}</p>
+            {errors.email && (
+              <p className="text-sm text-red-500 mt-1">{errors.email}</p>
             )}
           </div>
-        )}
 
-        <div>
-          <PhoneInput
-            label="Phone Number"
-            value={participant.phone}
-            onChange={(value) => updateField("phone", value)}
-            onBlur={(value) => handleBlur("phone", value)}
-            required
-            placeholder="98765 43210"
-            error={errors.phone}
-          />
+          {category !== "domestic" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Country of Residence *
+              </label>
+              <Input
+                type="text"
+                value={participant.country}
+                onChange={(e) => updateField("country", e.target.value)}
+                onBlur={(e) => handleBlur("country", e.target.value)}
+                required
+                placeholder="e.g., India"
+                className={errors.country ? "border-red-500" : ""}
+              />
+              {errors.country && (
+                <p className="text-sm text-red-500 mt-1">{errors.country}</p>
+              )}
+            </div>
+          )}
+          {category !== "domestic" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Passport Number *
+              </label>
+              <Input
+                type="text"
+                value={participant.passport}
+                onChange={(e) => updateField("passport", e.target.value)}
+                onBlur={(e) => handleBlur("passport", e.target.value)}
+                required
+                placeholder="e.g., N12345677"
+                className={errors.passport ? "border-red-500" : ""}
+              />
+              {errors.passport && (
+                <p className="text-sm text-red-500 mt-1">{errors.passport}</p>
+              )}
+            </div>
+          )}
+
+          <div>
+            <PhoneInput
+              label="Phone Number"
+              value={participant.phone}
+              onChange={(value) => updateField("phone", value)}
+              onBlur={(value) => handleBlur("phone", value)}
+              required
+              placeholder="98765 43210"
+              error={errors.phone}
+            />
+          </div>
+
+          <div>
+            <PhoneInput
+              label="Emergency Contact"
+              value={participant.emergencyContact}
+              onChange={(value) => updateField("emergencyContact", value)}
+              onBlur={(value) => handleBlur("emergencyContact", value)}
+              required
+              placeholder="98765 43210"
+              error={errors.emergencyContact}
+            />
+          </div>
         </div>
 
-        <div>
-          <PhoneInput
-            label="Emergency Contact"
-            value={participant.emergencyContact}
-            onChange={(value) => updateField("emergencyContact", value)}
-            onBlur={(value) => handleBlur("emergencyContact", value)}
-            required
-            placeholder="98765 43210"
-            error={errors.emergencyContact}
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Medical Information (Optional)
+          </label>
+          <textarea
+            value={participant.medicalInfo}
+            onChange={(e) => updateField("medicalInfo", e.target.value)}
+            rows={3}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+            placeholder="Any medical conditions, allergies, or special requirements..."
           />
         </div>
       </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Medical Information (Optional)
-        </label>
-        <textarea
-          value={participant.medicalInfo}
-          onChange={(e) => updateField("medicalInfo", e.target.value)}
-          rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-          placeholder="Any medical conditions, allergies, or special requirements..."
-        />
-      </div>
-    </div>
-  );
-};
+    );
+  };
 
 // Main component
 const ParticipantGroupForm: React.FC<ParticipantGroupFormProps> = ({
@@ -229,8 +229,41 @@ const ParticipantGroupForm: React.FC<ParticipantGroupFormProps> = ({
     members: {},
   });
   const isMaxParticipants = participantGroup.members.length < maxParticipants;
+  const prevParticipantCountRef = useRef(participantCount);
 
-  // Error state helpers
+  // Update members array when participantCount changes
+  useEffect(() => {
+    // Only run if participantCount actually changed
+    if (prevParticipantCountRef.current === participantCount) {
+      return;
+    }
+
+    prevParticipantCountRef.current = participantCount;
+
+    const membersNeeded = Math.max(0, participantCount - 1);
+    const currentMembers = participantGroup.members;
+
+    let newMembers: ParticipantInfo[];
+
+    if (membersNeeded > currentMembers.length) {
+      // Add empty participants
+      const additionalMembers = Array(membersNeeded - currentMembers.length)
+        .fill(null)
+        .map(() => createEmptyParticipant());
+      newMembers = [...currentMembers, ...additionalMembers];
+    } else if (membersNeeded < currentMembers.length) {
+      // Remove excess participants
+      newMembers = currentMembers.slice(0, membersNeeded);
+    } else {
+      // No change needed
+      return;
+    }
+
+    const updatedGroup = { ...participantGroup, members: newMembers };
+    setParticipantGroup(updatedGroup);
+    onChange(updatedGroup, false);
+  }, [participantCount]); // Only depend on participantCount
+
   const clearFieldError = (
     type: "organizer" | "member",
     field: string,
@@ -299,9 +332,9 @@ const ParticipantGroupForm: React.FC<ParticipantGroupFormProps> = ({
       // For domestic tours, auto-fill country as "India" before validation
       const validationGroup = productType === "domestic"
         ? {
-            organizer: { ...group.organizer, country: "India" },
-            members: group.members.map(m => ({ ...m, country: "India" }))
-          }
+          organizer: { ...group.organizer, country: "India" },
+          members: group.members.map(m => ({ ...m, country: "India" }))
+        }
         : group;
 
       const schema = participantGroupSchema(productType);
@@ -319,29 +352,6 @@ const ParticipantGroupForm: React.FC<ParticipantGroupFormProps> = ({
       return false;
     }
   };
-
-  // Update members array when participantCount changes
-  useEffect(() => {
-    const membersNeeded = Math.max(0, participantCount - 1);
-    const currentMembers = participantGroup.members;
-
-    let newMembers: ParticipantInfo[];
-
-    if (membersNeeded > currentMembers.length) {
-      // Add empty participants
-      const additionalMembers = Array(membersNeeded - currentMembers.length)
-        .fill(null)
-        .map(() => createEmptyParticipant());
-      newMembers = [...currentMembers, ...additionalMembers];
-    } else {
-      // Remove excess participants
-      newMembers = currentMembers.slice(0, membersNeeded);
-    }
-
-    const updatedGroup = { ...participantGroup, members: newMembers };
-    setParticipantGroup(updatedGroup);
-    onChange(updatedGroup, false);
-  }, [participantCount]);
 
   // Single update helper to avoid repetition
   const updateGroupAndNotify = (updatedGroup: ParticipantGroup) => {

@@ -41,7 +41,6 @@ export default function PosterCarousel() {
                     })) as Poster[];
                     setPosters(fetchedPosters);
                 } else {
-                    // Try to use local ones if they exist, otherwise empty
                     setPosters(fallbackPosters);
                 }
             } catch (error) {
@@ -56,30 +55,26 @@ export default function PosterCarousel() {
     }, []);
 
     if (loading) {
-        return <div className="w-full h-[400px] bg-gray-100 animate-pulse rounded-2xl"></div>;
+        return <div className="w-full h-[400px] bg-gray-100 animate-pulse"></div>;
     }
 
-    // If no posters and no fallbacks that work (e.g. file doesn't exist), show nothing or static
-    // But we assume fallbacks might fail if files don't exist, so let's just use what we have.
     const displayPosters = posters.length > 0 ? posters : [];
 
     if (displayPosters.length === 0) return null;
 
     return (
-        <section className="py-12 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
-                <FadeIn className="relative overflow-hidden rounded-[32px] shadow-2xl">
+        <section className="w-full bg-white py-0 sm:py-12">
+            <div className="w-full sm:max-w-7xl sm:mx-auto sm:px-4 md:px-6 lg:px-8">
+                <FadeIn className="relative overflow-hidden sm:rounded-[32px] sm:shadow-2xl">
                     <div className="overflow-hidden" ref={emblaRef}>
                         <div className="flex">
                             {displayPosters.map((poster) => (
-                                <div className="flex-[0_0_100%] min-w-0 relative aspect-[6/2]" key={poster.id}>
+                                <div className="flex-[0_0_100%] min-w-0 relative aspect-[16/9] sm:aspect-[6/2]" key={poster.id}>
                                     <img
                                         src={poster.url}
                                         alt={poster.title || "Poster"}
                                         className="w-full h-full object-cover"
                                     />
-                                    {/* Gradient Overlay for Text Visibility if needed later */}
-                                    {/* <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div> */}
                                 </div>
                             ))}
                         </div>

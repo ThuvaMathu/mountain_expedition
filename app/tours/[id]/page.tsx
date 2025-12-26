@@ -31,6 +31,8 @@ import { BookingCalendar } from "@/components/booking/BookingCalendar";
 import { pdf } from "@react-pdf/renderer";
 import { BrochureTemplate } from "@/lib/pdf-templates/brochure-template";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 
 export default function TouristDetailPage() {
   const params = useParams();
@@ -179,53 +181,55 @@ export default function TouristDetailPage() {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-4xl font-bold text-gray-900">
-            {touristPackage.name}
-          </h1>
-          {!isDisabled && (
-            <div className="text-sm">
-              <span className="text-green-600 font-medium">
-                {getAvailableSlots(touristPackage)}
-              </span>
-              <span className="text-gray-500"> spots available</span>
-            </div>
-          )}
-        </div>
+      <SlideUp>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-4xl font-bold text-gray-900">
+              {touristPackage.name}
+            </h1>
+            {!isDisabled && (
+              <div className="text-sm">
+                <span className="text-green-600 font-medium">
+                  {getAvailableSlots(touristPackage)}
+                </span>
+                <span className="text-gray-500"> spots available</span>
+              </div>
+            )}
+          </div>
 
-        <div className="flex flex-wrap items-center gap-4 text-gray-600">
-          <div className="flex items-center">
-            <MapPin className="h-4 w-4 mr-1" />
-            <span>{touristPackage.location}</span>
-          </div>
-          <div className="flex items-center">
-            <Clock className="h-4 w-4 mr-1" />
-            <span>{touristPackage.duration}</span>
-          </div>
-          <div className="flex items-center">
-            <Calendar className="h-4 w-4 mr-1" />
-            <span>{touristPackage.bestSeason}</span>
-          </div>
-          <span
-            className={`px-3 py-1 rounded-full flex items-center text-sm font-medium ${getCategoryColor(
-              category
-            )}`}
-          >
-            {getCategoryIcon()}
-            <span className="ml-1">
-              {category === "domestic" ? "Domestic" : "International"}
+          <div className="flex flex-wrap items-center gap-4 text-gray-600">
+            <div className="flex items-center">
+              <MapPin className="h-4 w-4 mr-1" />
+              <span>{touristPackage.location}</span>
+            </div>
+            <div className="flex items-center">
+              <Clock className="h-4 w-4 mr-1" />
+              <span>{touristPackage.duration}</span>
+            </div>
+            <div className="flex items-center">
+              <Calendar className="h-4 w-4 mr-1" />
+              <span>{touristPackage.bestSeason}</span>
+            </div>
+            <span
+              className={`px-3 py-1 rounded-full flex items-center text-sm font-medium ${getCategoryColor(
+                category
+              )}`}
+            >
+              {getCategoryIcon()}
+              <span className="ml-1">
+                {category === "domestic" ? "Domestic" : "International"}
+              </span>
             </span>
-          </span>
-          <span
-            className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
-              touristPackage.difficulty
-            )}`}
-          >
-            {touristPackage.difficulty}
-          </span>
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
+                touristPackage.difficulty
+              )}`}
+            >
+              {touristPackage.difficulty}
+            </span>
+          </div>
         </div>
-      </div>
+      </SlideUp>
 
       {/* Unavailability Banner */}
       {isDisabled && (
@@ -246,7 +250,7 @@ export default function TouristDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Images and Details */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Image Gallery */}
+          {/* Image Gallery - No animation to prevent re-render */}
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="relative">
               <ImageLoader
@@ -274,11 +278,10 @@ export default function TouristDetailPage() {
                   <button
                     key={`thumb-${index}`}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                      selectedImage === index
-                        ? "border-teal-600"
-                        : "border-gray-200"
-                    }`}
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${selectedImage === index
+                      ? "border-teal-600"
+                      : "border-gray-200"
+                      }`}
                   >
                     <ImageLoader
                       src={image || "/placeholder.svg"}

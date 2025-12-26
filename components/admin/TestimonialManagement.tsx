@@ -385,11 +385,10 @@ export function TestimonialManagement() {
           (status) => (
             <div
               key={status}
-              className={`p-6 rounded-xl border-2 cursor-pointer transition-all ${
-                filterStatus === status
+              className={`p-6 rounded-xl border-2 cursor-pointer transition-all ${filterStatus === status
                   ? "border-blue-500 bg-blue-50"
                   : "border-gray-200 bg-white hover:border-gray-300"
-              }`}
+                }`}
               onClick={() => setFilterStatus(status)}
             >
               <div className="flex items-center justify-between">
@@ -402,15 +401,14 @@ export function TestimonialManagement() {
                   </p>
                 </div>
                 <div
-                  className={`p-3 rounded-lg ${
-                    status === "all"
+                  className={`p-3 rounded-lg ${status === "all"
                       ? "bg-blue-100"
                       : status === "pending"
-                      ? "bg-yellow-100"
-                      : status === "approved"
-                      ? "bg-green-100"
-                      : "bg-red-100"
-                  }`}
+                        ? "bg-yellow-100"
+                        : status === "approved"
+                          ? "bg-green-100"
+                          : "bg-red-100"
+                    }`}
                 >
                   {status === "all" ? (
                     <Star className="h-6 w-6 text-blue-600" />
@@ -494,11 +492,10 @@ export function TestimonialManagement() {
             {filteredTestimonials.map((testimonial, index) => (
               <div
                 key={testimonial.id}
-                className={`p-6 ${
-                  index !== filteredTestimonials.length - 1
+                className={`p-6 ${index !== filteredTestimonials.length - 1
                     ? "border-b border-gray-200"
                     : ""
-                }`}
+                  }`}
               >
                 <div className="flex items-start gap-4">
                   {/* Checkbox */}
@@ -573,11 +570,10 @@ export function TestimonialManagement() {
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`h-4 w-4 ${
-                                i < testimonial.rating
+                              className={`h-4 w-4 ${i < testimonial.rating
                                   ? "text-yellow-400 fill-current"
                                   : "text-gray-300"
-                              }`}
+                                }`}
                             />
                           ))}
                           <span className="text-sm text-gray-600">
@@ -668,7 +664,7 @@ export function TestimonialManagement() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 max-w-md mx-4">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle className="h-6 w-6 text-red-600" />
@@ -799,11 +795,10 @@ export function TestimonialManagement() {
                       className="focus:outline-none"
                     >
                       <Star
-                        className={`h-8 w-8 ${
-                          rating <= newTestimonial.rating
+                        className={`h-8 w-8 ${rating <= newTestimonial.rating
                             ? "text-yellow-400 fill-current"
                             : "text-gray-300"
-                        }`}
+                          }`}
                       />
                     </button>
                   ))}

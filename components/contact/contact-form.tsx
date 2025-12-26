@@ -174,7 +174,7 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Expedition Interest
         </label>
@@ -193,7 +193,7 @@ export function ContactForm() {
           <option value="custom">Custom Expedition</option>
           <option value="other">Other</option>
         </select>
-      </div>
+      </div> */}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">

@@ -9,6 +9,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import GlobalLoader from "../global/global-loader";
 import CommunityExperiences from "./CommunityExperiences";
 import GalleryImages from "./GalleryImages";
+import VideoGallery from "./VideoGallery";
 import { staticGalleryImages } from "@/lib/data/static-images";
 import { SlideUp, FadeIn } from "../ui/motion-wrapper";
 
@@ -217,6 +218,10 @@ export default function GalleryMain() {
               showTitle={activeFilter === "all"}
             />
           )}
+
+        {/* Video Gallery Section */}
+        <VideoGallery showTitle={activeFilter === "all"} />
+
         <FadeIn delay={0.3}>
           <section className="mt-16">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">

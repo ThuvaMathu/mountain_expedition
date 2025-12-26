@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export function AdventureHero() {
     return (
-        <section className="relative h-[60vh] md:h-[70vh] overflow-hidden bg-gray-900">
+        <section className="relative h-[30vh] md:h-[40vh] overflow-hidden bg-gray-900">
             {/* Background Images Grid */}
             <div className="absolute inset-0 grid grid-cols-3 md:grid-cols-4 gap-0">
                 <div className="relative h-full">
@@ -55,8 +55,8 @@ export function AdventureHero() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="text-[15vw] md:text-[20vw] font-black text-white/20 tracking-tighter leading-none select-none"
+                    transition={{ duration: 1.4, ease: "easeOut" }}
+                    className="text-[14vw] md:text-[16vw] font-black text-white/20 tracking-tighter leading-none select-none"
                     style={{
                         WebkitTextStroke: "2px rgba(255, 255, 255, 0.3)",
                         textShadow: "0 10px 40px rgba(0, 0, 0, 0.3)"
@@ -67,7 +67,7 @@ export function AdventureHero() {
             </div>
 
             {/* Bottom Gradient Fade */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-gray-50 to-transparent" />
         </section>
     );
 }

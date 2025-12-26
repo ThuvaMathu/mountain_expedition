@@ -174,8 +174,10 @@ type TExperienceSubmission = {
   rating: number;
   images: string[];
   thumbnails?: string[]; // Optimized thumbnails for each image
+  videoUrl?: string; // Video download URL
+  videoStoragePath?: string; // Storage path for deletion
   status: "pending" | "approved" | "rejected";
-  submittedAt: Timestamp | Date;
+  submittedAt: any;
   userName: string;
   userEmail: string;
 };
@@ -208,4 +210,10 @@ type TContactDetails = {
   emergencyPhone: string;
   officeHours: OfficeHours[];
   faqs: FAQ[];
+  socialMedia?: {
+    facebook: string;
+    twitter: string;
+    instagram: string;
+    youtube: string;
+  };
 };

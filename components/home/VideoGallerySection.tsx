@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FadeIn, SlideUp } from "../ui/motion-wrapper";
 
@@ -12,31 +12,35 @@ interface VideoItem {
     id: string;
     title: string;
     url: string;
+    thumbnailUrl?: string;
     createdAt: any;
 }
 
 export function VideoGallerySection() {
     const [videos, setVideos] = useState<VideoItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const [
-        emblaRef,
-        emblaApi
-    ] = useEmblaCarousel({
+    const [emblaRef, emblaApi] = useEmblaCarousel({
         loop: false,
         align: "start",
         slidesToScroll: 1,
         breakpoints: {
-            '(min-width: 768px)': { slidesToScroll: 2 },
-            '(min-width: 1024px)': { slidesToScroll: 3 }
-        }
+            "(min-width: 768px)": { slidesToScroll: 2 },
+            "(min-width: 1024px)": { slidesToScroll: 3 },
+        },
     });
 
     const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
     const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
-    const [hoveredId, setHoveredId] = useState<string | null>(null);
+    const [playingId, setPlayingId] = useState<string | null>(null);
 
-    const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
-    const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+    const scrollPrev = useCallback(
+        () => emblaApi && emblaApi.scrollPrev(),
+        [emblaApi]
+    );
+    const scrollNext = useCallback(
+        () => emblaApi && emblaApi.scrollNext(),
+        [emblaApi]
+    );
 
     const onSelect = useCallback(() => {
         if (!emblaApi) return;
@@ -55,11 +59,15 @@ export function VideoGallerySection() {
         const fetchVideos = async () => {
             try {
                 if (!db) return;
-                const q = query(collection(db, "videos"), orderBy("createdAt", "desc"), limit(10));
+                const q = query(
+                    collection(db, "videos"),
+                    orderBy("createdAt", "desc"),
+                    limit(10)
+                );
                 const snapshot = await getDocs(q);
-                const fetchedVideos = snapshot.docs.map(doc => ({
+                const fetchedVideos = snapshot.docs.map((doc) => ({
                     id: doc.id,
-                    ...doc.data()
+                    ...doc.data(),
                 })) as VideoItem[];
                 setVideos(fetchedVideos);
             } catch (error) {
@@ -71,6 +79,15 @@ export function VideoGallerySection() {
 
         fetchVideos();
     }, []);
+
+    // Track video play state
+    const handlePlay = (videoId: string) => {
+        setPlayingId(videoId);
+    };
+
+    const handlePause = () => {
+        setPlayingId(null);
+    };
 
     if (loading) return null;
     if (videos.length === 0) return null;
@@ -87,7 +104,8 @@ export function VideoGallerySection() {
                             Watch Our Adventures
                         </h2>
                         <p className="mt-4 text-gray-600 max-w-2xl">
-                            See what it's like to be on top of the world. Capture the moments that matter.
+                            See what it's like to be on top of the world. Capture the moments
+                            that matter.
                         </p>
                     </SlideUp>
 
@@ -117,60 +135,54 @@ export function VideoGallerySection() {
                 <FadeIn className="relative overflow-hidden">
                     <div className="relative overflow-hidden" ref={emblaRef}>
                         <div className="flex -ml-4">
-                            {videos.map((video) => {
-                                const isHovered = hoveredId === video.id;
+                            {videos.map((video) => (
+                                <div
+                                    className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 pl-4"
+                                    key={video.id}
+                                >
+                                    <div className="relative aspect-[9/16] md:aspect-[3/4] rounded-3xl overflow-hidden group bg-gray-900 shadow-xl">
+                                        {/* Video with poster thumbnail */}
+                                        <video
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                            poster={video.thumbnailUrl || undefined}
+                                            loop
+                                            controls
+                                            muted
+                                            playsInline
+                                            preload="metadata"
+                                            onPlay={() => handlePlay(video.id)}
+                                            onPause={handlePause}
+                                            onEnded={handlePause}
+                                        >
+                                            <source src={video.url} type="video/mp4" />
+                                        </video>
 
-                                return (
-                                    <div
-                                        className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0 pl-4"
-                                        key={video.id}
-                                        onMouseEnter={() => setHoveredId(video.id)}
-                                        onMouseLeave={() => setHoveredId(null)}
-                                    >
-                                        <div className="relative aspect-[9/16] md:aspect-[3/4] rounded-3xl overflow-hidden group bg-gray-900 shadow-xl">
-                                            {/* Video - always present, autoplays on hover but respects user controls */}
-                                            <video
-                                                src={video.url}
-                                                className="absolute inset-0 w-full h-full object-cover"
-                                                loop
-                                                muted={!isHovered}
-                                                playsInline
-                                                controls
-                                                preload="metadata"
-                                                ref={(el) => {
-                                                    if (el && isHovered && el.paused) {
-                                                        el.play().catch(() => { });
-                                                    }
-                                                }}
-                                            />
-
-                                            {/* Overlay - fades out on hover, doesn't block clicks */}
-                                            <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 pointer-events-none ${isHovered ? 'opacity-50' : 'opacity-100'}`} />
-
-                                            {/* Play Icon - visible when not hovered */}
-                                            {!isHovered && (
+                                        {/* Play button and overlay - only show when not playing */}
+                                        {playingId !== video.id && (
+                                            <>
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
                                                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                                     <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/50 shadow-lg">
-                                                        <svg className="w-8 h-8 text-white fill-current translate-x-1" viewBox="0 0 24 24">
-                                                            <path d="M8 5v14l11-7z" />
-                                                        </svg>
+                                                        <Play className="w-8 h-8 text-white fill-current translate-x-1" />
                                                     </div>
                                                 </div>
-                                            )}
+                                            </>
+                                        )}
 
-                                            {/* Title Overlay */}
-                                            <div className="absolute bottom-0 left-0 p-6 w-full pointer-events-none">
-                                                <h3 className="text-white font-bold text-xl leading-snug line-clamp-2 drop-shadow-lg">
-                                                    {video.title}
-                                                </h3>
+                                        {/* Title overlay */}
+                                        <div className="absolute bottom-0 left-0 p-6 w-full pointer-events-none">
+                                            <h3 className="text-white font-bold text-xl leading-snug line-clamp-2 drop-shadow-lg">
+                                                {video.title}
+                                            </h3>
+                                            {playingId !== video.id && (
                                                 <p className="text-gray-200 text-xs mt-2 uppercase tracking-wide font-medium drop-shadow">
-                                                    {isHovered ? "Playing..." : "Hover to Play"}
+                                                    Click to Play
                                                 </p>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
-                                )
-                            })}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </FadeIn>

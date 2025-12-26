@@ -6,6 +6,9 @@ import { localBusinessSchema, generateFAQSchema } from "@/seo/schemas";
 import { getContactDetails } from "@/services/get-contact";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
+import { SlideUp, FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
+import { HomeBlogSection } from "@/components/home/HomeBlogSection";
+import { AdventureHero } from "@/components/home/AdventureHero";
 
 export const metadata = generateContactMetadata();
 
@@ -29,7 +32,7 @@ export default async function ContactPage() {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-teal-600 to-teal-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
+          <SlideUp className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Get in Touch
             </h1>
@@ -37,13 +40,13 @@ export default async function ContactPage() {
               Ready for your next adventure? We're here to help you plan the
               perfect mountain expedition.
             </p>
-          </div>
+          </SlideUp>
         </div>
       </div>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Contact Form */}
-          <div className="lg:col-span-2">
+          <FadeIn delay={0.2} className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Send us a Message
@@ -55,10 +58,10 @@ export default async function ContactPage() {
               </p>
               <ContactForm />
             </div>
-          </div>
+          </FadeIn>
 
           {/* Contact Information */}
-          <div className="space-y-8">
+          <FadeIn delay={0.4} className="space-y-8">
             <ContactInfo contactDetails={contactDetails} />
 
             {/* Office Hours */}
@@ -97,26 +100,28 @@ export default async function ContactPage() {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-            Frequently Asked Questions
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {contactDetails.faqs.map((faq, index) => (
-              <div key={index}>
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  {faq.question}
-                </h3>
-                <p className="text-gray-600 text-sm">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
+          </FadeIn>
         </div>
       </main>
+
+      <HomeBlogSection />
+      {/* FAQ Section */}
+      <FadeIn delay={0.6} className="mt-16 bg-white rounded-xl shadow-lg p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+          Frequently Asked Questions
+        </h2>
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {contactDetails.faqs.map((faq, index) => (
+            <StaggerItem key={index}>
+              <h3 className="font-semibold text-gray-900 mb-2">
+                {faq.question}
+              </h3>
+              <p className="text-gray-600 text-sm">{faq.answer}</p>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </FadeIn>
+      <AdventureHero />
     </>
   );
 }

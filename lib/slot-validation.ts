@@ -2,7 +2,7 @@ import { adminDb } from "./firebase-admin";
 
 export interface SlotValidationParams {
   productId: string;
-  productType: "trekking" | "tourist-packages";
+  productType: "trekking" | "tourist-packages" | "tours";
   slotId: string;
   date: string;
   participants: number;
@@ -26,19 +26,44 @@ export async function validateSlotAvailability(
 
   console.log("🔍 [SLOT VALIDATION] Checking availability:", {
     productId,
+    productType,
     slotId,
     date,
     participants,
     timestamp: new Date().toISOString(),
   });
 
-  const collection = productType === "trekking" ? "mountains" : "tourist-packages";
+  // Map productType to actual Firebase collection name
+  // 'trekking' -> 'mountains' collection
+  // 'tours' or 'tourist-packages' -> 'tourist-packages' collection
+  const collection = productType === "trekking" 
+    ? "mountains" 
+    : "tourist-packages";
+  
+  console.log("📂 [SLOT VALIDATION] Using collection:", collection, "for productType:", productType);
+  
   const docRef = adminDb.collection(collection).doc(productId);
-  const doc = await docRef.get();
+  
+  let doc;
+  try {
+    doc = await docRef.get();
+  } catch (error: any) {
+    console.error("❌ [SLOT VALIDATION] Firebase error:", {
+      collection,
+      productId,
+      error: error.message,
+      code: error.code
+    });
+    throw new Error(`Failed to fetch product: ${error.message}`);
+  }
 
   if (!doc.exists) {
-    console.error("❌ [SLOT VALIDATION] Product not found:", productId);
-    throw new Error("Product not found");
+    console.error("❌ [SLOT VALIDATION] Product not found:", {
+      collection,
+      productId,
+      productType
+    });
+    throw new Error(`Product not found in ${collection} collection`);
   }
 
   const data = doc.data();

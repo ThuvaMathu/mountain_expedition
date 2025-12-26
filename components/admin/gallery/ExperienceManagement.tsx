@@ -7,10 +7,11 @@ import {
   collection,
   getDocs,
   updateDoc,
+  deleteDoc,
   doc,
   serverTimestamp,
 } from "firebase/firestore";
-import { Eye, Check, X, Star, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Eye, Check, X, Star, Clock, CheckCircle, XCircle, Trash2 } from "lucide-react";
 
 interface ExperienceSubmission {
   id: string;
@@ -19,6 +20,8 @@ interface ExperienceSubmission {
   mountainName: string;
   rating: number;
   images: string[];
+  videoUrl?: string;
+  videoStoragePath?: string;
   status: "pending" | "approved" | "rejected";
   submittedAt: any;
   userName: string;
@@ -34,6 +37,7 @@ export function ExperienceManagement() {
     useState<ExperienceSubmission | null>(null);
   const [adminNotes, setAdminNotes] = useState("");
   const [loading, setLoading] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const loadExperiences = async () => {
     if (!isFirebaseConfigured || !db) {
@@ -92,6 +96,23 @@ export function ExperienceManagement() {
     } catch (error) {
       console.error("Error updating experience:", error);
       alert("Failed to update experience status");
+    }
+  };
+
+  const handleDelete = async (experienceId: string) => {
+    try {
+      if (!isFirebaseConfigured || !db) {
+        setExperienceSubmissions((prev) =>
+          prev.filter((exp) => exp.id !== experienceId)
+        );
+      } else {
+        await deleteDoc(doc(db, "experienceSubmissions", experienceId));
+        await loadExperiences();
+      }
+      setDeleteConfirm(null);
+    } catch (error) {
+      console.error("Error deleting experience:", error);
+      alert("Failed to delete experience");
     }
   };
 
@@ -198,7 +219,11 @@ export function ExperienceManagement() {
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     By {experience.userName} •{" "}
-                    {new Date(experience.submittedAt).toLocaleDateString()}
+                    {experience.submittedAt?.toDate
+                      ? experience.submittedAt.toDate().toLocaleDateString()
+                      : experience.submittedAt
+                        ? new Date(experience.submittedAt).toLocaleDateString()
+                        : "N/A"}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -251,7 +276,7 @@ export function ExperienceManagement() {
                 </div>
               )}
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-2 flex-wrap">
                 <Button
                   size="sm"
                   variant="outline"
@@ -262,6 +287,7 @@ export function ExperienceManagement() {
                   Review
                 </Button>
 
+                {/* Status Change Buttons - Show based on current status */}
                 {experience.status === "pending" && (
                   <>
                     <Button
@@ -287,6 +313,44 @@ export function ExperienceManagement() {
                     </Button>
                   </>
                 )}
+
+                {experience.status === "approved" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      handleExperienceAction(experience.id, "reject")
+                    }
+                    className="flex items-center gap-1 border-red-300 text-red-700 hover:bg-red-50"
+                  >
+                    <X className="h-4 w-4" />
+                    Reject
+                  </Button>
+                )}
+
+                {experience.status === "rejected" && (
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      handleExperienceAction(experience.id, "approve")
+                    }
+                    className="bg-green-600 hover:bg-green-700 flex items-center gap-1"
+                  >
+                    <Check className="h-4 w-4" />
+                    Approve
+                  </Button>
+                )}
+
+                {/* Delete Button - Always available */}
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => setDeleteConfirm(experience.id)}
+                  className="flex items-center gap-1 ml-auto"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete
+                </Button>
               </div>
             </div>
           ))}
@@ -295,7 +359,7 @@ export function ExperienceManagement() {
 
       {/* Experience Review Modal */}
       {selectedExperience && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
@@ -382,6 +446,20 @@ export function ExperienceManagement() {
                 </div>
               )}
 
+              {/* Video Display */}
+              {selectedExperience.videoUrl && (
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-3">
+                    Submitted Video
+                  </h4>
+                  <video
+                    src={selectedExperience.videoUrl}
+                    controls
+                    className="w-full max-h-96 rounded-lg bg-black"
+                  />
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Admin Notes
@@ -432,6 +510,47 @@ export function ExperienceManagement() {
                   </Button>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <Trash2 className="h-6 w-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Delete Experience
+                </h3>
+                <p className="text-sm text-gray-600">
+                  This action cannot be undone
+                </p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete this experience submission? All
+              associated images and data will be permanently removed.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setDeleteConfirm(null)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleDelete(deleteConfirm)}
+                className="flex items-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete Permanently
+              </Button>
             </div>
           </div>
         </div>

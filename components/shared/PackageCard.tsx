@@ -138,9 +138,11 @@ export function PackageCard({
               <span className="text-2xl font-bold text-gray-900">{formattedPrice}</span>
             </div>
           </div>
-          <Button className="rounded-full bg-teal-600 hover:bg-teal-700 text-white px-6">
-            View Details
-          </Button>
+          <Link href={`/${type}/${id}`}>
+            <Button className="rounded-full bg-teal-600 hover:bg-teal-700 text-white px-6">
+              Book Now
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

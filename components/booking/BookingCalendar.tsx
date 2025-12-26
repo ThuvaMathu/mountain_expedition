@@ -52,11 +52,11 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
     setIsLoading(true);
     setTimeout(() => {
       const maxP = getMaxParticipants().length;
+      // Determine product type - fallback to 'tours' if not set
+      const productType = product.type || "tours";
+
       router.push(
-        `/booking/checkout?id=${product.id}&type=${
-          product.type
-        }&slot_id=${selectedDate}&participants=${
-          participants.split(" ")[0]
+        `/booking/checkout?id=${product.id}&type=${productType}&slot_id=${selectedDate}&participants=${participants.split(" ")[0]
         }&max=${maxP}`
       );
     }, 100);
@@ -81,11 +81,10 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
             return (
               <div
                 key={slot.date}
-                className={`w-full p-2 text-left rounded-lg border transition-colors ${
-                  isPastDate
+                className={`w-full p-2 text-left rounded-lg border transition-colors ${isPastDate
                     ? "border-gray-200 bg-gray-100 opacity-60"
                     : "border-gray-200 hover:border-gray-300"
-                }`}
+                  }`}
               >
                 <div className={`font-medium flex items-center gap-2 ${isPastDate ? "text-gray-400" : ""}`}>
                   {new Date(slot.date).toLocaleDateString("en-US", {
@@ -98,78 +97,76 @@ export function BookingCalendar({ mountain: product }: BookingCalendarProps) {
                     <span className="text-xs text-red-600 font-medium bg-red-50 px-2 py-0.5 rounded">(Past Date)</span>
                   )}
                 </div>
-              {slot.slots.map((timeSlot) => {
-                // Get availability status for this slot
-                const availability = getSlotAvailability(
-                  timeSlot.bookedParticipants,
-                  timeSlot.maxParticipants
-                );
+                {slot.slots.map((timeSlot) => {
+                  // Get availability status for this slot
+                  const availability = getSlotAvailability(
+                    timeSlot.bookedParticipants,
+                    timeSlot.maxParticipants
+                  );
 
-                // Don't show fully booked slots
-                if (!shouldShowSlot(timeSlot.bookedParticipants, timeSlot.maxParticipants)) {
-                  return null;
-                }
+                  // Don't show fully booked slots
+                  if (!shouldShowSlot(timeSlot.bookedParticipants, timeSlot.maxParticipants)) {
+                    return null;
+                  }
 
-                // Disable slot if date is in the past or slot is full
-                const isSlotDisabled = isPastDate || availability.status === "full";
+                  // Disable slot if date is in the past or slot is full
+                  const isSlotDisabled = isPastDate || availability.status === "full";
 
-                return (
-                  <div key={timeSlot.id} className="my-1">
-                    <button
-                      onClick={() => !isPastDate && setSelectedDate(timeSlot.id)}
-                      disabled={isSlotDisabled}
-                      className={`w-full p-3 text-left rounded-lg border transition-colors ${
-                        selectedDate === timeSlot.id && !isPastDate
-                          ? "border-teal-600 bg-teal-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      } ${isSlotDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
-                    >
-                      <div className="flex w-full justify-between items-center gap-2">
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-gray-600" />
-                          <div className="font-medium text-gray-900">
-                            {timeSlot.time}
+                  return (
+                    <div key={timeSlot.id} className="my-1">
+                      <button
+                        onClick={() => !isPastDate && setSelectedDate(timeSlot.id)}
+                        disabled={isSlotDisabled}
+                        className={`w-full p-3 text-left rounded-lg border transition-colors ${selectedDate === timeSlot.id && !isPastDate
+                            ? "border-teal-600 bg-teal-50"
+                            : "border-gray-200 hover:border-gray-300"
+                          } ${isSlotDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                      >
+                        <div className="flex w-full justify-between items-center gap-2">
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4 text-gray-600" />
+                            <div className="font-medium text-gray-900">
+                              {timeSlot.time}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            {/* Availability Badge */}
+                            <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${availability.bgColor} ${availability.textColor}`}>
+                              <span className={`h-2 w-2 rounded-full bg-${availability.color}-500 mr-1`}></span>
+                              {availability.label}
+                            </div>
+
+                            {selectedDate === timeSlot.id && (
+                              <div className="text-teal-600">✓</div>
+                            )}
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          {/* Availability Badge */}
-                          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${availability.bgColor} ${availability.textColor}`}>
-                            <span className={`h-2 w-2 rounded-full bg-${availability.color}-500 mr-1`}></span>
-                            {availability.label}
+                        {/* Spots info and progress bar */}
+                        <div className="mt-2 text-xs text-gray-600">
+                          <div className="flex justify-between mb-1">
+                            <span>{availability.available} spots left</span>
+                            <span>{availability.booked} already booked</span>
                           </div>
 
-                          {selectedDate === timeSlot.id && (
-                            <div className="text-teal-600">✓</div>
-                          )}
+                          {/* Visual Progress Bar */}
+                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div
+                              className={`h-1.5 rounded-full transition-all ${availability.status === "available" ? "bg-green-500" :
+                                  availability.status === "limited" ? "bg-yellow-500" :
+                                    availability.status === "nearly-full" ? "bg-orange-500" :
+                                      "bg-red-500"
+                                }`}
+                              style={{ width: `${(availability.booked / availability.max) * 100}%` }}
+                            />
+                          </div>
                         </div>
-                      </div>
-
-                      {/* Spots info and progress bar */}
-                      <div className="mt-2 text-xs text-gray-600">
-                        <div className="flex justify-between mb-1">
-                          <span>{availability.available} spots left</span>
-                          <span>{availability.booked} already booked</span>
-                        </div>
-
-                        {/* Visual Progress Bar */}
-                        <div className="w-full bg-gray-200 rounded-full h-1.5">
-                          <div
-                            className={`h-1.5 rounded-full transition-all ${
-                              availability.status === "available" ? "bg-green-500" :
-                              availability.status === "limited" ? "bg-yellow-500" :
-                              availability.status === "nearly-full" ? "bg-orange-500" :
-                              "bg-red-500"
-                            }`}
-                            style={{ width: `${(availability.booked / availability.max) * 100}%` }}
-                          />
-                        </div>
-                      </div>
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
             );
           })}
         </div>

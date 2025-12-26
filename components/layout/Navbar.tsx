@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import {
   Menu,
@@ -26,7 +25,6 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isTouristDropdownOpen, setIsTouristDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
-  const { language, toggleLanguage, t } = useLanguage();
   const pathname = usePathname();
 
   if (pathname?.startsWith("/admin")) {
@@ -49,13 +47,13 @@ export function Navbar() {
               href="/"
               className="text-gray-700 hover:text-teal-600 transition-colors"
             >
-              {t("home")}
+              Home
             </Link>
             <Link
               href="/about"
               className="text-gray-700 hover:text-teal-600 transition-colors"
             >
-              {t("about")}
+              About
             </Link>
 
             {/* Adventures Dropdown */}
@@ -106,19 +104,19 @@ export function Navbar() {
               href="/gallery"
               className="text-gray-700 hover:text-teal-600 transition-colors"
             >
-              {t("gallery")}
+              Gallery
             </Link>
             <Link
               href="/blog"
               className="text-gray-700 hover:text-teal-600 transition-colors"
             >
-              {t("blog")}
+              Blog
             </Link>
             <Link
-              href="/Contact"
+              href="/contact"
               className="text-gray-700 hover:text-teal-600 transition-colors"
             >
-              {t("Contact")}
+              Contact
             </Link>
 
             {/* Currency Selector */}
@@ -153,14 +151,14 @@ export function Navbar() {
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
                 onClick={() => setIsOpen(false)}
               >
-                {t("home")}
+                Home
               </Link>
               <Link
                 href="/about"
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
                 onClick={() => setIsOpen(false)}
               >
-                {t("about")}
+                About
               </Link>
               {/* Mobile Adventures Links */}
               <div className="px-3 py-2">
@@ -192,21 +190,21 @@ export function Navbar() {
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
                 onClick={() => setIsOpen(false)}
               >
-                {t("gallery")}
+                Gallery
               </Link>
               <Link
                 href="/blog"
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
                 onClick={() => setIsOpen(false)}
               >
-                {t("blog")}
+                Blog
               </Link>
               <Link
                 href="/contact"
                 className="block px-3 py-2 text-gray-700 hover:text-teal-600"
                 onClick={() => setIsOpen(false)}
               >
-                {t("contact")}
+                Contact
               </Link>
 
               {/* Mobile Currency Selector */}

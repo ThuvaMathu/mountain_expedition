@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/shared/PageHero";
 import { PackageCard } from "@/components/shared/PackageCard";
@@ -53,6 +53,7 @@ export default function TrekkingPage() {
     const [mountains, setMountains] = useState<Mountain[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<"all" | "domestic" | "international">("all");
+    const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([]);
 
     useEffect(() => {
         const fetchMountains = async () => {
@@ -98,6 +99,23 @@ export default function TrekkingPage() {
             }
         };
         fetchMountains();
+    }, []);
+
+    // Fetch FAQs from Firestore
+    useEffect(() => {
+        const fetchFAQs = async () => {
+            try {
+                if (!db) return;
+                const contactDoc = await getDoc(doc(db, "contact-details", "main"));
+                if (contactDoc.exists()) {
+                    const data = contactDoc.data();
+                    setFaqs(data.faqs || []);
+                }
+            } catch (error) {
+                console.error("Error fetching FAQs:", error);
+            }
+        };
+        fetchFAQs();
     }, []);
 
     const isAvailable = (mountain: Mountain) => {
@@ -333,7 +351,7 @@ export default function TrekkingPage() {
                 </div>
 
                 {/* FAQ Section */}
-                <FAQSection />
+                <FAQSection faqs={faqs} />
 
                 {/* Testimonials */}
                 <div className="bg-blue-50/30 -mx-4 px-4 py-8 rounded-3xl">

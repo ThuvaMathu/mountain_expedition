@@ -8,11 +8,15 @@ import { Toaster } from "@/components/ui/toast";
 import { ToastContainer, toast } from "react-toastify";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
+import { buildMetadata } from "@/seo/utils";
+import { defaultViewport } from "@/seo/viewport";
+
 const inter = Inter({ subsets: ["latin"] });
 
 const isDevelopment = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
 
 export const dynamic = "force-dynamic";
+export const viewport = defaultViewport;
 
 export const metadata: Metadata = {
   metadataBase: new URL(

@@ -8,6 +8,9 @@ import {
   generateBlogArticleSchema,
   generateBreadcrumbSchema,
 } from "@/seo/schemas";
+import { SocialShare } from "@/components/blog/SocialShare";
+import { RecentPostsServer } from "@/components/blog/RecentPostsServer";
+import { BlogCTA } from "@/components/blog/BlogCTA";
 
 type TBlogPost = {
   id?: string;
@@ -132,7 +135,7 @@ export default async function BlogPostPage({
         }}
       />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Link
           href="/blog"
           className="inline-flex items-center text-teal-600 hover:text-teal-700 font-medium mb-8"
@@ -141,87 +144,107 @@ export default async function BlogPostPage({
           Back to Blog
         </Link>
 
-        <article className="bg-white rounded-xl shadow-lg overflow-hidden">
-          {post.mainImageUrl && (
-            <div className="aspect-video lg:aspect-[21/9] overflow-hidden">
-              <img
-                src={post.mainImageUrl || "/placeholder.svg"}
-                alt={post.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            <article className="bg-white rounded-xl shadow-lg overflow-hidden">
+              {post.mainImageUrl && (
+                <div className="aspect-video lg:aspect-[21/9] overflow-hidden">
+                  <img
+                    src={post.mainImageUrl || "/placeholder.svg"}
+                    alt={post.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
 
-          <div className="p-8 lg:p-12">
-            <div className="flex flex-wrap gap-2 mb-6">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center px-3 py-1 bg-teal-100 text-teal-700 text-sm rounded-full"
-                >
-                  <Tag className="h-3 w-3 mr-1" />
-                  {tag}
-                </span>
-              ))}
-            </div>
+              <div className="p-8 lg:p-12">
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {post.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center px-3 py-1 bg-teal-100 text-teal-700 text-sm rounded-full"
+                    >
+                      <Tag className="h-3 w-3 mr-1" />
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-              {post.title}
-            </h1>
+                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                  {post.title}
+                </h1>
 
-            <div className="flex items-center gap-6 text-gray-600 mb-8 pb-8 border-b border-gray-200">
-              <div className="flex items-center">
-                <User className="h-5 w-5 mr-2" />
-                <span className="font-medium">{post.author}</span>
+                <div className="flex items-center gap-6 text-gray-600 mb-8 pb-8 border-b border-gray-200">
+                  <div className="flex items-center">
+                    <User className="h-5 w-5 mr-2" />
+                    <span className="font-medium">{post.author}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Calendar className="h-5 w-5 mr-2" />
+                    <span>
+                      {post.createdAt
+                        ? (() => {
+                          // Handle Firestore Timestamp format
+                          let dateObj: Date;
+                          if (typeof post.createdAt === "object" && "seconds" in post.createdAt) {
+                            dateObj = new Date((post.createdAt as any).seconds * 1000);
+                          } else {
+                            dateObj = new Date(post.createdAt);
+                          }
+
+                          // Check if date is valid
+                          if (isNaN(dateObj.getTime())) {
+                            return new Date().toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            });
+                          }
+
+                          return dateObj.toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          });
+                        })()
+                        : ""}
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-teal-600 prose-strong:text-gray-900"
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
               </div>
-              <div className="flex items-center">
-                <Calendar className="h-5 w-5 mr-2" />
-                <span>
-                  {post.createdAt
-                    ? (() => {
-                      // Handle Firestore Timestamp format
-                      let dateObj: Date;
-                      if (typeof post.createdAt === "object" && "seconds" in post.createdAt) {
-                        dateObj = new Date((post.createdAt as any).seconds * 1000);
-                      } else {
-                        dateObj = new Date(post.createdAt);
-                      }
+            </article>
 
-                      // Check if date is valid
-                      if (isNaN(dateObj.getTime())) {
-                        return new Date().toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        });
-                      }
-
-                      return dateObj.toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      });
-                    })()
-                    : ""}
-                </span>
-              </div>
+            <div className="mt-12 text-center">
+              <Link
+                href="/blog"
+                className="inline-flex items-center px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                More Stories
+              </Link>
             </div>
-
-            <div
-              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-teal-600 prose-strong:text-gray-900"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
           </div>
-        </article>
 
-        <div className="mt-12 text-center">
-          <Link
-            href="/blog"
-            className="inline-flex items-center px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            More Stories
-          </Link>
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="space-y-6 sticky top-8">
+              <SocialShare
+                url={`/blog/${slug}`}
+                title={post.title}
+                description={post.desc}
+              />
+
+              <RecentPostsServer currentSlug={slug} limit={3} />
+
+              <BlogCTA />
+            </div>
+          </div>
         </div>
       </main>
     </>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { Save, Plus, Trash2, Clock, Phone, HelpCircle } from "lucide-react";
+import { Save, Plus, Trash2, Clock, Phone, HelpCircle, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 
 type OfficeHours = {
   day: string;
@@ -24,6 +24,12 @@ type ContactConfig = {
   emergencyPhone: string;
   officeHours: OfficeHours[];
   faqs: FAQ[];
+  socialMedia: {
+    facebook: string;
+    twitter: string;
+    instagram: string;
+    youtube: string;
+  };
 };
 
 const defaultOfficeHours: OfficeHours[] = [
@@ -63,6 +69,12 @@ export function ContactsManagement() {
     emergencyPhone: "",
     officeHours: defaultOfficeHours,
     faqs: defaultFAQs,
+    socialMedia: {
+      facebook: "",
+      twitter: "",
+      instagram: "",
+      youtube: "",
+    },
   });
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -80,6 +92,12 @@ export function ContactsManagement() {
         emergencyPhone: data.emergencyPhone || "",
         officeHours: data.officeHours || defaultOfficeHours,
         faqs: data.faqs || defaultFAQs,
+        socialMedia: data.socialMedia || {
+          facebook: "",
+          twitter: "",
+          instagram: "",
+          youtube: "",
+        },
       });
     }
   };
@@ -214,6 +232,83 @@ export function ContactsManagement() {
         </div>
       </div>
 
+      {/* Social Media Links */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          Social Media Links
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+              <Facebook className="h-4 w-4 text-blue-600 mr-2" />
+              Facebook
+            </label>
+            <Input
+              type="url"
+              value={form.socialMedia.facebook}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  socialMedia: { ...form.socialMedia, facebook: e.target.value },
+                })
+              }
+              placeholder="https://facebook.com/yourpage"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+              <Twitter className="h-4 w-4 text-sky-500 mr-2" />
+              Twitter
+            </label>
+            <Input
+              type="url"
+              value={form.socialMedia.twitter}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  socialMedia: { ...form.socialMedia, twitter: e.target.value },
+                })
+              }
+              placeholder="https://twitter.com/yourhandle"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+              <Instagram className="h-4 w-4 text-pink-600 mr-2" />
+              Instagram
+            </label>
+            <Input
+              type="url"
+              value={form.socialMedia.instagram}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  socialMedia: { ...form.socialMedia, instagram: e.target.value },
+                })
+              }
+              placeholder="https://instagram.com/yourprofile"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+              <Youtube className="h-4 w-4 text-red-600 mr-2" />
+              YouTube
+            </label>
+            <Input
+              type="url"
+              value={form.socialMedia.youtube}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  socialMedia: { ...form.socialMedia, youtube: e.target.value },
+                })
+              }
+              placeholder="https://youtube.com/yourchannel"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Office Hours */}
       <div className="bg-white rounded-xl shadow p-6">
         <div className="flex items-center justify-between mb-4">
@@ -342,11 +437,10 @@ export function ContactsManagement() {
           </Button>
           {notice && (
             <div
-              className={`text-sm px-3 py-1 rounded ${
-                notice.includes("Failed")
+              className={`text-sm px-3 py-1 rounded ${notice.includes("Failed")
                   ? "text-red-700 bg-red-50"
                   : "text-green-700 bg-green-50"
-              }`}
+                }`}
             >
               {notice}
             </div>

@@ -27,6 +27,8 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { processImages } from "@/lib/image-processor";
 
+import { ImageUploader } from "@/components/global/image-uploader";
+
 interface FormData {
   name: string;
   location: string;
@@ -34,7 +36,8 @@ interface FormData {
   rating: number;
   text: string;
   email: string;
-  image?: File;
+  image?: string; // Image URL
+  thumbnailUrl?: string; // Thumbnail URL
 }
 
 interface FormErrors {
@@ -65,7 +68,6 @@ export default function ReviewSubmissionForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [mountains, setMountains] = useState<Mountain[]>([]);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loadingMountains, setLoadingMountains] = useState(true);
 
   // Mock mountains data for when Firebase is not configured
@@ -137,55 +139,6 @@ export default function ReviewSubmissionForm() {
     }
   };
 
-  // Handle image upload
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const Tfile = e.target.files?.[0];
-
-    if (!Tfile) return;
-    const processedFile = await processImages(Tfile, {
-      aspectRatio: "original",
-      targetSizeKB: 120,
-    });
-    const file = processedFile[0];
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      setErrors((prev) => ({
-        ...prev,
-        image: "Please select a valid image file",
-      }));
-      return;
-    }
-
-    // Validate file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      setErrors((prev) => ({
-        ...prev,
-        image: "Image size should be less than 5MB",
-      }));
-      return;
-    }
-
-    setFormData((prev) => ({ ...prev, image: file }));
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setImagePreview(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-
-    // Clear image error
-    if (errors.image) {
-      setErrors((prev) => ({ ...prev, image: undefined }));
-    }
-  };
-
-  // Remove image
-  const removeImage = () => {
-    setFormData((prev) => ({ ...prev, image: undefined }));
-    setImagePreview(null);
-  };
-
   // Validate form
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -224,26 +177,6 @@ export default function ReviewSubmissionForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Upload image to Firebase Storage
-  const uploadImage = async (file: File): Promise<string | null> => {
-    if (!isFirebaseConfigured || !storage) {
-      return null;
-    }
-
-    try {
-      const timestamp = Date.now();
-      const fileName = `testimonials/${timestamp}_${file.name}`;
-      const storageRef = ref(storage, fileName);
-
-      await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      return downloadURL;
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      throw new Error("Failed to upload image");
-    }
-  };
-
   // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -255,19 +188,6 @@ export default function ReviewSubmissionForm() {
     setIsSubmitting(true);
 
     try {
-      let imageUrl: string | null = null;
-
-      // Upload image if provided
-      if (formData.image) {
-        try {
-          imageUrl = (await uploadImage(formData.image)) || null;
-        } catch (error) {
-          setErrors({ image: "Failed to upload image. Please try again." });
-          setIsSubmitting(false);
-          return;
-        }
-      }
-
       // Prepare testimonial data
       const testimonialData = {
         name: formData.name.trim(),
@@ -276,7 +196,8 @@ export default function ReviewSubmissionForm() {
         rating: formData.rating,
         text: formData.text.trim(),
         email: formData.email || "",
-        image: imageUrl,
+        image: formData.image || "",
+        thumbnailUrl: formData.thumbnailUrl || "",
         status: "pending" as const,
         createdAt: isFirebaseConfigured ? serverTimestamp() : new Date(),
       };
@@ -337,7 +258,6 @@ export default function ReviewSubmissionForm() {
                   text: "",
                   email: "",
                 });
-                setImagePreview(null);
                 setErrors({});
               }}
               className="px-6 py-3 bg-gradient-to-r from-teal-600 to-teal-600 text-white rounded-full font-medium hover:from-teal-600 hover:to-teal-700 transition-all duration-200"
@@ -384,9 +304,8 @@ export default function ReviewSubmissionForm() {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                  errors.name ? "border-red-500 bg-red-50" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.name ? "border-red-500 bg-red-50" : "border-gray-300"
+                  }`}
                 placeholder="Enter your full name"
               />
               {errors.name && (
@@ -412,11 +331,10 @@ export default function ReviewSubmissionForm() {
                 name="location"
                 value={formData.location}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                  errors.location
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.location
                     ? "border-red-500 bg-red-50"
                     : "border-gray-300"
-                }`}
+                  }`}
                 placeholder="e.g., California, USA"
               />
               {errors.location && (
@@ -471,16 +389,14 @@ export default function ReviewSubmissionForm() {
                     key={star}
                     type="button"
                     onClick={() => handleRatingChange(star)}
-                    className={`p-1 rounded-full transition-all hover:scale-110 ${
-                      star <= formData.rating
+                    className={`p-1 rounded-full transition-all hover:scale-110 ${star <= formData.rating
                         ? "text-yellow-400"
                         : "text-gray-300 hover:text-yellow-300"
-                    }`}
+                      }`}
                   >
                     <Star
-                      className={`h-8 w-8 ${
-                        star <= formData.rating ? "fill-current" : ""
-                      }`}
+                      className={`h-8 w-8 ${star <= formData.rating ? "fill-current" : ""
+                        }`}
                     />
                   </button>
                 ))}
@@ -513,9 +429,8 @@ export default function ReviewSubmissionForm() {
                 value={formData.text}
                 onChange={handleInputChange}
                 rows={4}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${
-                  errors.text ? "border-red-500 bg-red-50" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${errors.text ? "border-red-500 bg-red-50" : "border-gray-300"
+                  }`}
                 placeholder="Share your experience, what you loved most, and any tips for future climbers..."
               />
               <div className="flex justify-between items-center mt-1">
@@ -549,9 +464,8 @@ export default function ReviewSubmissionForm() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                  errors.email ? "border-red-500 bg-red-50" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.email ? "border-red-500 bg-red-50" : "border-gray-300"
+                  }`}
                 placeholder="your.email@example.com (for follow-up if needed)"
               />
               {errors.email && (
@@ -569,37 +483,20 @@ export default function ReviewSubmissionForm() {
                 Profile Photo (Optional)
               </label>
 
-              {imagePreview ? (
-                <div className="relative inline-block">
-                  <img
-                    src={imagePreview}
-                    alt="Profile preview"
-                    className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              ) : (
-                <label className="cursor-pointer">
-                  <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center hover:border-blue-400 transition-colors">
-                    <div className="text-center">
-                      <Upload className="h-6 w-6 text-gray-400 mx-auto mb-1" />
-                      <span className="text-xs text-gray-500">Upload</span>
-                    </div>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                </label>
-              )}
+              <ImageUploader
+                bucketName="testimonials"
+                isMulti={false}
+                generateThumbnail={true}
+                onImageUpload={(urls) => {
+                  if (urls.length > 0) {
+                    setFormData((prev) => ({ ...prev, image: urls[0] }));
+                  }
+                }}
+                onThumbnailGenerated={(url) => {
+                  setFormData((prev) => ({ ...prev, thumbnailUrl: url }));
+                }}
+                initialUrls={formData.image ? [formData.image] : []}
+              />
 
               {errors.image && (
                 <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -608,7 +505,7 @@ export default function ReviewSubmissionForm() {
                 </p>
               )}
               <p className="mt-1 text-xs text-gray-500">
-                Optional: Upload a profile photo (max 5MB, JPG/PNG)
+                Optional: Upload a profile photo (will be optimized automatically)
               </p>
             </div>
 

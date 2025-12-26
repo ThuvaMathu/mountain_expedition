@@ -19,6 +19,8 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import dynamic from "next/dynamic";
 import { getContactDetailsClient } from "@/services/client-service/get-contact";
 import { fallbackContactDetails } from "@/services/default-values";
+import { motion } from "framer-motion";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 
 export default function BookingConfirmationPage() {
   const params = useParams();
@@ -137,10 +139,20 @@ export default function BookingConfirmationPage() {
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+      <motion.div
+        className="text-center mb-8"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, type: "spring", bounce: 0.4 }}
+      >
+        <motion.div
+          className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+        >
           <CheckCircle className="h-12 w-12 text-green-600" />
-        </div>
+        </motion.div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Booking Confirmed!
         </h1>
@@ -152,87 +164,89 @@ export default function BookingConfirmationPage() {
             (Demo Mode - No actual payment processed)
           </p>
         )}
-      </div>
+      </motion.div>
 
-      <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Booking Details
-          </h2>
-          <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">
-            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <Mountain className="h-5 w-5 text-teal-600 mt-1" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">Expedition</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {booking.mountainName}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <Calendar className="h-5 w-5 text-teal-600 mt-1" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">
-                  Expedition Date
-                </p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {booking.slotDetails?.date}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <User className="h-5 w-5 text-teal-600 mt-1" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">
-                  Participants
-                </p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {booking.participants} person(s)
-                </p>
-              </div>
-            </div>
+      <FadeIn delay={0.3}>
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Booking Details
+            </h2>
+            <span className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">
+              {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+            </span>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <Mail className="h-5 w-5 text-teal-600 mt-1" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">Booking ID</p>
-                <p className="text-lg font-semibold text-gray-900 font-mono">
-                  {booking.bookingId}
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <StaggerItem className="space-y-4">
+              <div className="flex items-start space-x-3">
+                <Mountain className="h-5 w-5 text-teal-600 mt-1" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Expedition</p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {booking.mountainName}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Calendar className="h-5 w-5 text-teal-600 mt-1" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500">
+                    Expedition Date
+                  </p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {booking.slotDetails?.date}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <User className="h-5 w-5 text-teal-600 mt-1" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500">
+                    Participants
+                  </p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {booking.participants} person(s)
+                  </p>
+                </div>
+              </div>
+            </StaggerItem>
+
+            <StaggerItem className="space-y-4">
+              <div className="flex items-start space-x-3">
+                <Mail className="h-5 w-5 text-teal-600 mt-1" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Booking ID</p>
+                  <p className="text-lg font-semibold text-gray-900 font-mono">
+                    {booking.bookingId}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <MapPin className="h-5 w-5 text-teal-600 mt-1" />
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Customer</p>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {booking.customerInfo.organizer.name}
+                  </p>
+                  <p className="text-sm text-gray-600">{booking.userEmail}</p>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm font-medium text-gray-500 mb-1">
+                  Total Amount Paid
+                </p>
+                <p className="text-2xl font-bold text-green-600">
+                  {fmt(booking.amount)}
                 </p>
               </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <MapPin className="h-5 w-5 text-teal-600 mt-1" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">Customer</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {booking.customerInfo.organizer.name}
-                </p>
-                <p className="text-sm text-gray-600">{booking.userEmail}</p>
-              </div>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm font-medium text-gray-500 mb-1">
-                Total Amount Paid
-              </p>
-              <p className="text-2xl font-bold text-green-600">
-                {fmt(booking.amount)}
-              </p>
-            </div>
-          </div>
+            </StaggerItem>
+          </StaggerContainer>
         </div>
-      </div>
+      </FadeIn>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+      <StaggerContainer className="flex flex-col sm:flex-row gap-4 justify-center">
         <Button
           size="lg"
           className="flex items-center"
@@ -264,7 +278,7 @@ export default function BookingConfirmationPage() {
             View My Bookings
           </Button>
         </Link>
-      </div>
+      </StaggerContainer>
 
       {!booking.pdfUrl && (
         <div className="mt-6 text-center">

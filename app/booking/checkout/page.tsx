@@ -21,6 +21,8 @@ import {
   CHECKOUT_MESSAGES,
   TERMS_CONDITIONS,
 } from "@/lib/constants/checkout-constants";
+import { motion } from "framer-motion";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
@@ -263,18 +265,20 @@ export default function CheckoutPage() {
   //console.log("booking:", bookingDetails);
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Complete Your Booking
-        </h1>
-        <p className="text-gray-600">
-          Secure your spot on this incredible expedition
-        </p>
-      </div>
+      <SlideUp>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Complete Your Booking
+          </h1>
+          <p className="text-gray-600">
+            Secure your spot on this incredible expedition
+          </p>
+        </div>
+      </SlideUp>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <StaggerContainer className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Booking Form */}
-        <div className="lg:col-span-2 space-y-6 relative">
+        <StaggerItem className="lg:col-span-2 space-y-6 relative">
           {/* Processing Overlay */}
           {isLoading && (
             <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-50 rounded-xl flex items-center justify-center">
@@ -320,10 +324,10 @@ export default function CheckoutPage() {
               ))}
             </div>
           </div>
-        </div>
+        </StaggerItem>
 
         {/* Booking Summary */}
-        <div className="lg:col-span-1">
+        <StaggerItem className="lg:col-span-1">
           <div className="sticky top-8">
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
@@ -431,11 +435,10 @@ export default function CheckoutPage() {
                   !isFieldsFilled ||
                   !Object.values(termsCon).every(Boolean)
                 }
-                className={`w-full mt-6 ${
-                  !isFieldsFilled || !Object.values(termsCon).every(Boolean)
+                className={`w-full mt-6 ${!isFieldsFilled || !Object.values(termsCon).every(Boolean)
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-teal-600 hover:bg-teal-700"
-                } text-white py-3 text-lg`}
+                  } text-white py-3 text-lg`}
               >
                 {isLoading ? (
                   <div className="flex items-center">
@@ -470,8 +473,8 @@ export default function CheckoutPage() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </StaggerItem>
+      </StaggerContainer>
     </main>
   );
 }

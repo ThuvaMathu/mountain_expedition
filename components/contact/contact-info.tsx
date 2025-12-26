@@ -12,6 +12,7 @@ import {
   Youtube,
 } from "lucide-react";
 import Link from "next/link";
+import { COMPANY_INFO } from "@/seo/config";
 
 interface ContactDetails {
   email: string;
@@ -78,25 +79,33 @@ export function ContactInfo({ contactDetails }: ContactInfoProps) {
         <h4 className="font-medium text-gray-900 mb-4">Follow Us</h4>
         <div className="flex space-x-4">
           <Link
-            href="#"
+            href={COMPANY_INFO.social.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-gray-400 hover:text-teal-400 transition-colors"
           >
             <Facebook className="h-6 w-6" />
           </Link>
           <Link
-            href="#"
+            href={COMPANY_INFO.social.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-gray-400 hover:text-teal-400 transition-colors"
           >
             <Twitter className="h-6 w-6" />
           </Link>
           <Link
-            href="#"
+            href={COMPANY_INFO.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-gray-400 hover:text-teal-400 transition-colors"
           >
             <Instagram className="h-6 w-6" />
           </Link>
           <Link
-            href="#"
+            href={COMPANY_INFO.social.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-gray-400 hover:text-teal-400 transition-colors"
           >
             <Youtube className="h-6 w-6" />

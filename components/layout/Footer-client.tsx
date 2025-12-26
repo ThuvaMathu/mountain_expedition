@@ -27,6 +27,12 @@ type ContactDetails = {
   emergencyPhone: string;
   officeHours: OfficeHours[];
   faqs: any[];
+  socialMedia?: {
+    facebook: string;
+    twitter: string;
+    instagram: string;
+    youtube: string;
+  };
 };
 
 type FooterClientProps = {
@@ -64,30 +70,46 @@ export function FooterClient({
               across the globe.
             </p>
             <div className="flex space-x-4">
-              <Link
-                href={COMPANY_INFO.social.facebook}
-                className="text-gray-400 hover:text-teal-400 transition-colors"
-              >
-                <Facebook className="h-6 w-6" />
-              </Link>
-              <Link
-                href={COMPANY_INFO.social.twitter}
-                className="text-gray-400 hover:text-teal-400 transition-colors"
-              >
-                <Twitter className="h-6 w-6" />
-              </Link>
-              <Link
-                href={COMPANY_INFO.social.instagram}
-                className="text-gray-400 hover:text-teal-400 transition-colors"
-              >
-                <Instagram className="h-6 w-6" />
-              </Link>
-              <Link
-                href={COMPANY_INFO.social.youtube}
-                className="text-gray-400 hover:text-teal-400 transition-colors"
-              >
-                <Youtube className="h-6 w-6" />
-              </Link>
+              {contactDetails.socialMedia?.facebook && (
+                <Link
+                  href={contactDetails.socialMedia.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition-colors"
+                >
+                  <Facebook className="h-6 w-6" />
+                </Link>
+              )}
+              {contactDetails.socialMedia?.twitter && (
+                <Link
+                  href={contactDetails.socialMedia.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition-colors"
+                >
+                  <Twitter className="h-6 w-6" />
+                </Link>
+              )}
+              {contactDetails.socialMedia?.instagram && (
+                <Link
+                  href={contactDetails.socialMedia.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition-colors"
+                >
+                  <Instagram className="h-6 w-6" />
+                </Link>
+              )}
+              {contactDetails.socialMedia?.youtube && (
+                <Link
+                  href={contactDetails.socialMedia.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition-colors"
+                >
+                  <Youtube className="h-6 w-6" />
+                </Link>
+              )}
             </div>
           </div>
 
@@ -140,21 +162,31 @@ export function FooterClient({
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
             <ul className="space-y-3">
-              <li className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-teal-400" />
-                <span className="text-gray-300">{contactDetails.email}</span>
+              <li className="flex items-start space-x-3">
+                <Mail className="h-5 w-5 text-teal-400 flex-shrink-0 mt-0.5" />
+                <a
+                  href={`mailto:${contactDetails.email}`}
+                  className="text-gray-300 hover:text-teal-400 transition-colors break-all text-sm"
+                >
+                  {contactDetails.email}
+                </a>
               </li>
               <li className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-teal-400" />
-                <span className="text-gray-300">{contactDetails.phone}</span>
+                <Phone className="h-5 w-5 text-teal-400 flex-shrink-0" />
+                <a
+                  href={`tel:${contactDetails.phone}`}
+                  className="text-gray-300 hover:text-teal-400 transition-colors text-sm"
+                >
+                  {contactDetails.phone}
+                </a>
               </li>
               <li className="flex items-start space-x-3">
-                <div className="w-5">
+                <div className="w-5 flex-shrink-0">
                   <Clock className="h-5 w-5 text-teal-400 mt-1" />
                 </div>
-                <div className="w-fit">
+                <div className="flex-1">
                   {contactDetails.officeHours.map((hrTime, i) => (
-                    <span key={i} className="text-gray-300 block">
+                    <span key={i} className="text-gray-300 block text-sm">
                       {hrTime.day}: {hrTime.hours}
                     </span>
                   ))}
@@ -167,7 +199,7 @@ export function FooterClient({
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} Tamil Adventure Treckking Club. All
+              © {new Date().getFullYear()} {COMPANY_INFO.legalName}. All
               rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">

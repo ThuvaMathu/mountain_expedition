@@ -13,7 +13,6 @@ export function buildMetadata(config: Partial<SEOConfig>): Metadata {
     robots = DEFAULT_SEO.robots,
     icons = DEFAULT_SEO.icons,
     manifest = DEFAULT_SEO.manifest,
-    themeColor = DEFAULT_SEO.themeColor,
     appleWebApp = DEFAULT_SEO.appleWebApp,
   } = config;
 
@@ -72,7 +71,6 @@ export function buildMetadata(config: Partial<SEOConfig>): Metadata {
 
     // PWA
     manifest,
-    themeColor,
     appleWebApp: {
       capable: appleWebApp?.capable,
       title: appleWebApp?.title,

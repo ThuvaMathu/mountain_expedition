@@ -144,4 +144,10 @@ export const fallbackContactDetails: TContactDetails = {
         "Fitness requirements vary by expedition. We provide detailed preparation guides and fitness recommendations for each trip.",
     },
   ],
+  socialMedia: {
+    facebook: "https://facebook.com/tamiladventuretrekkingclub",
+    twitter: "https://twitter.com/tamiladventure",
+    instagram: "https://instagram.com/tamiladventuretrekkingclub",
+    youtube: "https://youtube.com/@tamiladventuretrekkingclub",
+  },
 };

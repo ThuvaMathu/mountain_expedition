@@ -30,6 +30,8 @@ import { useCurrencyStore } from "@/stores/currency-store";
 import { pdf } from "@react-pdf/renderer";
 import { BrochureTemplate } from "@/lib/pdf-templates/brochure-template";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 
 export default function MountainDetailPage() {
   const params = useParams();
@@ -216,7 +218,7 @@ export default function MountainDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Images and Details */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Image Gallery */}
+          {/* Image Gallery - No animation to prevent re-render */}
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="relative">
               <ImageLoader
@@ -242,11 +244,10 @@ export default function MountainDetailPage() {
                   <button
                     key={`thumb-${index}`}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                      selectedImage === index
-                        ? "border-teal-600"
-                        : "border-gray-200"
-                    }`}
+                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${selectedImage === index
+                      ? "border-teal-600"
+                      : "border-gray-200"
+                      }`}
                   >
                     <ImageLoader
                       src={image || "/placeholder.svg"}
@@ -277,7 +278,7 @@ export default function MountainDetailPage() {
                   <div className="font-medium text-gray-900">Duration</div>
                   <div className="text-gray-600">
                     {mountain.duration === "0 days 0 nights" ||
-                    !mountain.duration
+                      !mountain.duration
                       ? "Duration varies"
                       : mountain.duration}
                   </div>

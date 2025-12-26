@@ -15,7 +15,7 @@ export const FadeIn = ({
     children,
     className = "",
     delay = 0,
-    duration = 0.8, // Increased from 0.5
+    duration = 1, // Increased from 0.5
     once = true
 }: Props) => {
     return (

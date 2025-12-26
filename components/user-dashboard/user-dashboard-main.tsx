@@ -21,6 +21,7 @@ import {
   Star,
   Clock,
   CheckCircle,
+  Trash2,
 } from "lucide-react";
 import { db, storage, isFirebaseConfigured } from "@/lib/firebase";
 import {
@@ -31,7 +32,7 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, uploadBytesResumable, deleteObject, ref as storageRef } from "firebase/storage";
 import { capitalizeName, formatCurrency } from "@/lib/utils";
 import { Textarea } from "../ui/textarea";
 
@@ -79,6 +80,18 @@ export default function DashboardPageMain() {
     rating: 5,
     images: [] as File[],
   });
+
+  // Video upload state
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoUploadProgress, setVideoUploadProgress] = useState(0);
+  const [videoUrl, setVideoUrl] = useState<string>("");
+  const [videoStoragePath, setVideoStoragePath] = useState<string>("");
+  const [videoError, setVideoError] = useState<string>("");
+
+  // Pagination state for bookings
+  const [currentPage, setCurrentPage] = useState(1);
+  const bookingsPerPage = 5;
 
   useEffect(() => {
     const load = async () => {
@@ -220,6 +233,12 @@ export default function DashboardPageMain() {
     )
       return;
 
+    // Wait for video upload to complete
+    if (videoUploading) {
+      alert("Please wait for video upload to complete");
+      return;
+    }
+
     setUploadingExperience(true);
     try {
       const imageUrls: string[] = [];
@@ -236,13 +255,15 @@ export default function DashboardPageMain() {
           imageUrls.push(url);
         }
 
-        // Save experience submission to Firestore
+        // Save experience submission to Firestore with video
         await addDoc(collection(db, "experienceSubmissions"), {
           title: experienceForm.title,
           description: experienceForm.description,
           mountainName: experienceForm.mountainName,
           rating: experienceForm.rating,
           images: imageUrls,
+          videoUrl: videoUrl || null,
+          videoStoragePath: videoStoragePath || null,
           status: "pending",
           userEmail: user.email,
           userName: user.displayName || "Anonymous",
@@ -277,7 +298,7 @@ export default function DashboardPageMain() {
         setExperienceSubmissions((prev) => [demoExperience, ...prev]);
       }
 
-      // Reset form
+      // Reset form including video
       setExperienceForm({
         title: "",
         description: "",
@@ -285,6 +306,10 @@ export default function DashboardPageMain() {
         rating: 5,
         images: [],
       });
+      setVideoUrl("");
+      setVideoStoragePath("");
+      setVideoFile(null);
+      setVideoError("");
     } catch (error) {
       console.error("Error submitting experience:", error);
       alert("Failed to submit experience. Please try again.");
@@ -308,6 +333,57 @@ export default function DashboardPageMain() {
     setExperienceForm({ ...experienceForm, images: newImages });
   };
 
+  const handleVideoUpload = async (file: File) => {
+    // Validate file size (20MB = 20 * 1024 * 1024 bytes)
+    const MAX_VIDEO_SIZE = 20 * 1024 * 1024;
+
+    if (file.size > MAX_VIDEO_SIZE) {
+      setVideoError(`Video too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max 20MB.`);
+      return;
+    }
+
+    if (!storage || !user) {
+      setVideoError("Storage not configured");
+      return;
+    }
+
+    setVideoUploading(true);
+    setVideoError("");
+
+    try {
+      const timestamp = Date.now();
+      const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, "_");
+      const storagePath = `experience-videos/${user.uid}/${timestamp}_${safeName}`;
+      const fileRef = storageRef(storage, storagePath);
+
+      const uploadTask = uploadBytesResumable(fileRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setVideoUploadProgress(progress);
+        },
+        (error) => {
+          console.error(error);
+          setVideoError("Upload failed");
+          setVideoUploading(false);
+        },
+        async () => {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          setVideoUrl(downloadURL);
+          setVideoStoragePath(storagePath);
+          setVideoUploading(false);
+          setVideoUploadProgress(0);
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      setVideoError("Upload failed");
+      setVideoUploading(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "approved":
@@ -329,6 +405,18 @@ export default function DashboardPageMain() {
     );
   }
   const hasBookings = bookings.length > 0;
+
+  // Calculate pagination
+  const totalPages = Math.ceil(bookings.length / bookingsPerPage);
+  const indexOfLastBooking = currentPage * bookingsPerPage;
+  const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+  const currentBookings = bookings.slice(indexOfFirstBooking, indexOfLastBooking);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    // Scroll to bookings section
+    document.getElementById('bookings-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
   return (
     <>
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -356,8 +444,8 @@ export default function DashboardPageMain() {
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">
                     Your Bookings
                   </h2>
-                  <div className="space-y-4">
-                    {bookings.map((booking) => (
+                  <div className="space-y-4" id="bookings-section">
+                    {currentBookings.map((booking) => (
                       <div
                         key={booking.bookingId}
                         className="flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-gray-50 rounded-lg"
@@ -385,11 +473,10 @@ export default function DashboardPageMain() {
                             {formatCurrency(booking.amount, booking.currency)}
                           </div>
                           <span
-                            className={`px-2 py-1 rounded-full text-xs ${
-                              booking.status === "confirmed"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
+                            className={`px-2 py-1 rounded-full text-xs ${booking.status === "confirmed"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-yellow-100 text-yellow-800"
+                              }`}
                           >
                             {booking.status}
                           </span>
@@ -402,6 +489,52 @@ export default function DashboardPageMain() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Pagination Controls - Only show if more than 5 bookings */}
+                  {bookings.length > bookingsPerPage && (
+                    <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                      <div className="text-sm text-gray-600">
+                        Showing {indexOfFirstBooking + 1} to{" "}
+                        {Math.min(indexOfLastBooking, bookings.length)} of{" "}
+                        {bookings.length} bookings
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                        >
+                          Previous
+                        </Button>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                          (pageNumber) => (
+                            <Button
+                              key={pageNumber}
+                              variant={currentPage === pageNumber ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => handlePageChange(pageNumber)}
+                              className={
+                                currentPage === pageNumber
+                                  ? "bg-teal-600 hover:bg-teal-700"
+                                  : ""
+                              }
+                            >
+                              {pageNumber}
+                            </Button>
+                          )
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="bg-white rounded-xl shadow-md p-6">
@@ -493,11 +626,10 @@ export default function DashboardPageMain() {
                               rating: star,
                             })
                           }
-                          className={`${
-                            star <= experienceForm.rating
-                              ? "text-yellow-400"
-                              : "text-gray-300"
-                          } hover:text-yellow-400 transition-colors`}
+                          className={`${star <= experienceForm.rating
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                            } hover:text-yellow-400 transition-colors`}
                         >
                           <Star className="h-5 w-5 fill-current" />
                         </button>
@@ -540,10 +672,73 @@ export default function DashboardPageMain() {
                     )}
                   </div>
 
+                  {/* Video Upload Section */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Upload Video (Optional) - Max 20MB
+                    </label>
+
+                    {!videoUrl ? (
+                      <>
+                        <input
+                          type="file"
+                          accept="video/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setVideoFile(file);
+                              handleVideoUpload(file);
+                            }
+                          }}
+                          disabled={videoUploading}
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 disabled:opacity-50"
+                        />
+
+                        {videoError && (
+                          <p className="text-sm text-red-600">{videoError}</p>
+                        )}
+
+                        {videoUploading && (
+                          <div className="space-y-2">
+                            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                              <div
+                                className="bg-purple-600 h-2.5 rounded-full transition-all duration-300"
+                                style={{ width: `${videoUploadProgress}%` }}
+                              />
+                            </div>
+                            <p className="text-sm text-gray-600">
+                              Uploading video... {videoUploadProgress.toFixed(0)}%
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="relative">
+                        <video
+                          src={videoUrl}
+                          controls
+                          className="w-full max-h-64 rounded-lg bg-black"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setVideoUrl("");
+                            setVideoStoragePath("");
+                            setVideoFile(null);
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <Button
                     onClick={handleExperienceSubmit}
                     disabled={
                       uploadingExperience ||
+                      videoUploading ||
                       !experienceForm.title ||
                       !experienceForm.description ||
                       !experienceForm.mountainName
