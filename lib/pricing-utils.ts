@@ -1,5 +1,4 @@
-import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { adminDb } from "@/lib/firebase-admin";
 import { serviceFeeCal } from "@/lib/service-fee-cal";
 
 /**
@@ -20,27 +19,36 @@ const createErrorResponse = (error: string): PriceValidationError => ({
 });
 
 /**
- * Fetch mountain/package details from Firestore
+ * Fetch mountain/package details from Firestore using Admin SDK
  */
 async function getMountainDetails(
   mountainId: string,
   type: string
 ): Promise<TMountainType | null> {
-  if (!isFirebaseConfigured || !db) {
-    throw new Error("Firebase not configured");
+  if (!adminDb) {
+    throw new Error("Firebase Admin not configured");
   }
 
   const dbName = type === "trekking" ? "mountains" : "tourist-packages";
-  const q = query(collection(db, dbName), where("id", "==", mountainId));
-  const snap = await getDocs(q);
+  
+  console.log(`🔍 [PRICING] Looking for ${type} with ID: ${mountainId} in collection: ${dbName}`);
+  
+  // Fetch document directly by ID
+  const mountainDoc = await adminDb
+    .collection(dbName)
+    .doc(mountainId)
+    .get();
 
-  if (snap.empty) {
+  if (!mountainDoc.exists) {
+    console.error(`❌ [PRICING] Document not found in ${dbName}/${mountainId}`);
     return null;
   }
 
+  console.log(`✅ [PRICING] Found document: ${mountainDoc.data()?.name || 'Unknown'}`);
+  
   return {
-    id: snap.docs[0].id,
-    ...(snap.docs[0].data() as any),
+    id: mountainDoc.id,
+    ...(mountainDoc.data() as any),
   };
 }
 

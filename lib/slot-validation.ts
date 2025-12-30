@@ -67,28 +67,43 @@ export async function validateSlotAvailability(
   }
 
   const data = doc.data();
-  const dateObj = data?.availableDates?.find((d: any) => d.date === date);
-
-  if (!dateObj) {
-    console.error("❌ [SLOT VALIDATION] Date not found:", date);
-    throw new Error("Date not found");
+  
+  // ✅ FIX: Search for slot by ID across all dates
+  // The 'date' parameter is actually the slotId, not a date string
+  console.log(`🔍 [SLOT VALIDATION] Searching for slot ${slotId} across all dates...`);
+  
+  let foundSlot: any = null;
+  let foundDateObj: any = null;
+  
+  if (data?.availableDates && Array.isArray(data.availableDates)) {
+    for (const dateObj of data.availableDates) {
+      const slot = dateObj.slots?.find((s: any) => s.id === slotId);
+      if (slot) {
+        foundSlot = slot;
+        foundDateObj = dateObj;
+        console.log(`✅ [SLOT VALIDATION] Found slot in date: ${dateObj.date}`);
+        break;
+      }
+    }
   }
 
-  const slot = dateObj.slots.find((s: any) => s.id === slotId);
-
-  if (!slot) {
+  if (!foundSlot || !foundDateObj) {
     console.error("❌ [SLOT VALIDATION] Slot not found:", slotId);
-    throw new Error("Slot not found");
+    console.log("Available dates:", JSON.stringify(data?.availableDates?.map((d: any) => ({
+      date: d.date,
+      slotIds: d.slots?.map((s: any) => s.id)
+    })), null, 2));
+    throw new Error(`Slot ${slotId} not found in any date`);
   }
 
-  const availableSpots = slot.maxParticipants - slot.bookedParticipants;
+  const availableSpots = foundSlot.maxParticipants - foundSlot.bookedParticipants;
 
   if (availableSpots < participants) {
     console.warn("⚠️ [SLOT VALIDATION] Insufficient capacity:", {
       requested: participants,
       available: availableSpots,
-      max: slot.maxParticipants,
-      booked: slot.bookedParticipants,
+      max: foundSlot.maxParticipants,
+      booked: foundSlot.bookedParticipants,
     });
 
     return {
@@ -106,6 +121,6 @@ export async function validateSlotAvailability(
   return {
     available: true,
     availableSpots,
-    slot,
+    slot: foundSlot,
   };
 }

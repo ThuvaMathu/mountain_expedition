@@ -112,6 +112,21 @@ export async function POST(request: NextRequest) {
     const bookingId = generateBookingId();
     const cusInfo: TParticipantGroup = participantsInfo;
 
+    // ✅ SECURITY FIX: Validate participant count matches actual data
+    // This prevents client from sending participants=1 with 5 people in participantsInfo
+    const actualParticipants = cusInfo.members.length + 1;
+    if (participants !== actualParticipants) {
+      console.error(`❌ Participant count mismatch: payload=${participants}, actual=${actualParticipants}`);
+      return NextResponse.json(
+        {
+          error: "Participant count mismatch",
+          details: `Expected ${actualParticipants} participants based on form data, but received ${participants}`,
+        },
+        { status: 400 }
+      );
+    }
+    console.log(`✅ Participant count validated: ${actualParticipants}`);
+
     // STEP 5: Validate payment amount server-side
     // This prevents client-side price manipulation
     console.log("🔍 Validating payment amount...");
@@ -140,11 +155,20 @@ export async function POST(request: NextRequest) {
     console.log("🔍 Validating slot availability...");
     try {
       const { validateSlotAvailability } = await import("@/lib/slot-validation");
+      
+      // ✅ FIX: The 'date' field contains the slotId, not an actual date
+      console.log(`📋 [CREATE ORDER] Slot validation params:`, {
+        productId: mountainId,
+        productType: type || "trekking",
+        slotId: date,  // This is actually the slot ID
+        participants
+      });
+      
       const validation = await validateSlotAvailability({
         productId: mountainId,
         productType: type || "trekking",
-        slotId: slotDetails?.id,
-        date: slotDetails?.originalDate || slotDetails?.date || date,
+        slotId: date,  // ✅ Use 'date' field which contains the slotId
+        date: "",  // Not used anymore since we search by slotId
         participants
       });
 
@@ -178,7 +202,6 @@ export async function POST(request: NextRequest) {
       bookingId,
       userId, // Store authenticated user ID
       booking: { id: mountainId, type: type || "trekking" },
-      userEmail,
       mountainName,
       slotDetails: slotDetails || { date },
       participants,

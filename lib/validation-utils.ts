@@ -179,9 +179,5 @@ export function validateOrderRequest(body: unknown): {
     return participantValidation;
   }
 
-  if (!isValidEmail(data.userEmail as string)) {
-    return { isValid: false, error: "Invalid user email" };
-  }
-
   return { isValid: true };
 }

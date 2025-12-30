@@ -23,6 +23,7 @@ export async function getContactDetailsClient(): Promise<TContactDetails> {
           data.emergencyPhone || fallbackContactDetails.emergencyPhone,
         officeHours: data.officeHours || fallbackContactDetails.officeHours,
         faqs: data.faqs || fallbackContactDetails.faqs,
+        socialMedia: data.socialMedia || fallbackContactDetails.socialMedia,
       };
     }
   } catch (error) {

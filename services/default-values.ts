@@ -149,5 +149,6 @@ export const fallbackContactDetails: TContactDetails = {
     twitter: "https://twitter.com/tamiladventure",
     instagram: "https://instagram.com/tamiladventuretrekkingclub",
     youtube: "https://youtube.com/@tamiladventuretrekkingclub",
+    whatsapp: "+919003140943",
   },
 };

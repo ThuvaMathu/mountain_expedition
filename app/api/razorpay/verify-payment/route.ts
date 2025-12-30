@@ -133,7 +133,6 @@ export async function POST(request: NextRequest) {
       id: "",
       bookingId,
       booking: orderData.booking,
-      userEmail: orderData.userEmail,
       mountainName: orderData.mountainName,
       slotDetails: orderData.slotDetails,
       participants: orderData.participants,
@@ -192,10 +191,12 @@ export async function POST(request: NextRequest) {
     await updateDoc(docRef, { id: docRef.id });
 
     // 5.5: CRITICAL - Reduce slot capacity after successful booking
+    // ✅ FIX: Extract slot ID from slotDetails.date which contains the slot ID
+    const actualSlotId = orderData.slotDetails?.date || orderData.slotDetails?.id;
+    
     console.log("🔄 [SLOT REDUCTION] Starting slot update:", {
       productId: orderData.booking.id,
-      slotId: orderData.slotDetails?.id,
-      date: orderData.slotDetails?.date,
+      slotId: actualSlotId,
       participants: orderData.participants,
       timestamp: new Date().toISOString()
     });
@@ -217,20 +218,22 @@ export async function POST(request: NextRequest) {
         const data = doc.data();
         const availableDates = data?.availableDates || [];
 
-        // Find the date and slot
-        const searchDate = orderData.slotDetails?.originalDate || orderData.slotDetails?.date;
-        const dateIndex = availableDates.findIndex((d: any) => d.date === searchDate);
-
-        if (dateIndex === -1) {
-          throw new Error(`Date ${searchDate} not found`);
+        // ✅ FIX: Search for slot by ID across all dates (same as validation logic)
+        let dateIndex = -1;
+        let slotIndex = -1;
+        
+        for (let i = 0; i < availableDates.length; i++) {
+          const slots = availableDates[i].slots || [];
+          const foundSlotIndex = slots.findIndex((s: any) => s.id === actualSlotId);
+          if (foundSlotIndex !== -1) {
+            dateIndex = i;
+            slotIndex = foundSlotIndex;
+            break;
+          }
         }
 
-        const slotIndex = availableDates[dateIndex].slots.findIndex(
-          (s: any) => s.id === orderData.slotDetails?.id
-        );
-
-        if (slotIndex === -1) {
-          throw new Error(`Slot ${orderData.slotDetails?.id} not found`);
+        if (dateIndex === -1 || slotIndex === -1) {
+          throw new Error(`Slot ${actualSlotId} not found in any date`);
         }
 
         // Get current slot data
@@ -279,13 +282,13 @@ export async function POST(request: NextRequest) {
       try {
         const { adminDb } = await import("@/lib/firebase-admin");
         await adminDb.collection("slot-update-failures").add({
-          bookingId: bookingId,
-          productId: orderData.booking.id,
-          productType: orderData.booking.type,
-          slotId: orderData.slotDetails?.id,
-          date: orderData.slotDetails?.date,
-          participants: orderData.participants,
-          error: slotError.message,
+          bookingId: bookingId || "unknown",
+          productId: orderData.booking?.id || "unknown",
+          productType: orderData.booking?.type || "unknown",
+          slotId: orderData.slotDetails?.id || "unknown",
+          date: orderData.slotDetails?.date || "unknown",
+          participants: orderData.participants || 0,
+          error: slotError.message || "Unknown error",
           timestamp: new Date().toISOString()
         });
       } catch (logError) {
@@ -308,7 +311,7 @@ export async function POST(request: NextRequest) {
       await sendBookingConfirmationEmail({
         booking: { ...booking, id: docRef.id },
         pdfBuffer,
-        customerEmail: orderData.userEmail,
+        customerEmail: orderData.customerInfo?.organizer?.email,
         customerName: orderData.customerInfo?.organizer?.name,
       });
       console.log("✅ Confirmation email sent successfully");

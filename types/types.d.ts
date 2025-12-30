@@ -105,6 +105,7 @@ type TOrderData = {
   date: string;
   participants: number;
   participantsInfo: TParticipantGroup;
+  type?: string;  // ✅ Add type field (trekking/tour)
 };
 
 type TParticipantInfo = {
@@ -153,7 +154,7 @@ type TBooking = {
   razorpayOrderId: string;
   razorpayPaymentId: string;
   status: string; // can extend later
-  userEmail: string;
+  userEmail?: string;  // ✅ Optional
   pdfUrl?: string;
   pdfPath?: string;
 };
@@ -215,5 +216,6 @@ type TContactDetails = {
     twitter: string;
     instagram: string;
     youtube: string;
+    whatsapp?: string;
   };
 };
