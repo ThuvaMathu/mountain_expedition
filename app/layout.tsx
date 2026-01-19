@@ -62,7 +62,7 @@ export default function RootLayout({
             <div className="min-h-screen bg-gray-50">
               <Navbar />
               {children}
-              <Footer />
+              {/* <Footer /> */}
             </div>
             <Toaster />
           </LanguageProvider>

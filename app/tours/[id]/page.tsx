@@ -494,40 +494,24 @@ export default function TouristDetailPage() {
           </div>
         </div>
 
-        {/* Right Column - Booking */}
+        {/* Right Column - Booking / Enquire */}
         <div className="lg:col-span-1">
           <div className="sticky top-8">
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="text-center mb-6">
-                <div className="text-3xl font-bold text-teal-600">
-                  {formatedValue()}
-                </div>
-                <div className="text-gray-600">per person</div>
-                <div className="flex items-center justify-center mt-2 text-sm text-gray-600">
-                  <Users className="h-4 w-4 mr-1" />
-                  <span>
-                    {getAvailableSlots(touristPackage)} slots available
-                  </span>
-                </div>
-              </div>
+              {/* Check if package is enquire-only */}
+              {touristPackage.pricingType === "enquire" ? (
+                <div className="text-center space-y-4">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Interested in this tour?</h3>
+                    <p className="text-gray-600">Contact us for pricing and availability details</p>
+                  </div>
 
-              {isDisabled ? (
-                <div className="text-center py-6">
-                  <p className="text-gray-600 mb-4">Booking is not available for this event.</p>
-                  <Link href="/contact">
-                    <Button className="w-full bg-teal-600 hover:bg-teal-700">
-                      Contact Us for Similar Events
+                  <Link href={`/enquire/${touristPackage.id}`}>
+                    <Button className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white py-6 text-lg font-semibold">
+                      Enquire Now
                     </Button>
                   </Link>
-                </div>
-              ) : !showBooking ? (
-                <div className="space-y-4">
-                  <Button
-                    onClick={() => setShowBooking(true)}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 text-lg"
-                  >
-                    Check Availability & Book
-                  </Button>
+
                   <Button
                     variant="outline"
                     className="w-full"
@@ -546,6 +530,7 @@ export default function TouristDetailPage() {
                       </div>
                     )}
                   </Button>
+
                   <Button
                     variant="outline"
                     className="w-full"
@@ -555,21 +540,82 @@ export default function TouristDetailPage() {
                   </Button>
                 </div>
               ) : (
-                <BookingCalendar mountain={touristPackage} />
-              )}
+                <>
+                  {/* Price and Booking Section */}
+                  <div className="text-center mb-6">
+                    <div className="text-3xl font-bold text-teal-600">
+                      {formatedValue()}
+                    </div>
+                    <div className="text-gray-600">per person</div>
+                    <div className="flex items-center justify-center mt-2 text-sm text-gray-600">
+                      <Users className="h-4 w-4 mr-1" />
+                      <span>
+                        {getAvailableSlots(touristPackage)} slots available
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="mt-6 pt-6 border-t">
-                <div className="flex items-center justify-center space-x-4 text-sm text-gray-600">
-                  <div className="flex items-center">
-                    <Shield className="h-4 w-4 mr-1" />
-                    <span>Secure Payment</span>
+                  {isDisabled ? (
+                    <div className="text-center py-6">
+                      <p className="text-gray-600 mb-4">Booking is not available for this event.</p>
+                      <Link href="/contact">
+                        <Button className="w-full bg-teal-600 hover:bg-teal-700">
+                          Contact Us for Similar Events
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : !showBooking ? (
+                    <div className="space-y-4">
+                      <Button
+                        onClick={() => setShowBooking(true)}
+                        className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 text-lg"
+                      >
+                        Check Availability & Book
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={handleDownloadBrochure}
+                        disabled={isDownloading}
+                      >
+                        {isDownloading ? (
+                          <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-teal-600 mr-2"></div>
+                            Generating...
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center">
+                            <Download className="h-4 w-4 mr-2" />
+                            Download Brochure
+                          </div>
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={handleContactExpert}
+                      >
+                        Contact Travel Expert
+                      </Button>
+                    </div>
+                  ) : (
+                    <BookingCalendar mountain={touristPackage} />
+                  )}
+
+                  <div className="mt-6 pt-6 border-t">
+                    <div className="flex items-center justify-center space-x-4 text-sm text-gray-600">
+                      <div className="flex items-center">
+                        <Shield className="h-4 w-4 mr-1" />
+                        <span>Secure Payment</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Award className="h-4 w-4 mr-1" />
+                        <span>Expert Guides</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <Award className="h-4 w-4 mr-1" />
-                    <span>Expert Guides</span>
-                  </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </div>
         </div>

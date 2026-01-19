@@ -29,6 +29,7 @@ import {
   CheckCheck,
   Compass,
   Image,
+  Mail,
 } from "lucide-react";
 import { ArrayInput } from "@/components/ui/array-input";
 import { ItineraryInput } from "@/components/ui/itinerylist-adder";
@@ -48,6 +49,8 @@ const emptyTouristPackage: TMountainType = {
   priceUSD: 0,
   availableDates: [],
   description: "",
+  pricingType: "price", // Default to price mode
+
   id: "",
   imageUrl: [],
   safetyRating: "Good",
@@ -133,9 +136,11 @@ export default function TourAndTravelManagement() {
       setNotice("Group size is required");
       return;
     }
-    if (form.priceINR <= 0 || form.priceUSD <= 0) {
-      setNotice("Both INR and USD prices are required");
-      return;
+    if (form.pricingType === "price") {
+      if (!form.priceINR || form.priceINR <= 0 || !form.priceUSD || form.priceUSD <= 0) {
+        setNotice("Both INR and USD prices are required for price display mode");
+        return;
+      }
     }
 
     setLoading(true);
@@ -347,8 +352,8 @@ export default function TourAndTravelManagement() {
                 })
               }
               className={`flex items-center justify-center space-x-2 p-4 rounded-lg border-2 transition-all ${form.category === "domestic"
-                  ? "border-teal-600 bg-teal-100 text-teal-700"
-                  : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
+                ? "border-teal-600 bg-teal-100 text-teal-700"
+                : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
                 }`}
             >
               <MapPin className="h-5 w-5" />
@@ -366,8 +371,8 @@ export default function TourAndTravelManagement() {
                 })
               }
               className={`flex items-center justify-center space-x-2 p-4 rounded-lg border-2 transition-all ${form.category === "international"
-                  ? "border-teal-600 bg-teal-100 text-teal-700"
-                  : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
+                ? "border-teal-600 bg-teal-100 text-teal-700"
+                : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
                 }`}
             >
               <Plane className="h-5 w-5" />
@@ -492,63 +497,174 @@ export default function TourAndTravelManagement() {
       </div>
 
       {/* Pricing Section */}
+      {/* Pricing Type Selection */}
       <div className="border-t pt-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4"></h3>{" "}
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <DollarSign className="h-5 w-5 mr-2 text-teal-600" />
-          Pricing Information
-        </h3>
-        <div className=" grid grid-cols-2 border border-gray-300 rounded-md p-4 gap-4 w-full shadow shadow-teal-200 bg-teal-50">
-          <div>
-            <label className="block text-lg font-medium text-teal-700 mb-1">
-              Base Price (INR) <span className="text-red-500">*</span>
-            </label>
-            <CurrencyInput
-              value={form.priceINR}
-              onChange={(value) => setForm({ ...form, priceINR: value })}
-              placeholder="e.g., 65000"
-              className="max-w-xs text-teal-700 font-medium"
-              prefix="₹"
-            />
-            <p className="mt-2 text-xs text-teal-600">
-              + Service fees, GST, and processing charges
-            </p>
-          </div>
-          <div>
-            <label className="block text-lg font-medium text-teal-700 mb-1">
-              Base Price (USD) <span className="text-red-500">*</span>
-            </label>
-            <CurrencyInput
-              value={form.priceUSD}
-              onChange={(value) => setForm({ ...form, priceUSD: value })}
-              placeholder="e.g., 2800"
-              className="max-w-xs text-teal-700 font-medium"
-            />
-            <p className="mt-2 text-xs text-teal-600">
-              + Service fees and processing charges
-            </p>
-          </div>
-        </div>
-
-        {/* Info banner explaining complete fee structure */}
-        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <div className="flex items-start">
-            <svg className="h-5 w-5 text-amber-600 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-            </svg>
-            <div className="flex-1">
-              <h4 className="text-sm font-semibold text-amber-900 mb-1">Pricing Information</h4>
-              <ul className="text-xs text-amber-800 space-y-1">
-                <li>• <strong>Base Price:</strong> Per-person base price for this package.</li>
-                <li>• <strong>INR:</strong> 2% service fee + 18% GST on fee + payment charges added at checkout.</li>
-                <li>• <strong>USD:</strong> 2.9% service fee + $0.30 + international payment charges added at checkout.</li>
-                <li>• <strong>Display:</strong> Customers see total (base + all fees) during checkout.</li>
-              </ul>
-            </div>
+        <div className="bg-purple-50 rounded-lg p-4 border-2 border-purple-200">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Pricing Display Type <span className="text-red-500">*</span>
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, pricingType: "price" })}
+              className={`flex items-center justify-center space-x-2 p-4 rounded-lg border-2 transition-all ${form.pricingType === "price"
+                ? "border-purple-600 bg-purple-100 text-purple-700"
+                : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
+                }`}
+            >
+              <DollarSign className="h-5 w-5" />
+              <div className="text-left">
+                <div className="font-semibold">Show Price</div>
+                <div className="text-xs">Display INR/USD pricing</div>
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, pricingType: "enquire" })}
+              className={`flex items-center justify-center space-x-2 p-4 rounded-lg border-2 transition-all ${form.pricingType === "enquire"
+                ? "border-purple-600 bg-purple-100 text-purple-700"
+                : "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
+                }`}
+            >
+              <Mail className="h-5 w-5" />
+              <div className="text-left">
+                <div className="font-semibold">Enquire Now</div>
+                <div className="text-xs">Contact for pricing</div>
+              </div>
+            </button>
           </div>
         </div>
       </div>
 
+      {/* Pricing Section */}
+      {form.pricingType === "price" && (
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4"></h3>{" "}
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <DollarSign className="h-5 w-5 mr-2 text-teal-600" />
+            Pricing Information
+          </h3>
+          <div className=" grid grid-cols-2 border border-gray-300 rounded-md p-4 gap-4 w-full shadow shadow-teal-200 bg-teal-50">
+            <div>
+              <label className="block text-lg font-medium text-teal-700 mb-1">
+                Base Price (INR) <span className="text-red-500">*</span>
+              </label>
+              <CurrencyInput
+                value={form.priceINR || 0}
+                onChange={(value) => setForm({ ...form, priceINR: value })}
+                placeholder="e.g., 65000"
+                className="max-w-xs text-teal-700 font-medium"
+                prefix="₹"
+              />
+              <p className="mt-2 text-xs text-teal-600">
+                + Service fees, GST, and processing charges
+              </p>
+            </div>
+            <div>
+              <label className="block text-lg font-medium text-teal-700 mb-1">
+                Base Price (USD) <span className="text-red-500">*</span>
+              </label>
+              <CurrencyInput
+                value={form.priceUSD || 0}
+                onChange={(value) => setForm({ ...form, priceUSD: value })}
+                placeholder="e.g., 2800"
+                className="max-w-xs text-teal-700 font-medium"
+              />
+              <p className="mt-2 text-xs text-teal-600">
+                + Service fees and processing charges
+              </p>
+            </div>
+          </div>
+
+          {/* Info banner explaining complete fee structure */}
+          <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <div className="flex items-start">
+              <svg className="h-5 w-5 text-amber-600 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              <div className="flex-1">
+                <h4 className="text-sm font-semibold text-amber-900 mb-1">Pricing Information</h4>
+                <ul className="text-xs text-amber-800 space-y-1">
+                  <li>• <strong>Base Price:</strong> Per-person base price for this package.</li>
+                  <li>• <strong>INR:</strong> 2% service fee + 18% GST on fee + payment charges added at checkout.</li>
+                  <li>• <strong>USD:</strong> 2.9% service fee + $0.30 + international payment charges added at checkout.</li>
+                  <li>• <strong>Display:</strong> Customers see total (base + all fees) during checkout.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Price (INR) <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                ₹
+              </span>
+              <Input
+                type="number"
+                min="0"
+                value={form.priceINR}
+                onChange={(e) =>
+                  setForm({ ...form, priceINR: Number(e.target.value) })
+                }
+                placeholder="e.g., 25000"
+                className="pl-8"
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              {form.category === "domestic"
+                ? "Price for Indian travelers"
+                : "Base price in INR"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Price (USD) <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                $
+              </span>
+              <Input
+                type="number"
+                min="0"
+                value={form.priceUSD}
+                onChange={(e) =>
+                  setForm({ ...form, priceUSD: Number(e.target.value) })
+                }
+                placeholder="e.g., 350"
+                className="pl-8"
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              {form.category === "international"
+                ? "Price for international travelers"
+                : "Approximate USD price"}
+            </p>
+          </div>
+        </div> */}
+        </div>
+      )}
+
+      {/* Enquire Mode Info */}
+      {form.pricingType === "enquire" && (
+        <div className="border-t pt-6">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start">
+              <Mail className="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
+              <div>
+                <h4 className="text-sm font-semibold text-blue-900 mb-1">Enquire Mode Active</h4>
+                <p className="text-sm text-blue-800">
+                  Customers will see an "Enquire Now" button instead of pricing. They'll be directed to a contact form with package details pre-filled.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Description Section */}
       <div className="border-t pt-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -862,12 +978,12 @@ export default function TourAndTravelManagement() {
                             <div>
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${slot.bookedParticipants >=
-                                    slot.maxParticipants
-                                    ? "bg-red-100 text-red-700"
-                                    : slot.bookedParticipants >
-                                      slot.maxParticipants * 0.8
-                                      ? "bg-yellow-100 text-yellow-700"
-                                      : "bg-green-100 text-green-700"
+                                  slot.maxParticipants
+                                  ? "bg-red-100 text-red-700"
+                                  : slot.bookedParticipants >
+                                    slot.maxParticipants * 0.8
+                                    ? "bg-yellow-100 text-yellow-700"
+                                    : "bg-green-100 text-green-700"
                                   }`}
                               >
                                 {slot.bookedParticipants >= slot.maxParticipants
@@ -942,12 +1058,12 @@ export default function TourAndTravelManagement() {
         {notice && (
           <div
             className={`text-sm px-3 py-2 rounded-md ${notice.includes("success") ||
-                notice.includes("created") ||
-                notice.includes("updated")
-                ? "bg-green-100 text-green-700"
-                : notice.includes("Failed") || notice.includes("error")
-                  ? "bg-red-100 text-red-700"
-                  : "bg-blue-100 text-blue-700"
+              notice.includes("created") ||
+              notice.includes("updated")
+              ? "bg-green-100 text-green-700"
+              : notice.includes("Failed") || notice.includes("error")
+                ? "bg-red-100 text-red-700"
+                : "bg-blue-100 text-blue-700"
               }`}
           >
             {notice}
@@ -1052,12 +1168,12 @@ export default function TourAndTravelManagement() {
                       <span className="text-gray-600">Difficulty:</span>
                       <span
                         className={`font-medium px-2 py-0.5 rounded text-xs ${pkg.difficulty === "Beginner"
-                            ? "bg-green-100 text-green-700"
-                            : pkg.difficulty === "Intermediate"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : pkg.difficulty === "Advanced"
-                                ? "bg-orange-100 text-orange-700"
-                                : "bg-red-100 text-red-700"
+                          ? "bg-green-100 text-green-700"
+                          : pkg.difficulty === "Intermediate"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : pkg.difficulty === "Advanced"
+                              ? "bg-orange-100 text-orange-700"
+                              : "bg-red-100 text-red-700"
                           }`}
                       >
                         {pkg.difficulty}

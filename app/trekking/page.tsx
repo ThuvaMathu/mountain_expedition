@@ -45,6 +45,7 @@ interface Mountain {
     difficulty?: string;
     availableSlots?: number;
     [key: string]: any;
+    pricingType?: "price" | "enquire"; // Changed from priceType
 }
 
 export default function TrekkingPage() {
@@ -302,6 +303,7 @@ export default function TrekkingPage() {
                                             difficulty={mountain.difficulty}
                                             availableSlots={mountain.availableSlots}
                                             currency={currency}
+                                            pricingType={mountain.pricingType}
                                         />
                                     </StaggerItem>
                                 ))}
@@ -338,6 +340,7 @@ export default function TrekkingPage() {
                                         difficulty={mountain.difficulty}
                                         availableSlots={mountain.availableSlots}
                                         currency={currency}
+                                        pricingType={mountain.pricingType}
                                     />
                                 </StaggerItem>
                             ))}

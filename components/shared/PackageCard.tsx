@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Check, MapPin, Clock, Users, Ticket, MountainSnow } from "lucide-react";
+import { Check, MapPin, Clock, Users, Ticket, MountainSnow, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface PackageCardProps {
@@ -20,6 +20,7 @@ interface PackageCardProps {
   features?: string[];
   currency: "INR" | "USD";
   thumbnail?: string;
+  pricingType?: "price" | "enquire";
 }
 
 export function PackageCard({
@@ -37,6 +38,7 @@ export function PackageCard({
   availableSlots,
   difficulty,
   thumbnail,
+  pricingType = "price"
 }: PackageCardProps) {
   const price = currency === "INR" ? priceINR : priceUSD;
   const formattedPrice = new Intl.NumberFormat("en-US", {
@@ -131,18 +133,29 @@ export function PackageCard({
         </div>
 
         {/* Price & CTA section at bottom */}
-        <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-500 uppercase font-semibold">Starting From</p>
-            <div className="flex items-baseline">
-              <span className="text-2xl font-bold text-gray-900">{formattedPrice}</span>
+        <div className="mt-auto pt-4 border-t border-gray-100">
+          {pricingType === "enquire" ? (
+            <Link href={`/enquire/${id}`} className="block">
+              <Button className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white px-6 py-3 text-base font-semibold rounded-full shadow-lg shadow-teal-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/40 hover:-translate-y-1">
+                Enquire Now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-gray-500 uppercase font-semibold">Starting From</p>
+                <div className="flex items-baseline">
+                  <span className="text-2xl font-bold text-gray-900">{formattedPrice}</span>
+                </div>
+              </div>
+              <Link href={`/${type}/${id}`}>
+                <Button className="rounded-full bg-teal-600 hover:bg-teal-700 text-white px-6">
+                  Book Now
+                </Button>
+              </Link>
             </div>
-          </div>
-          <Link href={`/${type}/${id}`}>
-            <Button className="rounded-full bg-teal-600 hover:bg-teal-700 text-white px-6">
-              Book Now
-            </Button>
-          </Link>
+          )}
         </div>
       </div>
     </div>

@@ -59,8 +59,9 @@ type TMountainType = {
   imageUrl: string[];
   thumbnailUrl?: string; // Optimized thumbnail
   price: number;
-  priceUSD: number;
-  priceINR: number;
+  pricingType?: "price" | "enquire"; // NEW: Determines if package shows price or enquire button
+  priceUSD?: number; // Now optional
+  priceINR?: number; // Now optional
   rating: number;
   totalReviews: number;
   availableSlots: number;
@@ -88,6 +89,25 @@ type TMountainType = {
   status?: "active" | "disabled" | "outdated";
   disabledReason?: string;
   lastUpdated?: string;
+};
+
+// Enquiry Management Type (CRM-style)
+type TEnquiry = {
+  id: string;
+  packageId: string;
+  packageName: string;
+  packageType: "trekking" | "tour";
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  message: string;
+  status: "new" | "contacted" | "quoted" | "converted" | "closed";
+  priority?: "low" | "medium" | "high";
+  assignedTo?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt?: string;
+  convertedToBookingId?: string;
 };
 
 type ItineraryItem = {
