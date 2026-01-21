@@ -169,7 +169,7 @@ export function FeaturedMountains() {
                     <div>
                       <span className="text-xl font-bold text-gray-900">
                         {formatCurrency(
-                          currency === "USD" ? item.priceUSD : item.priceINR,
+                          currency === "USD" ? (item.priceUSD ?? 0) : (item.priceINR ?? 0),
                           currency
                         )}
                       </span>

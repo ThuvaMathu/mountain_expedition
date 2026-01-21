@@ -2,6 +2,8 @@ import { generateHomeMetadata } from "@/seo/metadata/home";
 import { organizationSchema } from "@/seo/schemas";
 import HomePageV2 from "@/components/landing-v2/HomePageV2";
 import HomePageV1 from "@/components/new-home/HomePage";
+import { getContactDetails } from "@/services/get-contact";
+import { FloatingWhatsApp, StickyBookingCTA } from "@/components/landing-v2/social-trust";
 
 // Lazy load below-the-fold components for better performance
 
@@ -20,6 +22,7 @@ export default async function HomePage() {
         }}
       />
       <main className="min-h-screen">
+
         <HomePageV2 />
       </main>
     </>

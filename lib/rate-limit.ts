@@ -95,3 +95,27 @@ export function checkIpRateLimit(ipAddress: string) {
 export function checkPaymentVerificationRateLimit(orderId: string) {
   return checkRateLimit(`verify:${orderId}`, 3, 60 * 1000);
 }
+
+/**
+ * Rate limit for AI chat messages by IP
+ * 20 messages per minute per IP
+ */
+export function checkChatRateLimit(ipAddress: string) {
+  return checkRateLimit(`chat:ip:${ipAddress}`, 20, 60 * 1000);
+}
+
+/**
+ * Rate limit for AI chat messages by session
+ * 100 messages per hour per session
+ */
+export function checkChatSessionRateLimit(sessionId: string) {
+  return checkRateLimit(`chat:session:${sessionId}`, 100, 60 * 60 * 1000);
+}
+
+/**
+ * Rate limit for chat context requests
+ * Prevents abuse of context fetching: 10 per minute
+ */
+export function checkChatContextRateLimit(ipAddress: string) {
+  return checkRateLimit(`chat:context:${ipAddress}`, 10, 60 * 1000);
+}

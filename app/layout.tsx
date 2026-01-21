@@ -10,6 +10,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { buildMetadata } from "@/seo/utils";
 import { defaultViewport } from "@/seo/viewport";
+import { getContactDetails } from "@/services/get-contact";
+import { StickyBookingCTA } from "@/components/landing-v2/social-trust";
+import { AIChatWrapper } from "@/components/ai-bot/AIChatWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,20 +52,28 @@ export const metadata: Metadata = {
     : undefined,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const contactDetails = await getContactDetails();
   return (
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
           <LanguageProvider>
-            <div className="min-h-screen bg-gray-50">
-              <Navbar />
+            <div className="relative min-h-screen bg-gray-50">
+              <Navbar
+              />
+              <StickyBookingCTA
+                whatsappNumber={contactDetails?.socialMedia?.whatsapp?.replace(/\D/g, "") || "919876543210"}
+                phoneNumber={contactDetails?.phone || "+919876543210"}
+                offerText="Limited: 15% Off Season Bookings"
+              />
               {children}
-              {/* <Footer /> */}
+              <Footer />
+              <AIChatWrapper />
             </div>
             <Toaster />
           </LanguageProvider>

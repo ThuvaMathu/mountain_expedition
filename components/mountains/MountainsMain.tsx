@@ -107,20 +107,20 @@ export default function MountainsMain() {
       switch (filters.priceRange) {
         case "budget":
           filtered = filtered.filter(
-            (mountain) => (isINR ? mountain.priceINR : mountain.priceUSD) < low
+            (mountain) => (isINR ? (mountain.priceINR ?? 0) : (mountain.priceUSD ?? 0)) < low
           );
           break;
         case "mid":
           filtered = filtered.filter(
             (mountain) => {
-              const price = isINR ? mountain.priceINR : mountain.priceUSD;
+              const price = isINR ? (mountain.priceINR ?? 0) : (mountain.priceUSD ?? 0);
               return price >= low && price < high;
             }
           );
           break;
         case "premium":
           filtered = filtered.filter(
-            (mountain) => (isINR ? mountain.priceINR : mountain.priceUSD) >= high
+            (mountain) => (isINR ? (mountain.priceINR ?? 0) : (mountain.priceUSD ?? 0)) >= high
           );
           break;
       }

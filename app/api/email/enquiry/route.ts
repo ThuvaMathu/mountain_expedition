@@ -7,6 +7,14 @@ export async function POST(request: Request) {
     const data = await request.json();
     const { name, email, phone, message, packageId, packageName, packageType } = data;
 
+    // Check if db is initialized
+    if (!db) {
+      return NextResponse.json(
+        { success: false, message: "Database not available" },
+        { status: 500 }
+      );
+    }
+
     // Save to Firestore enquiries collection
     await addDoc(collection(db, "enquiries"), {
       customerName: name,

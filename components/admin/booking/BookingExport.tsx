@@ -160,6 +160,7 @@ export function BookingExport({
 
     let headers = [
       "Booking ID",
+      "Source",
       "Type",
       "Mountain",
       "Organizer Name",
@@ -195,6 +196,7 @@ export function BookingExport({
 
         let row = [
           booking.bookingId,
+          booking.source || "system",
           booking.booking.type,
           `"${booking.mountainName}"`,
           `"${booking.customerInfo.organizer.name}"`,
@@ -243,6 +245,7 @@ export function BookingExport({
 
     let headers = [
       "Booking ID",
+      "Source",
       "Type",
       "Mountain",
       "Date",
@@ -271,6 +274,7 @@ export function BookingExport({
 
       let organizerRow = [
         booking.bookingId,
+        booking.source || "system",
         booking.booking.type,
         booking.mountainName,
         formatDateForExport(booking.slotDetails?.date),
@@ -298,6 +302,7 @@ export function BookingExport({
         booking.customerInfo.members.forEach((member) => {
           let memberRow = [
             booking.bookingId,
+            booking.source || "system",
             booking.booking.type,
             booking.mountainName,
             formatDateForExport(booking.slotDetails?.date),

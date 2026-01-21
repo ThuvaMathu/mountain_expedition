@@ -8,14 +8,17 @@ import { getContactDetails } from "@/services/get-contact";
 import { getStats } from "@/services/get-stats";
 import { getTestimonials } from "@/services/get-testimonials";
 
-export default async function EnquirePage({ params }: { params: { id: string } }) {
+export default async function EnquirePage({ params }: { params: Promise<{ id: string }> }) {
     // Fetch package details from both collections
     let packageData = null;
     let packageType: "trekking" | "tour" = "trekking";
 
+    // Await params in Next.js 15
+    const { id } = await params;
+
     // Try mountains collection first
     if (!db) return notFound();
-    const mountainDoc = await getDoc(doc(db, "mountains", params.id));
+    const mountainDoc = await getDoc(doc(db, "mountains", id));
     if (mountainDoc.exists()) {
         const data = mountainDoc.data();
         packageData = {
@@ -28,7 +31,7 @@ export default async function EnquirePage({ params }: { params: { id: string } }
         packageType = "trekking";
     } else {
         // Try tourist-packages collection
-        const tourDoc = await getDoc(doc(db, "tourist-packages", params.id));
+        const tourDoc = await getDoc(doc(db, "tourist-packages", id));
         if (tourDoc.exists()) {
             const data = tourDoc.data();
             packageData = {

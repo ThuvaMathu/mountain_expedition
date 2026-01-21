@@ -177,6 +177,8 @@ type TBooking = {
   userEmail?: string;  // ✅ Optional
   pdfUrl?: string;
   pdfPath?: string;
+  source?: "system" | "manual" | "enquiry"; // ✅ Booking source
+  notes?: string;
 };
 
 type TJourneyImage = {
@@ -238,4 +240,50 @@ type TContactDetails = {
     youtube: string;
     whatsapp?: string;
   };
+};
+
+// AI Chat Types
+type ChatMessage = {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: number;
+};
+
+type ChatSession = {
+  sessionId: string;
+  messages: ChatMessage[];
+  createdAt: number;
+  lastActivity: number;
+};
+
+type ChatIntent = 'booking' | 'information' | 'pricing' | 'contact' | 'unrelated' | 'greeting';
+
+type ProcessedQuery = {
+  originalQuery: string;
+  processedQuery: string;
+  intent: ChatIntent;
+  confidence: number;
+  suggestedPackages?: string[]; // Package IDs
+};
+
+type AIContext = {
+  packages: TMountainType[];
+  contact: TContactDetails;
+  faqs: FAQ[];
+  stats?: TStat[];
+};
+
+type ChatRequest = {
+  message: string;
+  sessionId?: string;
+  context?: AIContext;
+};
+
+type ChatResponse = {
+  success: boolean;
+  message: string;
+  sessionId: string;
+  suggestedPrompts?: string[];
+  intent?: ChatIntent;
 };

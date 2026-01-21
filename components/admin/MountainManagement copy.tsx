@@ -197,8 +197,8 @@ export function MountainManagement() {
       !form.name ||
       !form.location ||
       form.altitude <= 0 ||
-      form.priceINR <= 0 ||
-      form.priceUSD <= 0 ||
+      (form.priceINR ?? 0) <= 0 ||
+      (form.priceUSD ?? 0) <= 0 ||
       !form.groupSize ||
       !form.duration
     ) {
@@ -790,7 +790,7 @@ export function MountainManagement() {
               Base Price (INR) <span className="text-red-500">*</span>
             </label>
             <CurrencyInput
-              value={form.priceINR}
+              value={form.priceINR ?? 0}
               onChange={(value) => setForm({ ...form, priceINR: value })}
               placeholder="e.g., 65000"
               className="max-w-xs"
@@ -802,7 +802,7 @@ export function MountainManagement() {
               Base Price (USD) <span className="text-red-500">*</span>
             </label>
             <CurrencyInput
-              value={form.priceUSD}
+              value={form.priceUSD ?? 0}
               onChange={(value) => setForm({ ...form, priceUSD: value })}
               placeholder="e.g., 2800"
               className="max-w-xs"

@@ -3,8 +3,16 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Users, Mountain, Award, Globe } from "lucide-react";
-import { TStat } from "@/types/types.d";
 import { SlideUp } from "@/components/ui/motion-wrapper";
+
+type TStat = {
+  id?: string;
+  title: string;
+  value: string;
+  description?: string;
+  icon?: string;
+  order?: number;
+};
 
 interface TrustStatsProps {
     stats: TStat[];

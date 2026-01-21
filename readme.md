@@ -25,3 +25,6 @@ They also offer a slightly lower rate for certain debit/credit card types, depen
 Razorpay
 
 gcloud storage buckets update gs://careful-drummer-471609-n2.firebasestorage.app --cors-file=cors.json
+
+
+Redesign the About page (app/about/page.tsx) with an infographic, visual-first approach that guides users through a funnel - from brand introduction → achievements → credibility → contact/enquiry CTA.

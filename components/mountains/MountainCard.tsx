@@ -163,7 +163,7 @@ export function MountainCard({ mountain }: MountainCardProps) {
           <div>
             <span className="text-2xl font-bold text-teal-600">
               {formatCurrency(
-                currency === "USD" ? mountain.priceUSD : mountain.priceINR,
+                currency === "USD" ? (mountain.priceUSD ?? 0) : (mountain.priceINR ?? 0),
                 currency
               )}
             </span>

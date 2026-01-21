@@ -4,8 +4,22 @@ import { organizationSchema } from "@/seo/schemas";
 import { getContactDetails } from "@/services/get-contact";
 import { getStats } from "@/services/get-stats";
 import { getTestimonials } from "@/services/get-testimonials";
+import { getSuccessStories } from "@/services/get-success-stories";
 import HeroSection from "./HeroSection";
 import { FloatingSocialMedia } from "@/components/ui/floating-social-media";
+
+// Social Trust Components - Client Components
+import { TrustBadgeBar } from "./social-trust";
+import { StickyBookingCTA } from "./social-trust";
+import { SafetyGuarantees } from "./social-trust";
+import { SuccessStories } from "./social-trust";
+import { FAQSection } from "./social-trust";
+import { PressMediaSection } from "./social-trust";
+import { LiveBookingIndicator } from "./social-trust";
+import { ComparisonTable } from "./social-trust";
+
+// AI Chat Component
+import { AIChatWidget } from "@/components/ai-bot";
 
 // Lazy load below-the-fold components for better performance
 const NextAdventure = dynamicLoader(() => import("./NextAdventure").then(mod => mod.NextAdventure));
@@ -28,6 +42,7 @@ export default async function HomePageV2() {
   const contactDetails = await getContactDetails();
   const stats = await getStats("landing");
   const testimonials = await getTestimonials(5); // Get 5 testimonials for happy customers
+  const successStories = await getSuccessStories(10); // Get success stories from Firebase
 
   return (
     <>
@@ -38,21 +53,50 @@ export default async function HomePageV2() {
         }}
       />
       <main className="min-h-screen">
+        {/* Floating UI Components */}
         <FloatingSocialMedia contactDetails={contactDetails} />
+        <AIChatWidget enabled={true} />
+
+        {/* <LiveBookingIndicator enabled={true} startPosition="bottom-right" /> */}
+
+        {/* Hero Section */}
         <HeroSection stats={stats} />
+
+        {/* Trust Badge Bar - Instant Credibility */}
+        {/* <TrustBadgeBar /> */}
+
         <div id="next-section">
-
           <HeroAboutSection />
-          <NextAdventure /> <FeaturedMountains />
-          <Destinations testimonials={testimonials} />
-          <BookingSteps />
-          <PosterCarousel />
 
+          {/* Next Adventure + Featured Mountains */}
+          <NextAdventure />
+          <FeaturedMountains />
+
+          {/* <Destinations testimonials={testimonials} /> */}
+          <BookingSteps />
+
+          {/* Safety & Guarantees - Address Safety Concerns */}
+          <SafetyGuarantees />
+
+          <PosterCarousel />
           <MonthlyRecomendation testimonials={testimonials} />
-          <TestimonialsCarousel />
+          {/* <TestimonialsCarousel /> */}
+
+          {/* Success Stories - Real Expedition Results */}
+          <SuccessStories stories={successStories} />
+
           <Blog />
+
+
+          {/* Press & Media Coverage - Third Party Validation */}
+          {/* <PressMediaSection /> */}
+
+          {/* FAQ Section - Address Objections */}
+          <FAQSection />
           <Instagram />
-          <Footer contactDetails={contactDetails} />
+          {/* Comparison Table - Competitive Advantages */}
+          {/* <ComparisonTable /> */}
+
         </div>
       </main>
     </>

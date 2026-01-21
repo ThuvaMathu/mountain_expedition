@@ -460,6 +460,12 @@ export function BookingList({
                               {booking.booking.type.charAt(0).toUpperCase() +
                                 booking.booking.type.slice(1)}
                             </span>
+                            {/* Source Badge */}
+                            {booking.source && booking.source !== "system" && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border bg-blue-100 text-blue-700 border-blue-200">
+                                {booking.source.charAt(0).toUpperCase() + booking.source.slice(1)}
+                              </span>
+                            )}
                           </div>
                           <div className="text-sm text-gray-500 flex items-center mt-1">
                             <Users className="h-3 w-3 mr-1" />
@@ -588,14 +594,13 @@ export function BookingList({
                               !booking?.pdfPath && booking.pdfPath === ""
                             }
                             onClick={() => handleDownloadReceipt(booking)}
-                            className={`text-xs w-20  ${
-                              !booking?.pdfPath && booking.pdfPath === ""
+                            className={`text-xs w-20  ${!booking?.pdfPath && booking.pdfPath === ""
                                 ? "bg-gray-200 border-gray-700 text-gray-700 cursor-not-allowed "
                                 : "bg-sky-200 border-sky-700 text-sky-700 cursor-pointer "
-                            }`}
+                              }`}
                           >
                             {downloading.id === booking.id &&
-                            downloading.status ? (
+                              downloading.status ? (
                               <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-teal-600 mx-auto"></div>
                             ) : (
                               <div className=" flex gap-1 items-center">
@@ -851,14 +856,14 @@ export function BookingList({
                           // Calculate unit price based on current amount/participants
                           // Avoid division by zero
                           const unitPrice =
-                             oldParticipants > 0
+                            oldParticipants > 0
                               ? editingBooking.amount / oldParticipants
                               : 0;
-                          
+
                           setEditingBooking({
                             ...editingBooking,
                             participants: newParticipants,
-                             // Auto-update amount keeping unit price constant
+                            // Auto-update amount keeping unit price constant
                             amount: unitPrice * newParticipants,
                           });
                         }}
@@ -919,9 +924,9 @@ export function BookingList({
                               ...editingBooking,
                               slotDetails: editingBooking.slotDetails
                                 ? {
-                                    ...editingBooking.slotDetails,
-                                    date: e.target.value,
-                                  }
+                                  ...editingBooking.slotDetails,
+                                  date: e.target.value,
+                                }
                                 : null,
                             })
                           }
@@ -940,9 +945,9 @@ export function BookingList({
                                 ...editingBooking,
                                 slotDetails: editingBooking.slotDetails
                                   ? {
-                                      ...editingBooking.slotDetails,
-                                      time: e.target.value,
-                                    }
+                                    ...editingBooking.slotDetails,
+                                    time: e.target.value,
+                                  }
                                   : null,
                               })
                             }
@@ -960,10 +965,10 @@ export function BookingList({
                                 ...editingBooking,
                                 slotDetails: editingBooking.slotDetails
                                   ? {
-                                      ...editingBooking.slotDetails,
-                                      maxParticipants:
-                                        parseInt(e.target.value) || 1,
-                                    }
+                                    ...editingBooking.slotDetails,
+                                    maxParticipants:
+                                      parseInt(e.target.value) || 1,
+                                  }
                                   : null,
                               })
                             }

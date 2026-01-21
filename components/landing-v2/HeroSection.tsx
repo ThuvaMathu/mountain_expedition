@@ -100,7 +100,7 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                                     <source src={slide.src} type="video/webm" />
                                     {/* Fallback image if video fails */}
                                     <Image
-                                        src='/images/hero/hero-group.mp4'
+                                        src='/images/hero/adventure.jpg'
                                         alt="Mountain expedition"
                                         fill
                                         className="object-cover"

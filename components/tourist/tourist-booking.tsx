@@ -53,7 +53,7 @@ export function TouristBooking({ tourist, category }: TouristBookingProps) {
     : 0;
 
   const totalPrice =
-    participants * (currency === "USD" ? tourist.priceUSD : tourist.priceINR);
+    participants * (currency === "USD" ? (tourist.priceUSD ?? 0) : (tourist.priceINR ?? 0));
 
   const handleInputChange = (field: string, value: string) => {
     setBookingData((prev) => ({ ...prev, [field]: value }));

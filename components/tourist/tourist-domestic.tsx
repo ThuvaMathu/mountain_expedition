@@ -106,15 +106,15 @@ export default function DomesticTouristMain() {
     if (filters.priceRange !== "all") {
       switch (filters.priceRange) {
         case "budget":
-          filtered = filtered.filter((pkg) => pkg.priceUSD < 500);
+          filtered = filtered.filter((pkg) => (pkg.priceUSD ?? 0) < 500);
           break;
         case "mid":
           filtered = filtered.filter(
-            (pkg) => pkg.priceUSD >= 500 && pkg.priceUSD < 2000
+            (pkg) => (pkg.priceUSD ?? 0) >= 500 && (pkg.priceUSD ?? 0) < 2000
           );
           break;
         case "premium":
-          filtered = filtered.filter((pkg) => pkg.priceUSD >= 2000);
+          filtered = filtered.filter((pkg) => (pkg.priceUSD ?? 0) >= 2000);
           break;
       }
     }

@@ -55,7 +55,7 @@ const socialLinks = [
 type FooterClientProps = {
   contactDetails: TContactDetails;
 };
-export default function Footer({
+export default function NewFooter({
   contactDetails,
 }: FooterClientProps) {
   const [email, setEmail] = useState('');
@@ -93,7 +93,7 @@ export default function Footer({
             transition={{ duration: 0.6 }}
             className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-2xl p-8 md:p-12 shadow-2xl"
           >
-            <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-2">
                   Subscribe <span className="text-teal-200">Now!</span>
@@ -103,19 +103,21 @@ export default function Footer({
                 </p>
               </div>
 
-              <form onSubmit={handleSubscribe} className="flex gap-4">
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address..."
                   required
-                  className="flex-1 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:border-white/40 backdrop-blur"
+                  className="flex-1 w-full px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:border-white/40 backdrop-blur transition-all"
                 />
                 <button
                   type="submit"
-                  className="px-8 py-4 bg-white text-teal-600 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-300 flex items-center gap-2"
+                  className="w-full sm:w-auto px-8 py-4 bg-white text-teal-600 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-300 flex items-center justify-center gap-2 shadow-lg"
                 >
+                  <span className="hidden sm:inline">Subscribe</span>
+                  <span className="sm:hidden">Join Now</span>
                   <Send className="w-5 h-5" />
                 </button>
               </form>

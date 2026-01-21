@@ -324,12 +324,12 @@ export function NextAdventure() {
                   <span className="text-gray-700 font-medium">{upcomingPackage.altitude.toLocaleString()}m</span>
                 </div>
               )}
-              {upcomingPackage.rating && (
+              {/* {upcomingPackage.rating && (
                 <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border border-gray-200 shadow-sm">
                   <Star className="h-5 w-5 text-amber-500 fill-current" />
                   <span className="text-gray-700 font-medium">{upcomingPackage.rating}</span>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Best Season */}
@@ -376,20 +376,7 @@ export function NextAdventure() {
               </Link>
             </div>
 
-            {/* Trust Badge */}
-            <div className="mt-6 flex items-center gap-3 text-gray-500 text-sm">
-              <div className="flex -space-x-2">
-                {[...Array(3)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 border-2 border-white flex items-center justify-center text-xs font-bold text-white shadow-sm"
-                  >
-                    {String.fromCharCode(65 + i)}
-                  </div>
-                ))}
-              </div>
-              <span className="capitalize">{upcomingPackage.type} • Limited spots available</span>
-            </div>
+
           </ScaleIn>
         </div>
       </div>

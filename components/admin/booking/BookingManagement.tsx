@@ -18,9 +18,11 @@ import {
   List,
   Mountain,
   MapPin,
+  Plus,
 } from "lucide-react";
 import { BookingExport } from "./BookingExport";
 import { BookingList } from "./BookingList";
+import { CreateBookingModal } from "./CreateBookingModal";
 
 export function BookingManagement() {
   const [bookings, setBookings] = useState<TBooking[]>([]);
@@ -35,6 +37,7 @@ export function BookingManagement() {
   );
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"list" | "export">("list");
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const loadData = async () => {
     try {
@@ -232,31 +235,40 @@ export function BookingManagement() {
             </p>
           </div>
 
-          {/* List/Export Tab */}
-          <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg">
-            <Button
-              onClick={() => setActiveTab("list")}
-              className={`${
-                activeTab === "list"
+          {/* List/Export Tab & Create Button */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg">
+              <Button
+                onClick={() => setActiveTab("list")}
+                className={`${activeTab === "list"
                   ? "bg-white shadow-sm text-teal-600"
                   : "bg-transparent text-gray-600 hover:text-gray-900"
-              }`}
-              size="sm"
-            >
-              <List className="h-4 w-4 mr-2" />
-              Booking List
-            </Button>
-            <Button
-              onClick={() => setActiveTab("export")}
-              className={`${
-                activeTab === "export"
+                  }`}
+                size="sm"
+              >
+                <List className="h-4 w-4 mr-2" />
+                Booking List
+              </Button>
+              <Button
+                onClick={() => setActiveTab("export")}
+                className={`${activeTab === "export"
                   ? "bg-white shadow-sm text-teal-600"
                   : "bg-transparent text-gray-600 hover:text-gray-900"
-              }`}
+                  }`}
+                size="sm"
+              >
+                <FileDown className="h-4 w-4 mr-2" />
+                Export Data
+              </Button>
+            </div>
+
+            <Button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-teal-600 hover:bg-teal-700 text-white shadow-md"
               size="sm"
             >
-              <FileDown className="h-4 w-4 mr-2" />
-              Export Data
+              <Plus className="h-4 w-4 mr-2" />
+              New Booking
             </Button>
           </div>
         </div>
@@ -265,11 +277,10 @@ export function BookingManagement() {
         <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg w-fit">
           <Button
             onClick={() => setProductType("trekking")}
-            className={`${
-              productType === "trekking"
-                ? "bg-white shadow-sm text-purple-600"
-                : "bg-transparent text-gray-600 hover:text-gray-900"
-            }`}
+            className={`${productType === "trekking"
+              ? "bg-white shadow-sm text-purple-600"
+              : "bg-transparent text-gray-600 hover:text-gray-900"
+              }`}
             size="sm"
           >
             <Mountain className="h-4 w-4 mr-2" />
@@ -277,11 +288,10 @@ export function BookingManagement() {
           </Button>
           <Button
             onClick={() => setProductType("tour")}
-            className={`${
-              productType === "tour"
-                ? "bg-white shadow-sm text-orange-600"
-                : "bg-transparent text-gray-600 hover:text-gray-900"
-            }`}
+            className={`${productType === "tour"
+              ? "bg-white shadow-sm text-orange-600"
+              : "bg-transparent text-gray-600 hover:text-gray-900"
+              }`}
             size="sm"
           >
             <MapPin className="h-4 w-4 mr-2" />
@@ -499,6 +509,12 @@ export function BookingManagement() {
           productType={productType}
         />
       )}
+      <CreateBookingModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={loadData}
+        productType={productType}
+      />
     </div>
   );
 }

@@ -332,8 +332,8 @@ export const BrochureTemplate: React.FC<BrochureTemplateProps> = ({
               <Text
                 style={{ fontSize: 18, fontWeight: "bold", color: "#065f46" }}
               >
-                {formatCurrency(mountain.priceINR, "INR")} /{" "}
-                {formatCurrency(mountain.priceUSD, "USD")}
+                {formatCurrency(mountain.priceINR ?? 0, "INR")} /{" "}
+                {formatCurrency(mountain.priceUSD ?? 0, "USD")}
               </Text>
               <Text style={{ fontSize: 7, color: "#059669", marginTop: 3 }}>
                 * Price includes all fees, GST (18%), taxes, and processing

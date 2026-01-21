@@ -68,12 +68,12 @@ export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps
 
     return (
         <>
-            {/* Desktop - Left Center Vertical */}
+            {/* All Screen Sizes - Left Center Vertical (Small) */}
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
-                className="hidden lg:flex fixed left-6 top-1/2 -translate-y-1/2 z-50 flex-col gap-3"
+                className="flex fixed left-4 top-1/2 -translate-y-1/2 z-50 flex-col gap-2"
             >
                 {socialLinks.map((social, index) => {
                     const Icon = social.icon;
@@ -88,40 +88,7 @@ export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps
                                 href={social.url!}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`group w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg ${bgClass} ${textClass} ${social.color}`}
-                                aria-label={social.name}
-                            >
-                                <Icon className="w-5 h-5" />
-                            </Link>
-                        </motion.div>
-                    );
-                })}
-
-                {/* Vertical Line */}
-                <div className={`w-0.5 h-16 mx-auto mt-2 transition-all duration-300 ${lineClass}`} />
-            </motion.div>
-
-            {/* Mobile/Tablet - Bottom Left Horizontal */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                className="lg:hidden fixed bottom-6 left-6 z-50 flex gap-2"
-            >
-                {socialLinks.map((social, index) => {
-                    const Icon = social.icon;
-                    return (
-                        <motion.div
-                            key={social.name}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 1 + index * 0.1 }}
-                        >
-                            <Link
-                                href={social.url!}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`group w-10 h-10 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg ${bgClass} ${textClass} ${social.color}`}
+                                className={`group w-9 h-9 md:w-10 md:h-10 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg ${bgClass} ${textClass} ${social.color}`}
                                 aria-label={social.name}
                             >
                                 <Icon className="w-4 h-4" />
@@ -129,6 +96,9 @@ export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps
                         </motion.div>
                     );
                 })}
+
+                {/* Vertical Line */}
+                <div className={`w-0.5 h-12 mx-auto mt-1 transition-all duration-300 ${lineClass}`} />
             </motion.div>
         </>
     );
