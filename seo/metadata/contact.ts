@@ -26,7 +26,7 @@ export function generateContactMetadata(): Metadata {
       url: buildUrl(ROUTES.CONTACT),
       images: [
         {
-          url: buildImageUrl("/images/og-contact.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Contact Tamil Adventures",
@@ -39,7 +39,7 @@ export function generateContactMetadata(): Metadata {
       title: "Contact Tamil Adventures",
       description:
         "Get in touch with our expedition experts. Plan your mountain adventure today!",
-      images: [buildImageUrl("/images/og-contact.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

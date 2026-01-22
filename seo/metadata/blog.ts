@@ -29,7 +29,7 @@ export function generateBlogMetadata(): Metadata {
       url: buildUrl(ROUTES.BLOG),
       images: [
         {
-          url: buildImageUrl("/images/og-blog.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Tamil Adventures Blog - Mountain Stories & Guides",
@@ -42,7 +42,7 @@ export function generateBlogMetadata(): Metadata {
       title: "Tamil Adventures Blog - Mountain Stories & Guides",
       description:
         "Trekking stories, expedition tips, and expert advice for mountain adventurers.",
-      images: [buildImageUrl("/images/og-blog.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

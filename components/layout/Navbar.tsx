@@ -61,6 +61,8 @@ export function Navbar() {
               <button
                 onClick={() => setIsTouristDropdownOpen(!isTouristDropdownOpen)}
                 className="flex items-center space-x-1 text-gray-700 hover:text-teal-600 transition-colors"
+                aria-expanded={isTouristDropdownOpen}
+                aria-haspopup="true"
               >
                 <span>Adventures</span>
                 <ChevronDown className="h-4 w-4" />
@@ -132,6 +134,7 @@ export function Navbar() {
               variant="ghost"
               size="sm"
               onClick={() => setIsOpen(!isOpen)}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
             >
               {isOpen ? (
                 <X className="h-6 w-6" />

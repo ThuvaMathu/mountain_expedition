@@ -141,7 +141,7 @@ export function TestimonialsCarousel() {
           </div>
 
           {/* Guides Count */}
-          <div className="flex items-center gap-4 border-l-2 border-gray-100 pl-8 hidden md:flex">
+          <div className="items-center gap-4 border-l-2 border-gray-100 pl-8 hidden md:flex">
             <div>
               <h3 className="text-4xl font-bold text-gray-900">50+</h3>
               <p className="text-sm text-gray-500 font-medium">Expert Guides <br /> for your journey.</p>

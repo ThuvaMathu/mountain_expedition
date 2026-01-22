@@ -11,12 +11,14 @@ import { Navbar } from "@/components/layout/Navbar";
 import { buildMetadata } from "@/seo/utils";
 import { defaultViewport } from "@/seo/viewport";
 import { getContactDetails } from "@/services/get-contact";
-import { StickyBookingCTA } from "@/components/landing-v2/social-trust";
+import { StickyBookingWrapper } from "@/components/home/social-trust/StickyBookingWrapper";
 import { AIChatWrapper } from "@/components/ai-bot/AIChatWrapper";
+import { FloatingSocialMediaWrapper } from "@/components/ui/FloatingSocialMediaWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const isDevelopment = process.env.NEXT_PUBLIC_ENVIRONMENT !== "production";
+// Use NODE_ENV for production detection (set automatically by Next.js)
+const isDevelopment = process.env.NODE_ENV !== "production";
 
 export const dynamic = "force-dynamic";
 export const viewport = defaultViewport;
@@ -66,7 +68,8 @@ export default async function RootLayout({
             <div className="relative min-h-screen bg-gray-50">
               <Navbar
               />
-              <StickyBookingCTA
+              <FloatingSocialMediaWrapper contactDetails={contactDetails} />
+              <StickyBookingWrapper
                 whatsappNumber={contactDetails?.socialMedia?.whatsapp?.replace(/\D/g, "") || "919876543210"}
                 phoneNumber={contactDetails?.phone || "+919876543210"}
                 offerText="Limited: 15% Off Season Bookings"

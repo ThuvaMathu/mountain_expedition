@@ -30,7 +30,7 @@ export function generateHomeMetadata(): Metadata {
       url: buildUrl(ROUTES.HOME),
       images: [
         {
-          url: buildImageUrl("/images/og-home.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Tamil Adventures - Mountain Trekking Expeditions",
@@ -43,7 +43,7 @@ export function generateHomeMetadata(): Metadata {
       title: "Tamil Adventures - Mountain Trekking & Expeditions",
       description:
         "Premier mountain trekking company. Expert guides, safety-first approach, unforgettable experiences.",
-      images: [buildImageUrl("/images/og-home.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

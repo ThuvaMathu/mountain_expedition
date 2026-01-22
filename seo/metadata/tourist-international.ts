@@ -28,7 +28,7 @@ export function generateTouristInternationalMetadata(): Metadata {
       url: buildUrl(ROUTES.TOURIST_INTERNATIONAL),
       images: [
         {
-          url: buildImageUrl("/og-international.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "International Tour Packages - Tamil Adventures",
@@ -41,11 +41,11 @@ export function generateTouristInternationalMetadata(): Metadata {
       title: "International Tour Packages - Overseas Travel",
       description:
         "International tour packages with expert planners. Visa assistance and customized itineraries.",
-      images: [buildImageUrl("/og-international.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {
       canonical: buildUrl(ROUTES.TOURIST_INTERNATIONAL),
     },
-  });
+  }); 
 }

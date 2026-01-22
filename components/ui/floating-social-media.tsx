@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface FloatingSocialMediaProps {
     contactDetails: TContactDetails;
@@ -11,21 +11,34 @@ interface FloatingSocialMediaProps {
 
 export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps) {
     const [isDark, setIsDark] = useState(true);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const handleScroll = () => {
-            // Check scroll position - if past hero section (roughly 100vh), switch to dark mode
-            const scrollY = window.scrollY;
-            const viewportHeight = window.innerHeight;
+            // Throttle: clear any pending timeout
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
 
-            // Switch to dark icons after scrolling past the hero section
-            setIsDark(scrollY < viewportHeight * 0.8);
+            // Throttle: only update after 100ms of no scroll events
+            timeoutRef.current = setTimeout(() => {
+                const scrollY = window.scrollY;
+                const viewportHeight = window.innerHeight;
+
+                // Switch to dark icons after scrolling past the hero section
+                setIsDark(scrollY < viewportHeight * 0.8);
+            }, 100);
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         handleScroll(); // Check initial position
 
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
     }, []);
 
     const socialLinks = [
@@ -68,12 +81,12 @@ export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps
 
     return (
         <>
-            {/* All Screen Sizes - Left Center Vertical (Small) */}
+            {/* Mobile: Bottom Left | Desktop: Left Center Vertical */}
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.8 }}
-                className="flex fixed left-4 top-1/2 -translate-y-1/2 z-50 flex-col gap-2"
+                className="flex fixed left-4 bottom-24 z-40 flex-col gap-2 md:top-1/2 md:-translate-y-1/2 md:bottom-auto md:z-50"
             >
                 {socialLinks.map((social, index) => {
                     const Icon = social.icon;
@@ -88,7 +101,7 @@ export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps
                                 href={social.url!}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`group w-9 h-9 md:w-10 md:h-10 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg ${bgClass} ${textClass} ${social.color}`}
+                                className={`group w-11 h-11 md:w-10 md:h-10 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg ${bgClass} ${textClass} ${social.color}`}
                                 aria-label={social.name}
                             >
                                 <Icon className="w-4 h-4" />

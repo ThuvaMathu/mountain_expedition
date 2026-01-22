@@ -28,7 +28,7 @@ export function generateReviewMetadata(): Metadata {
       url: buildUrl(ROUTES.REVIEW),
       images: [
         {
-          url: buildImageUrl("/images/og-reviews.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Tamil Adventures Customer Reviews & Testimonials",
@@ -41,7 +41,7 @@ export function generateReviewMetadata(): Metadata {
       title: "Customer Reviews - Tamil Adventures",
       description:
         "Genuine reviews and testimonials from our trekkers. Real mountain adventure experiences.",
-      images: [buildImageUrl("/images/og-reviews.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

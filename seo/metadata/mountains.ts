@@ -28,7 +28,7 @@ export function generateMountainsMetadata(): Metadata {
       url: buildUrl(ROUTES.MOUNTAINS),
       images: [
         {
-          url: buildImageUrl("/images/og-mountains.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Mountains & Peaks - Tamil Adventures Trekking Destinations",
@@ -41,7 +41,7 @@ export function generateMountainsMetadata(): Metadata {
       title: "Mountains & Peaks - Trekking Destinations",
       description:
         "Explore curated mountains for trekking. Tamil Nadu peaks and Himalayan mountains.",
-      images: [buildImageUrl("/images/og-mountains.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

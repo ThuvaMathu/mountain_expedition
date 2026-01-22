@@ -15,7 +15,7 @@ export interface BlogPostData {
 
 export function generateBlogDetailMetadata(post: BlogPostData): Metadata {
   const postUrl = `${ROUTES.BLOG}/${post.slug}`;
-  const postImage = post.image || "/images/og-blog-default.jpg";
+  const postImage = post.image || "/og-image.jpg";
 
   return buildMetadata({
     title: `${post.title} | Tamil Adventures Blog`,

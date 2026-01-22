@@ -63,7 +63,14 @@ export default function PosterCarousel() {
     if (displayPosters.length === 0) return null;
 
     return (
-        <section className="w-full bg-white py-0 sm:py-12">
+        <section className="relative py-10 md:py-14 lg:py-16 overflow-hidden bg-white">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-20">
+                <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, #f59e0b 1px, transparent 0)',
+                    backgroundSize: '40px 40px'
+                }} />
+            </div>
             <div className="w-full sm:max-w-7xl sm:mx-auto sm:px-4 md:px-6 lg:px-8">
                 <FadeIn className="relative overflow-hidden sm:rounded-[32px] sm:shadow-2xl">
                     <div className="overflow-hidden" ref={emblaRef}>

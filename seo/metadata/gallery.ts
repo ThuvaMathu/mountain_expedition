@@ -28,7 +28,7 @@ export function generateGalleryMetadata(): Metadata {
       url: buildUrl(ROUTES.GALLERY),
       images: [
         {
-          url: buildImageUrl("/images/og-gallery.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Tamil Adventures Photo Gallery - Mountain Expeditions",
@@ -41,7 +41,7 @@ export function generateGalleryMetadata(): Metadata {
       title: "Mountain Trekking Photo Gallery - Tamil Adventures",
       description:
         "Stunning photos from mountain expeditions. Summit photos and breathtaking landscapes.",
-      images: [buildImageUrl("/images/og-gallery.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

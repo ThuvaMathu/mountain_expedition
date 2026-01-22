@@ -28,7 +28,7 @@ export function generateAboutMetadata(): Metadata {
       url: buildUrl(ROUTES.ABOUT),
       images: [
         {
-          url: buildImageUrl("/images/og-about.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Tamil Adventures Team - Expert Mountain Guides",
@@ -41,7 +41,7 @@ export function generateAboutMetadata(): Metadata {
       title: "About Tamil Adventures - Expert Mountain Guides",
       description:
         "10+ years of experience. Expert guides, safety-first approach, sustainable adventure tourism.",
-      images: [buildImageUrl("/images/og-about.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

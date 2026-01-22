@@ -9,7 +9,7 @@ export const organizationSchema = {
   description: COMPANY_INFO.description,
   url: SITE_CONFIG.url,
   logo: `${SITE_CONFIG.url}/logo.png`,
-  image: `${SITE_CONFIG.url}/images/og-image.jpg`,
+  image: `${SITE_CONFIG.url}/og-image.jpg`,
 
   contactPoint: {
     "@type": "ContactPoint",
@@ -314,6 +314,6 @@ export const localBusinessSchema = {
     },
   ],
 
-  image: `${SITE_CONFIG.url}/images/og-image.jpg`,
+  image: `${SITE_CONFIG.url}/og-image.jpg`,
   priceRange: "₹₹-₹₹₹",
 };

@@ -1,9 +1,6 @@
 import { generateHomeMetadata } from "@/seo/metadata/home";
 import { organizationSchema } from "@/seo/schemas";
-import HomePageV2 from "@/components/landing-v2/HomePageV2";
-import HomePageV1 from "@/components/new-home/HomePage";
-import { getContactDetails } from "@/services/get-contact";
-import { FloatingWhatsApp, StickyBookingCTA } from "@/components/landing-v2/social-trust";
+import HomePageV2 from "@/components/home/HomePageV2";
 
 // Lazy load below-the-fold components for better performance
 

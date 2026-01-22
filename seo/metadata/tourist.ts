@@ -29,7 +29,7 @@ export function generateTouristMetadata(): Metadata {
       url: buildUrl(ROUTES.TOURIST),
       images: [
         {
-          url: buildImageUrl("/images/og-tourist.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Tourist Packages - Tamil Adventures",
@@ -42,7 +42,7 @@ export function generateTouristMetadata(): Metadata {
       title: "Tourist Packages - Domestic & International Tours",
       description:
         "Curated tourist packages with expert travel planners. Adventure and cultural experiences.",
-      images: [buildImageUrl("/images/og-tourist.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

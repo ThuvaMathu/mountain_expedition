@@ -18,7 +18,7 @@ export function generateMountainDetailMetadata(
   mountain: MountainData
 ): Metadata {
   const mountainUrl = `${ROUTES.MOUNTAINS}/${mountain.id}`;
-  const mountainImage = mountain.image || "/images/og-mountain-default.jpg";
+  const mountainImage = mountain.image || "/og-image.jpg";
 
   const altitudeText = mountain.altitude ? ` (${mountain.altitude}m)` : "";
   const locationText = mountain.location ? ` in ${mountain.location}` : "";

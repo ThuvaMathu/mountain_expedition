@@ -27,7 +27,7 @@ export function generateBookingMetadata(): Metadata {
       url: buildUrl(ROUTES.BOOKING),
       images: [
         {
-          url: buildImageUrl("/images/og-booking.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Book Mountain Trek - Tamil Adventures",
@@ -40,7 +40,7 @@ export function generateBookingMetadata(): Metadata {
       title: "Book Your Mountain Trek - Tamil Adventures",
       description:
         "Easy online booking, expert guides, all-inclusive packages. Secure your adventure today!",
-      images: [buildImageUrl("/images/og-booking.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {

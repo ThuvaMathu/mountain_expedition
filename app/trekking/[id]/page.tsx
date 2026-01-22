@@ -22,7 +22,6 @@ import {
   AlertTriangle,
   Download,
 } from "lucide-react";
-import { mockMountain } from "@/lib/data/demo-data";
 import { isFirebaseConfigured, db } from "@/lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
 import { getAvailableSlots } from "@/lib/utils";

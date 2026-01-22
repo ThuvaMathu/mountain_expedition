@@ -4,11 +4,9 @@ import { ContactInfo } from "@/components/contact/contact-info";
 import { generateContactMetadata } from "@/seo/metadata/contact";
 import { localBusinessSchema, generateFAQSchema } from "@/seo/schemas";
 import { getContactDetails } from "@/services/get-contact";
-import { Footer } from "@/components/layout/Footer";
-import { Navbar } from "@/components/layout/Navbar";
 import { SlideUp, FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
-import { HomeBlogSection } from "@/components/home/HomeBlogSection";
-import { AdventureHero } from "@/components/home/AdventureHero";
+import { AdventureHero } from "@/components/home/FooterHero";
+import Blog from "@/components/home/Blog";
 
 export const metadata = generateContactMetadata();
 
@@ -104,7 +102,7 @@ export default async function ContactPage() {
         </div>
       </main>
 
-      <HomeBlogSection />
+      <Blog />
       {/* FAQ Section */}
       <FadeIn delay={0.6} className="mt-16 bg-white rounded-xl shadow-lg p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">

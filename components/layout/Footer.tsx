@@ -1,6 +1,6 @@
 import { getContactDetails } from "@/services/get-contact";
 import { FooterClient } from "./Footer-client";
-import NewFooter from "../landing-v2/Footer";
+import NewFooter from "../home/Footer";
 
 const hideFooterRoutes = ["/admin"];
 

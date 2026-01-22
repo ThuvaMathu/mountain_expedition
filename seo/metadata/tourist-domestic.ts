@@ -28,7 +28,7 @@ export function generateTouristDomesticMetadata(): Metadata {
       url: buildUrl(ROUTES.TOURIST_DOMESTIC),
       images: [
         {
-          url: buildImageUrl("/og-domestic.jpg"),
+          url: buildImageUrl("/og-image.jpg"),
           width: 1200,
           height: 630,
           alt: "Domestic Tour Packages - Tamil Adventures",
@@ -41,7 +41,7 @@ export function generateTouristDomesticMetadata(): Metadata {
       title: "Domestic Tour Packages - Explore India",
       description:
         "Curated domestic tour packages with expert guides. Tamil Nadu, Kerala, Himalayas and more.",
-      images: [buildImageUrl("/og-domestic.jpg")],
+      images: [buildImageUrl("/og-image.jpg")],
     },
 
     alternates: {
