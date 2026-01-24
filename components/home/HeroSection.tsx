@@ -13,34 +13,81 @@ interface HeroSectionProps {
     stats?: TStat[];
 }
 
-// Slide data - Image first for faster LCP
+// Slide data - 4 Images + 4 Videos (8 total slides)
 const heroSlides: HeroSlide[] = [
+    // ============= IMAGE SLIDES =============
     {
         id: 1,
         type: 'image',
-        src: '/images/hero/ice-drone-view.jpg',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero-image-1.jpg',
         title: 'Adventure Awaits',
         subtitle: 'Experience breathtaking landscapes and unforgettable journeys',
         ctaLink: '/tours',
         ctaText: 'View Tours',
     },
+
     {
         id: 2,
+        type: 'video',
+        src: 'https://media.tamiladventuretrekkingclub.com/Videos/hero-video1.mp4',
+        title: 'Awards & Recognition',
+        subtitle: 'Celebrating excellence in mountaineering and adventure tourism',
+        ctaLink: '/about',
+        ctaText: 'Learn More',
+    },
+
+    {
+        id: 3,
         type: 'image',
-        src: '/images/hero/ice-sun.jpg',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero-image-2.jpg',
+        title: 'Summit Success',
+        subtitle: 'Stand on top of the world with our expert climbing expeditions',
+        ctaLink: '/trekking',
+        ctaText: 'View Treks',
+    }, {
+        id: 4,
+        type: 'video',
+        src: 'https://media.tamiladventuretrekkingclub.com/Videos/hero-video-2.mp4',
+        title: 'The Journey Begins',
+        subtitle: 'Every expedition starts with a single step towards the unknown',
+        ctaLink: '/tours',
+        ctaText: 'Join Expedition',
+    },
+
+    {
+        id: 5,
+        type: 'image',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero-image-3.JPG',
         title: 'Reach New Heights',
         subtitle: 'Transform your dreams into reality with our guided mountain expeditions',
         ctaLink: '/mountains',
         ctaText: 'Start Your Journey',
+    }, {
+        id: 6,
+        type: 'image',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero-image-4.JPG',
+        title: 'Serene Beauty',
+        subtitle: 'Discover pristine alpine lakes and untouched wilderness',
+        ctaLink: '/gallery',
+        ctaText: 'See Gallery',
     },
     {
-        id: 3,
+        id: 7,
         type: 'video',
-        src: 'bg-videos/hero-group.mp4',
-        title: 'Conquer the Peaks',
-        subtitle: 'Join expert-led expeditions to the world\'s most challenging mountains',
-        ctaLink: '/mountains',
-        ctaText: 'Explore Expeditions',
+        src: 'https://media.tamiladventuretrekkingclub.com/Videos/hero-video-3.mp4',
+        title: 'Experience The Thrill',
+        subtitle: 'Feel the adrenaline of high-altitude adventures',
+        ctaLink: '/trekking',
+        ctaText: 'Start Trekking',
+    },
+    {
+        id: 8,
+        type: 'video',
+        src: 'https://media.tamiladventuretrekkingclub.com/Videos/hero-video-4.mp4',
+        title: 'Create Lasting Memories',
+        subtitle: 'Make memories that will last a lifetime in the Himalayas',
+        ctaLink: '/contact',
+        ctaText: 'Plan Your Trip',
     },
 ];
 
@@ -88,27 +135,31 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                         <div key={slide.id} className="flex-[0_0_100%] min-w-0 relative min-h-screen">
                             {/* Media Background */}
                             {slide.type === 'video' ? (
-                                <video
-                                    ref={(el) => registerVideo(index, el)}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    muted
-                                    playsInline
-                                    autoPlay
-                                    onEnded={handleVideoEnd}
-                                    preload="none"
-                                >
-                                    <source src={slide.src} type="video/webm" />
-                                    {/* Fallback image if video fails */}
+                                <>
+                                    <video
+                                        ref={(el) => registerVideo(index, el)}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        muted
+                                        playsInline
+                                        autoPlay
+                                        onEnded={handleVideoEnd}
+                                        preload="metadata"
+                                        poster="/images/hero/adventure.jpg"
+                                    >
+                                        {/* Use correct MIME type for MP4 - iOS Safari doesn't support WebM */}
+                                        <source src={slide.src} type="video/mp4" />
+                                    </video>
+                                    {/* Fallback image - shows when video fails to load on mobile */}
                                     <Image
                                         src='/images/hero/adventure.jpg'
                                         alt="Mountain expedition"
                                         fill
                                         sizes="100vw"
                                         quality={75}
-                                        className="object-cover"
-                                        priority={index === 0}
+                                        className="object-cover -z-10"
+                                        priority={false}
                                     />
-                                </video>
+                                </>
                             ) : (
                                 <Image
                                     src={slide.src}

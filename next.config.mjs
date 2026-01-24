@@ -18,6 +18,11 @@ const nextConfig = {
         hostname: 'firebasestorage.googleapis.com',
         pathname: '/v0/b/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'media.tamiladventuretrekkingclub.com',
+        pathname: '/**',
+      },
     ],
   },
   webpack: (config, { isServer }) => {
