@@ -21,9 +21,9 @@ const features = [
 ];
 
 const happyCustomers = [
-  '/images/gallery/img-7.jpg',
-  '/images/gallery/img-7.jpg',
-  '/images/gallery/img-7.jpg',
+  'https://media.tamiladventuretrekkingclub.com/images/gallery/img-7.webp',
+  'https://media.tamiladventuretrekkingclub.com/images/gallery/img-7.webp',
+  'https://media.tamiladventuretrekkingclub.com/images/gallery/img-7.webp',
 ];
 interface DestinationsProps {
   testimonials?: Testimonial[];
@@ -45,7 +45,7 @@ export default function MonthlyRec({ testimonials = [] }: DestinationsProps) {
               {/* Large Image */}
               <div className="absolute inset-0 rounded-3xl overflow-hidden">
                 <Image
-                  src="/images/gallery/img-19.jpg"
+                  src="https://media.tamiladventuretrekkingclub.com/images/gallery/img-19.webp"
                   alt="Beautiful destinations"
                   fill
                   className="object-cover"
@@ -55,7 +55,7 @@ export default function MonthlyRec({ testimonials = [] }: DestinationsProps) {
               {/* Circle Image */}
               <div className="absolute -bottom-8 -left-8 w-52 h-52 rounded-full overflow-hidden border-4 border-white shadow-xl">
                 <Image
-                  src="/images/gallery/img-7.jpg"
+                  src="https://media.tamiladventuretrekkingclub.com/images/gallery/img-7.webp"
                   alt="Adventure"
                   fill
                   className="object-cover"
@@ -65,7 +65,7 @@ export default function MonthlyRec({ testimonials = [] }: DestinationsProps) {
               {/* Small Floating Image */}
               <div className="absolute -top-4 -right-4 w-64 h-64 rotate-12 rounded-2xl overflow-hidden shadow-xl">
                 <Image
-                  src="/images/gallery/img-17.jpg"
+                  src="https://media.tamiladventuretrekkingclub.com/images/gallery/img-17.webp"
                   alt="Travel"
                   fill
                   className="object-cover"

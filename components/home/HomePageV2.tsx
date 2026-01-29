@@ -13,7 +13,6 @@ const NextAdventure = dynamicLoader(() => import("./NextAdventure").then(mod => 
 const HeroAboutSection = dynamicLoader(() => import("./HeroAboutSection").then(mod => mod.HeroAboutSection));
 const FeaturedMountains = dynamicLoader(() => import("./FeaturedMountains").then(mod => mod.FeaturedMountains));
 const PosterCarousel = dynamicLoader(() => import("./PosterCarousel").then(mod => mod.default));
-const SafetyGuarantees = dynamicLoader(() => import("./social-trust").then(mod => mod.SafetyGuarantees));
 const SuccessStories = dynamicLoader(() => import("./social-trust").then(mod => mod.SuccessStories));
 const Blog = dynamicLoader(() => import("./Blog").then(mod => mod.default));
 const FAQSection = dynamicLoader(() => import("./social-trust").then(mod => mod.FAQSection));
@@ -28,52 +27,26 @@ export default async function HomePageV2() {
 
   return (
     <main className="min-h-screen">
-      {/* Floating UI Components */}
-      {/* Note: FloatingSocialMedia is now rendered in layout.tsx */}
+
       <AIChatWidget enabled={true} />
 
-      {/* <LiveBookingIndicator enabled={true} startPosition="bottom-right" /> */}
-
-      {/* Hero Section */}
       <HeroSection stats={stats} />
 
-        {/* Trust Badge Bar - Instant Credibility */}
-        {/* <TrustBadgeBar /> */}
+      <div id="next-section">
+        <HeroAboutSection />
+        {/* Next Adventure + Featured Mountains */}
+        <NextAdventure />
+        <FeaturedMountains />
+        <PosterCarousel />
+        {/* Success Stories - Real Expedition Results */}
+        <SuccessStories stories={successStories} />
+        <Blog />
+        {/* FAQ Section - Address Objections */}
+        <FAQSection />
+        <Instagram />
 
-        <div id="next-section">
-          <HeroAboutSection />
-
-          {/* Next Adventure + Featured Mountains */}
-          <NextAdventure />
-          <FeaturedMountains />
-          <PosterCarousel />
-          {/* <Destinations testimonials={testimonials} /> */}
-          {/* <BookingSteps /> */}
-
-          {/* Safety & Guarantees - Address Safety Concerns */}
-          <SafetyGuarantees />
-
-
-          {/* <MonthlyRecomendation testimonials={testimonials} /> */}
-          {/* <TestimonialsCarousel /> */}
-
-          {/* Success Stories - Real Expedition Results */}
-          <SuccessStories stories={successStories} />
-
-          <Blog />
-
-
-          {/* Press & Media Coverage - Third Party Validation */}
-          {/* <PressMediaSection /> */}
-
-          {/* FAQ Section - Address Objections */}
-          <FAQSection />
-          <Instagram />
-          {/* Comparison Table - Competitive Advantages */}
-          {/* <ComparisonTable /> */}
-
-        </div>
-      </main>
-    );
+      </div>
+    </main>
+  );
 }
 

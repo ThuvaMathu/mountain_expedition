@@ -68,9 +68,9 @@ export default function ComingSoonPage() {
           muted
           playsInline
           preload="auto"
-          // poster="/images/hero-poster.jpg"
+        // poster="/images/hero-poster.jpg"
         >
-          <source src="/bg-videos/logo-video.mp4" type="video/webm" />
+          <source src="https://media.tamiladventuretrekkingclub.com/Videos/logo-video.webm" type="video/webm" />
         </video>
       </div>{" "}
       {/* <div className="absolute inset-0 overflow-hidden">

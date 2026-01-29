@@ -13,42 +13,42 @@ const allAwards = [
     title: "Fastest Indian Woman",
     subtitle: "Seven Summits Record",
     date: "June 2025",
-    image: "/images/awards/summit-celebration.jpg",
+    image: "https://media.tamiladventuretrekkingclub.com/images/awards/summit-celebration.webp",
     category: "National Record"
   },
   {
     title: "Everest Conqueror",
     subtitle: "First Tamil Woman",
     date: "May 2023",
-    image: "/images/awards/everest-achievement.jpg",
+    image: "https://media.tamiladventuretrekkingclub.com/images/awards/everest-achievement.webp",
     category: "Historic"
   },
   {
     title: "Kalpana Chawla Award",
     subtitle: "Tamil Nadu Govt",
     date: "2023",
-    image: "/images/awards/govt-award.jpg",
+    image: "https://media.tamiladventuretrekkingclub.com/images/awards/govt-award.webp",
     category: "Government"
   },
   {
     title: "Singa Pen Award",
     subtitle: "Aval Vikatan",
     date: "2023",
-    image: "/images/awards/media-award-1.jpg",
+    image: "https://media.tamiladventuretrekkingclub.com/images/awards/media-award-1.webp",
     category: "Media"
   },
   {
     title: "Trailblazing Icon",
     subtitle: "FETNA (USA)",
     date: "2025",
-    image: "/images/awards/international-fetna.jpg",
+    image: "https://media.tamiladventuretrekkingclub.com/images/awards/international-fetna.webp",
     category: "International"
   },
   {
     title: "Sakthi Award",
     subtitle: "Puthiya Thalaimurai",
     date: "2025",
-    image: "/images/awards/media-award-2.jpg",
+    image: "https://media.tamiladventuretrekkingclub.com/images/awards/media-award-2.webp",
     category: "Media"
   }
 ];
@@ -107,17 +107,15 @@ export function AwardsTabs() {
               <button
                 key={category.key}
                 onClick={() => setActiveCategory(category.key)}
-                className={`flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium md:font-semibold transition-all ${
-                  isActive
+                className={`flex items-center gap-1.5 md:gap-2 px-2.5 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium md:font-semibold transition-all ${isActive
                     ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/30"
                     : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
-                }`}
+                  }`}
               >
                 <Icon className="w-3 h-3 md:w-4 md:h-4" />
                 <span className="hidden sm:inline">{category.label}</span>
-                <span className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${
-                  isActive ? "bg-white/25 text-white" : "bg-amber-100 text-amber-700"
-                }`}>
+                <span className={`px-1.5 md:px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold ${isActive ? "bg-white/25 text-white" : "bg-amber-100 text-amber-700"
+                  }`}>
                   {count}
                 </span>
               </button>

@@ -24,7 +24,7 @@ const FALLBACK_TESTIMONIALS = [
     id: "2",
     name: "Michael Chen",
     role: "Mountain Enthusiast",
-    image: "/placeholder-83tbi.png",
+    image: "/placeholder.svg",
     text: "The Everest Base Camp trek was life-changing. The organization was flawless, and the team's expertise showed throughout the journey.",
     rating: 5,
     date: "15 NOV",
@@ -124,7 +124,7 @@ export function TestimonialsCarousel() {
           <div className="flex items-center gap-6">
             <div className="relative">
               <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
-                <img src="/mountaineer-female-teal.png" alt="Trust" className="w-full h-full object-cover" />
+                <img src="/images/muthamilselvi/profile_1.1.jpg" alt="Trust" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -top-2 -right-2">
                 <span className="flex items-center justify-center w-8 h-8 bg-orange-500 rounded-full text-white text-xs">

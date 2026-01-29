@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Instagram as InstagramIcon } from 'lucide-react';
 
 // Static images from /images/gallery directory
-const STATIC_GALLERY_IMAGES = Array.from({ length: 9 }, (_, i) => `/images/gallery/img-${i + 1}.jpg`);
+const STATIC_GALLERY_IMAGES = Array.from({ length: 9 }, (_, i) => `https://media.tamiladventuretrekkingclub.com/images/gallery/img-${i + 1}.webp`);
 
 export default function Instagram() {
   return (

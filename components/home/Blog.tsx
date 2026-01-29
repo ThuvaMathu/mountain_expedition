@@ -27,7 +27,7 @@ const FALLBACK_POSTS: BlogPost[] = [
     title: 'Top 10 International Destinations to Visit in.',
     desc: 'Discover the most breathtaking destinations around the world.',
     date: new Date('2024-12-01').toISOString(),
-    mainImageUrl: '/images/gallery/img-60.jpg',
+    mainImageUrl: 'https://media.tamiladventuretrekkingclub.com/images/gallery/img-60.webp',
     tags: ['Travel Guides'],
     author: 'DexignZone',
   },
@@ -37,7 +37,7 @@ const FALLBACK_POSTS: BlogPost[] = [
     title: 'A Complete Travel Guide to Exploring Europe.',
     desc: 'Learn how to explore Europe without breaking the bank.',
     date: new Date('2024-12-01').toISOString(),
-    mainImageUrl: '/images/gallery/img-61.jpg',
+    mainImageUrl: 'https://media.tamiladventuretrekkingclub.com/images/gallery/img-61.webp',
     tags: ['Travel Tips'],
     author: 'DexignZone',
   },
@@ -47,7 +47,7 @@ const FALLBACK_POSTS: BlogPost[] = [
     title: 'Hidden Paradise: 15 Underrated Places You Must.',
     desc: 'Explore hidden gems that most travelers miss.',
     date: new Date('2024-12-01').toISOString(),
-    mainImageUrl: '/images/gallery/img-62.jpg',
+    mainImageUrl: 'https://media.tamiladventuretrekkingclub.com/images/gallery/img-62.webp',
     tags: ['Travel Guides'],
     author: 'DexignZone',
   },
@@ -172,7 +172,7 @@ export default function Blog() {
                     <div className="relative aspect-[16/10] overflow-hidden">
                       <Link href={`/blog/${post.slug || post.id}`}>
                         <Image
-                          src={post.mainImageUrl || '/images/gallery/img-60.jpg'}
+                          src={post.mainImageUrl || 'https://media.tamiladventuretrekkingclub.com/images/gallery/img-60.webp'}
                           alt={post.title}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

@@ -99,7 +99,7 @@ export function AboutPageContent() {
               playsInline
               className="w-full h-full object-cover opacity-50"
             >
-              <source src="/bg-videos/logo-video.mp4" type="video/mp4" />
+              <source src="https://media.tamiladventuretrekkingclub.com/Videos/logo-video.webm" type="video/mp4" />
             </video>
           </div>
 

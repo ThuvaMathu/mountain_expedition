@@ -142,7 +142,7 @@ export default function ToursPage() {
       <PageHero
         title="Discover Amazing Destinations"
         subtitle="Embark on unforgettable journeys to breathtaking locations around the world. From exotic international adventures to incredible domestic getaways, find your perfect escape."
-        image="/images/posters/poster-13.jpg"
+        image="https://media.tamiladventuretrekkingclub.com/images/posters/poster-13.webp"
       />
 
       {/* Filter Toggles - Modern Segmented Control */}
@@ -266,7 +266,7 @@ export default function ToursPage() {
                       id={tour.id}
                       type="tours"
                       title={tour.name}
-                      image={tour.imageUrl?.[0] || "/images/posters/poster-adventure.jpg"}
+                      image={tour.imageUrl?.[0] || "https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"}
                       thumbnail={tour.thumbnailUrl}
                       priceINR={tour.priceINR || 0}
                       priceUSD={tour.priceUSD || 0}
@@ -302,7 +302,7 @@ export default function ToursPage() {
                     id={tour.id}
                     type="tours"
                     title={tour.name}
-                    image={tour.imageUrl?.[0] || "/images/posters/poster-adventure.jpg"}
+                    image={tour.imageUrl?.[0] || "https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"}
                     thumbnail={tour.thumbnailUrl}
                     priceINR={tour.priceINR || 0}
                     priceUSD={tour.priceUSD || 0}

@@ -169,7 +169,7 @@ export default function TrekkingPage() {
             <PageHero
                 title={t("explore_mountains")}
                 subtitle="Challenge yourself on epic mountain expeditions. From the Himalayas to the Alps, conquer the world's most majestic peaks with expert guidance and unforgettable experiences."
-                image="/images/posters/poster-adventure.jpg"
+                image="https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"
             />
 
             {/* Filter Toggles - Modern Segmented Control */}
@@ -293,7 +293,7 @@ export default function TrekkingPage() {
                                             id={mountain.id}
                                             type="trekking"
                                             title={mountain.name}
-                                            image={mountain.imageUrl?.[0] || "/images/posters/poster-adventure.jpg"} // Use specific fallback
+                                            image={mountain.imageUrl?.[0] || "https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"} // Use specific fallback
                                             thumbnail={mountain.thumbnailUrl}
                                             priceINR={mountain.priceINR || 0}
                                             priceUSD={mountain.priceUSD || 0}
@@ -330,7 +330,7 @@ export default function TrekkingPage() {
                                         id={mountain.id}
                                         type="trekking"
                                         title={mountain.name}
-                                        image={mountain.imageUrl?.[0] || "/images/posters/poster-adventure.jpg"}
+                                        image={mountain.imageUrl?.[0] || "https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"}
                                         thumbnail={mountain.thumbnailUrl}
                                         priceINR={mountain.priceINR || 0}
                                         priceUSD={mountain.priceUSD || 0}

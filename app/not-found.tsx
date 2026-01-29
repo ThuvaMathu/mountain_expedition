@@ -27,9 +27,9 @@ export default function NotFound() {
               muted
               playsInline
               preload="auto"
-              // poster="/images/hero-poster.jpg"
+            // poster="/images/hero-poster.jpg"
             >
-              <source src="/bg-videos/loop-demo.mp4" type="video/webm" />
+              <source src="https://media.tamiladventuretrekkingclub.com/Videos/loop-demo.webm" type="video/webm" />
             </video>
           </div>
         </div>

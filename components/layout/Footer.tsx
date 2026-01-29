@@ -1,6 +1,6 @@
 import { getContactDetails } from "@/services/get-contact";
-import { FooterClient } from "./Footer-client";
-import NewFooter from "../home/Footer";
+import FooterClient from "./Footer-client";
+
 
 const hideFooterRoutes = ["/admin"];
 
@@ -8,6 +8,6 @@ export async function Footer() {
   const contactDetails = await getContactDetails();
 
   return (
-    <NewFooter contactDetails={contactDetails} />
+    <FooterClient contactDetails={contactDetails} />
   );
 }

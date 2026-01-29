@@ -10,7 +10,7 @@ export function AdventureHero() {
             <div className="absolute inset-0 grid grid-cols-3 md:grid-cols-4 gap-0">
                 <div className="relative h-full">
                     <Image
-                        src="/images/posters/poster-29.jpg"
+                        src="https://media.tamiladventuretrekkingclub.com/images/posters/poster-29.webp"
                         alt="Adventure"
                         fill
                         className="object-cover"
@@ -19,7 +19,7 @@ export function AdventureHero() {
                 </div>
                 <div className="relative h-full">
                     <Image
-                        src="/images/posters/poster-adventure.jpg"
+                        src="https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"
                         alt="Adventure"
                         fill
                         className="object-cover"
@@ -28,7 +28,7 @@ export function AdventureHero() {
                 </div>
                 <div className="relative h-full">
                     <Image
-                        src="/images/posters/poster-30.jpg"
+                        src="https://media.tamiladventuretrekkingclub.com/images/posters/poster-30.webp"
                         alt="Adventure"
                         fill
                         className="object-cover"
@@ -37,7 +37,7 @@ export function AdventureHero() {
                 </div>
                 <div className="relative h-full hidden md:block">
                     <Image
-                        src="/images/posters/poster-31.jpg"
+                        src="https://media.tamiladventuretrekkingclub.com/images/posters/poster-31.webp"
                         alt="Adventure"
                         fill
                         className="object-cover"

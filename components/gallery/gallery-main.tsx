@@ -229,7 +229,7 @@ export default function GalleryMain() {
               <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
-                  backgroundImage: "url('/images/posters/poster-adventure.jpg')",
+                  backgroundImage: "url('https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp')",
                 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-900/95 via-teal-800/90 to-purple-900/85" />

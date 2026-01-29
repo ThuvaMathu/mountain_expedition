@@ -18,7 +18,7 @@ const awardsData = {
         "National record for fastest completion of Seven Summits—highest peaks on all seven continents—in just 2 years and 25 days",
       date: "June 2025",
       category: "National Record",
-      image: "/images/awards/summit-celebration.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/summit-celebration.webp",
     },
     {
       title: "First Tamil Woman to Conquer Mount Everest",
@@ -26,7 +26,7 @@ const awardsData = {
         "First woman from Tamil Nadu to successfully summit the world's highest peak, Mount Everest (8848m)",
       date: "May 23, 2023",
       category: "Historic Achievement",
-      image: "/images/awards/everest-achievement.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/everest-achievement.webp",
     },
   ],
 
@@ -36,7 +36,7 @@ const awardsData = {
       organization: "Tamil Nadu State Government",
       description: "Prestigious award for courage and daring enterprise",
       date: "2023",
-      image: "/images/awards/govt-award.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/govt-award.webp",
     },
     {
       title: "State Government Recognition & Support",
@@ -44,7 +44,7 @@ const awardsData = {
       description:
         "Honored and provided financial aid by Chief Minister M.K. Stalin and Deputy Chief Minister Udhayanidhi Stalin",
       date: "2023",
-      image: "/images/awards/cm-recognition.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/cm-recognition.webp",
     },
   ],
 
@@ -55,7 +55,7 @@ const awardsData = {
       description:
         "Recognized as 'Lioness Woman' for extraordinary courage and achievements in mountaineering",
       date: "2023",
-      image: "/images/awards/media-award-1.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/media-award-1.webp",
     },
     {
       title: "Sakthi Award (Thunivu / Courage Category)",
@@ -63,7 +63,7 @@ const awardsData = {
       description:
         "Awarded in 'Thunivu' (Courage) category for fear-breaking mission and determination",
       date: "2025",
-      image: "/images/awards/media-award-2.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/media-award-2.webp",
     },
   ],
 
@@ -74,7 +74,7 @@ const awardsData = {
       description:
         "Highest recognition for inspiring diaspora and representing Tamil global excellence",
       date: "2025",
-      image: "/images/awards/international-fetna.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/international-fetna.webp",
     },
     {
       title: "Princess of Himalayas",
@@ -82,7 +82,7 @@ const awardsData = {
       description:
         "Recognition for unique achievements across world's major mountain ranges",
       date: "2024",
-      image: "/images/awards/international-princess.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/international-princess.webp",
     },
   ],
 
@@ -93,14 +93,14 @@ const awardsData = {
       description:
         "Distinguished honor as exemplary woman of substance and courage",
       date: "2025",
-      image: "/images/awards/university-srm.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/university-srm.webp",
     },
     {
       title: "Rotary Club Recognition",
       organization: "Rotary Club 3212, Virudhunagar",
       description: "Honored for bringing global pride to home district",
       date: "2023",
-      image: "/images/awards/rotary-recognition.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/rotary-recognition.webp",
     },
     {
       title: "Raindrops Award",
@@ -108,7 +108,7 @@ const awardsData = {
       description:
         "Recognition for inspirational journey and dedication to extreme sports and social causes",
       date: "2024",
-      image: "/images/awards/raindrops-award.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/raindrops-award.webp",
     },
     {
       title: "MAA Awards",
@@ -116,7 +116,7 @@ const awardsData = {
       description:
         "Recognition for accomplishments and commitment to inspirational leadership",
       date: "2024",
-      image: "/images/awards/gandhi-foundation.jpg",
+      image: "https://media.tamiladventuretrekkingclub.com/images/awards/gandhi-foundation.webp",
     },
   ],
 };

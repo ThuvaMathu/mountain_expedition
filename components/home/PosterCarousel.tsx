@@ -19,9 +19,9 @@ export default function PosterCarousel() {
 
     // Fallback images if no posters are uploaded
     const fallbackPosters = [
-        { id: "1", url: "/images/posters/poster-adventure.jpg" },
-        { id: "2", url: "/images/posters/poster-nature.jpg" },
-        { id: "3", url: "/images/posters/poster-mountains.jpg" },
+        { id: "1", url: "https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp" },
+        { id: "2", url: "https://media.tamiladventuretrekkingclub.com/images/posters/poster-nature.webp" },
+        { id: "3", url: "https://media.tamiladventuretrekkingclub.com/images/posters/poster-mountains.webp" },
     ];
 
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [

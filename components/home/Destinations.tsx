@@ -22,9 +22,9 @@ const destinations = [
 ];
 
 const happyCustomers = [
-  '/images/gallery/img-1.jpg',
-  '/images/gallery/img-2.jpg',
-  '/images/gallery/img-3.jpg',
+  'https://media.tamiladventuretrekkingclub.com/images/gallery/img-1.webp',
+  'https://media.tamiladventuretrekkingclub.com/images/gallery/img-2.webp',
+  'https://media.tamiladventuretrekkingclub.com/images/gallery/img-3.webp',
 ];
 
 interface DestinationsProps {

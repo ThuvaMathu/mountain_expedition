@@ -1,298 +1,298 @@
 export const staticGalleryImages = [
   {
-    src: "/images/gallery/img-1.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-1.webp",
     title: "Summit celebration with Indian flag on mountain peak",
   },
   {
-    src: "/images/gallery/img-2.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-2.webp",
     title: "Mountain climber on rocky cliff with expedition flag",
   },
   {
-    src: "/images/gallery/img-3.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-3.webp",
     title: "Trekker silhouette against dramatic mountain valley",
   },
   {
-    src: "/images/gallery/img-4.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-4.webp",
     title: "Adventure group gathered at mountain base camp",
   },
   {
-    src: "/images/gallery/img-5.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-5.webp",
     title: "Large expedition team photo at mountain summit",
   },
   {
-    src: "/images/gallery/img-6.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-6.webp",
     title: "Solo climber standing at snowy mountain peak",
   },
   {
-    src: "/images/gallery/img-7.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-7.webp",
     title: "Trekker with backpack on scenic mountain trail",
   },
   {
-    src: "/images/gallery/img-8.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-8.webp",
     title: "Climber celebrating summit achievement with arms raised",
   },
   {
-    src: "/images/gallery/img-9.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-9.webp",
     title: "Group of trekkers ascending steep mountain pass",
   },
   {
-    src: "/images/gallery/img-10.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-10.webp",
     title: "Mountaineer crossing snowy ridge in harsh conditions",
   },
   {
-    src: "/images/gallery/img-11.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-11.webp",
     title: "Climber navigating rocky mountain terrain",
   },
   {
-    src: "/images/gallery/img-12.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-12.webp",
     title: "Expedition team at high altitude camp location",
   },
   {
-    src: "/images/gallery/img-13.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-13.webp",
     title: "Solo mountaineer trekking through snowy landscape",
   },
   {
-    src: "/images/gallery/img-14.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-14.webp",
     title: "Climber ascending steep snow-covered slope",
   },
   {
-    src: "/images/gallery/img-15.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-15.webp",
     title: "Team of climbers in colorful gear at summit",
   },
   {
-    src: "/images/gallery/img-16.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-16.webp",
     title: "Panoramic view of snow-capped Himalayan peaks",
   },
   {
-    src: "/images/gallery/img-17.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-17.webp",
     title: "Mountaineer scaling icy vertical face",
   },
   {
-    src: "/images/gallery/img-18.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-18.webp",
     title: "Summit climber with Indian flag at peak",
   },
   {
-    src: "/images/gallery/img-19.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-19.webp",
     title: "Expedition overlooking volcanic mountain crater",
   },
   {
-    src: "/images/gallery/img-20.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-20.webp",
     title: "Climber with Indian flag on snowy summit",
   },
   {
-    src: "/images/gallery/img-21.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-21.webp",
     title: "Team members displaying Indian flag at mountain top",
   },
   {
-    src: "/images/gallery/img-22.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-22.webp",
     title: "Trekker in orange gear on rocky mountain path",
   },
   {
-    src: "/images/gallery/img-23.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-23.webp",
     title: "Climbers ascending steep blue ice wall",
   },
   {
-    src: "/images/gallery/img-24.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-24.webp",
     title: "Two mountaineers climbing snowy slope with ice axes",
   },
   {
-    src: "/images/gallery/img-25.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-25.webp",
     title: "Expedition team gathering at mountain base camp",
   },
   {
-    src: "/images/gallery/img-26.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-26.webp",
     title: "Two climbers in goggles posing at high altitude",
   },
   {
-    src: "/images/gallery/img-27.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-27.webp",
     title: "Yellow tents at Everest base camp with prayer flags",
   },
   {
-    src: "/images/gallery/img-28.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-28.webp",
     title: "Climber inside blue ice crevasse",
   },
   {
-    src: "/images/gallery/img-29.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-29.webp",
     title: "Mountaineer skiing down steep snowy slope",
   },
   {
-    src: "/images/gallery/img-30.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-30.webp",
     title: "Orange tents at high altitude mountain camp",
   },
   {
-    src: "/images/gallery/img-31.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-31.webp",
     title: "Sunrise over snow-covered mountain peaks",
   },
   {
-    src: "/images/gallery/img-32.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-32.webp",
     title: "Aerial view of mountain summit with clouds",
   },
   {
-    src: "/images/gallery/img-33.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-33.webp",
     title: "Panoramic view of Himalayan mountain range",
   },
   {
-    src: "/images/gallery/img-34.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-34.webp",
     title: "Solo climber ascending snowy mountain ridge",
   },
   {
-    src: "/images/gallery/img-35.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-35.webp",
     title: "Group of mountaineers in colorful winter gear",
   },
   {
-    src: "/images/gallery/img-36.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-36.webp",
     title: "Climber with Indian flag at mountain summit",
   },
   {
-    src: "/images/gallery/img-37.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-37.webp",
     title: "Mountaineer at yellow tent camp in snow",
   },
   {
-    src: "/images/gallery/img-38.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-38.webp",
     title: "Trekker walking across vast snowy plateau",
   },
   {
-    src: "/images/gallery/img-39.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-39.webp",
     title: "Large expedition team marching across glacier",
   },
   {
-    src: "/images/gallery/img-40.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-40.webp",
     title: "Climber in misty mountain conditions",
   },
   {
-    src: "/images/gallery/img-41.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-41.webp",
     title: "Headlamp illuminated night climb on mountain",
   },
   {
-    src: "/images/gallery/img-42.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-42.webp",
     title: "Team of climbers celebrating on snowy peak",
   },
   {
-    src: "/images/gallery/img-43.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-43.webp",
     title: "Mountaineers roped together on glacier",
   },
   {
-    src: "/images/gallery/img-44.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-44.webp",
     title: "Climbers ascending steep snowy incline",
   },
   {
-    src: "/images/gallery/img-45.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-45.webp",
     title: "Expedition members climbing icy slope with axes",
   },
   {
-    src: "/images/gallery/img-46.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-46.webp",
     title: "Night portrait of climber with headlamp",
   },
   {
-    src: "/images/gallery/img-47.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-47.webp",
     title: "Summit team with Indian flag and prayer flags",
   },
   {
-    src: "/images/gallery/img-48.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-48.webp",
     title: "Group of climbers celebrating mountain achievement",
   },
   {
-    src: "/images/gallery/img-49.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-49.webp",
     title: "Mountaineer celebrating with arms spread on summit",
   },
   {
-    src: "/images/gallery/img-50.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-50.webp",
     title: "Climber in blue jacket celebrating at peak",
   },
   {
-    src: "/images/gallery/img-51.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-51.webp",
     title: "Portrait of expedition member in cold weather gear",
   },
   {
-    src: "/images/gallery/img-52.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-52.webp",
     title: "Mountain panorama with dramatic cloud formations",
   },
   {
-    src: "/images/gallery/img-53.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-53.webp",
     title: "Close-up of climber in protective goggles and mask",
   },
   {
-    src: "/images/gallery/img-54.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-54.webp",
     title: "Two mountaineers with Indian flag at summit",
   },
   {
-    src: "/images/gallery/img-55.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-55.webp",
     title: "Expedition team in yellow and red gear at peak",
   },
   {
-    src: "/images/gallery/img-56.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-56.webp",
     title: "Climber in yellow jacket at mountain summit",
   },
   {
-    src: "/images/gallery/img-57.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-57.webp",
     title: "Trekkers walking through rocky desert terrain",
   },
   {
-    src: "/images/gallery/img-58.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-58.webp",
     title: "Desert mountain trekking expedition",
   },
   {
-    src: "/images/gallery/img-59.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-59.webp",
     title: "Kayaker in red jacket on mountain lake",
   },
   {
-    src: "/images/gallery/img-60.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-60.webp",
     title: "Climbers silhouetted against snowy mountain backdrop",
   },
   {
-    src: "/images/gallery/img-61.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-61.webp",
     title: "Coastal mountain landscape with blue sky",
   },
   {
-    src: "/images/gallery/img-62.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-62.webp",
     title: "Mountaineer in bright vest trekking snowy slope",
   },
   {
-    src: "/images/gallery/img-63.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-63.webp",
     title: "Indoor team celebration with expedition members",
   },
   {
-    src: "/images/gallery/img-64.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-64.webp",
     title: "Line of climbers ascending snow-covered mountain",
   },
   {
-    src: "/images/gallery/img-65.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-65.webp",
     title: "Trekker with backpack on barren mountain trail",
   },
   {
-    src: "/images/gallery/img-66.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-66.webp",
     title: "Large expedition group photo at mountain location",
   },
   {
-    src: "/images/gallery/img-67.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-67.webp",
     title: "Team at base camp with mountain backdrop",
   },
   {
-    src: "/images/gallery/img-68.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-68.webp",
     title: "Climber in red jacket celebrating desert summit",
   },
   {
-    src: "/images/gallery/img-69.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-69.webp",
     title: "Expedition team with Indian flag on snowy peak",
   },
   {
-    src: "/images/gallery/img-70.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-70.webp",
     title: "Climber rappelling down steep mountain face",
   },
   {
-    src: "/images/gallery/img-71.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-71.webp",
     title: "Line of mountaineers crossing snowy ridge",
   },
   {
-    src: "/images/gallery/img-72.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-72.webp",
     title: "Full moon rising over mountain peak at night",
   },
   {
-    src: "/images/gallery/img-73.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-73.webp",
     title: "Expedition team walking on glacier with crevasses",
   },
   {
-    src: "/images/gallery/img-74.jpg",
+    src: "https://media.tamiladventuretrekkingclub.com/images/gallery/img-74.webp",
     title: "Climbers ascending snowy mountain slope",
   },
 ];

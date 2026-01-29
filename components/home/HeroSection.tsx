@@ -19,7 +19,7 @@ const heroSlides: HeroSlide[] = [
     {
         id: 1,
         type: 'image',
-        src: 'https://media.tamiladventuretrekkingclub.com/images/hero-image-1.jpg',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero/hero-image4.webp',
         title: 'Adventure Awaits',
         subtitle: 'Experience breathtaking landscapes and unforgettable journeys',
         ctaLink: '/tours',
@@ -39,7 +39,7 @@ const heroSlides: HeroSlide[] = [
     {
         id: 3,
         type: 'image',
-        src: 'https://media.tamiladventuretrekkingclub.com/images/hero-image-2.jpg',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero/hero-image2.webp',
         title: 'Summit Success',
         subtitle: 'Stand on top of the world with our expert climbing expeditions',
         ctaLink: '/trekking',
@@ -57,33 +57,33 @@ const heroSlides: HeroSlide[] = [
     {
         id: 5,
         type: 'image',
-        src: 'https://media.tamiladventuretrekkingclub.com/images/hero-image-3.JPG',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero/hero-image3.webp',
         title: 'Reach New Heights',
         subtitle: 'Transform your dreams into reality with our guided mountain expeditions',
         ctaLink: '/mountains',
         ctaText: 'Start Your Journey',
     }, {
         id: 6,
-        type: 'image',
-        src: 'https://media.tamiladventuretrekkingclub.com/images/hero-image-4.JPG',
-        title: 'Serene Beauty',
-        subtitle: 'Discover pristine alpine lakes and untouched wilderness',
-        ctaLink: '/gallery',
-        ctaText: 'See Gallery',
-    },
-    {
-        id: 7,
         type: 'video',
         src: 'https://media.tamiladventuretrekkingclub.com/Videos/hero-video-3.mp4',
         title: 'Experience The Thrill',
         subtitle: 'Feel the adrenaline of high-altitude adventures',
         ctaLink: '/trekking',
         ctaText: 'Start Trekking',
+    }, {
+        id: 7,
+        type: 'image',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero/hero-image1.webp',
+        title: 'Serene Beauty',
+        subtitle: 'Discover pristine alpine lakes and untouched wilderness',
+        ctaLink: '/gallery',
+        ctaText: 'See Gallery',
     },
+
     {
         id: 8,
         type: 'video',
-        src: 'https://media.tamiladventuretrekkingclub.com/Videos/hero-video-4.mp4',
+        src: 'https://media.tamiladventuretrekkingclub.com/Videos/runnig-to-snow.webm',
         title: 'Create Lasting Memories',
         subtitle: 'Make memories that will last a lifetime in the Himalayas',
         ctaLink: '/contact',
@@ -144,14 +144,14 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                                         autoPlay
                                         onEnded={handleVideoEnd}
                                         preload="metadata"
-                                        poster="/images/hero/adventure.jpg"
+                                        poster="https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"
                                     >
                                         {/* Use correct MIME type for MP4 - iOS Safari doesn't support WebM */}
                                         <source src={slide.src} type="video/mp4" />
                                     </video>
                                     {/* Fallback image - shows when video fails to load on mobile */}
                                     <Image
-                                        src='/images/hero/adventure.jpg'
+                                        src='https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp'
                                         alt="Mountain expedition"
                                         fill
                                         sizes="100vw"

@@ -19,7 +19,7 @@ const tours = [
     pricePer: 'Per Day',
     rating: 5,
     reviews: 5,
-    image: '/images/posters/poster-adventure.jpg',
+    image: 'https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp',
     slug: 'bangkok-cultural-heritage-tour',
   },
   {
@@ -31,7 +31,7 @@ const tours = [
     pricePer: 'Per Day',
     rating: 5,
     reviews: 5,
-    image: '/images/posters/poster-culture.jpg',
+    image: 'https://media.tamiladventuretrekkingclub.com/images/posters/poster-culture.webp',
     slug: 'thailand-beaches-island-hopping',
   },
   {
@@ -43,7 +43,7 @@ const tours = [
     pricePer: 'Per Day',
     rating: 4,
     reviews: 4,
-    image: '/images/posters/poster-hotels.jpg',
+    image: 'https://media.tamiladventuretrekkingclub.com/images/posters/poster-hotels.webp',
     slug: 'california-dreams-road-trip',
   },
   {
@@ -55,7 +55,7 @@ const tours = [
     pricePer: 'Per Day',
     rating: 0,
     reviews: 0,
-    image: '/images/posters/poster-wildlife.jpg',
+    image: 'https://media.tamiladventuretrekkingclub.com/images/posters/poster-wildlife.webp',
     slug: 'disneyland-universal-family-adventure',
   },
   {
@@ -67,7 +67,7 @@ const tours = [
     pricePer: 'Per Day',
     rating: 3.5,
     reviews: 3.5,
-    image: '/images/posters/poster-11.jpg',
+    image: 'https://media.tamiladventuretrekkingclub.com/images/posters/poster-11.webp',
     slug: 'maldives-luxury-water-villa-escape',
   },
   {
@@ -79,7 +79,7 @@ const tours = [
     pricePer: 'Per Day',
     rating: 3.5,
     reviews: 3.5,
-    image: '/images/posters/poster-12.jpg',
+    image: 'https://media.tamiladventuretrekkingclub.com/images/posters/poster-12.webp',
     slug: 'maldives-honeymoon-special',
   },
   {
@@ -91,7 +91,7 @@ const tours = [
     pricePer: 'Per Day',
     rating: 4.1,
     reviews: 4.1,
-    image: '/images/posters/poster-13.jpg',
+    image: 'https://media.tamiladventuretrekkingclub.com/images/posters/poster-13.webp',
     slug: 'spain-highlights-barcelona-madrid',
   },
 ];
@@ -195,8 +195,8 @@ export default function PopularTours() {
                                 <Star
                                   key={i}
                                   className={`w-4 h-4 ${i < Math.floor(tour.rating)
-                                      ? 'text-amber-400 fill-current'
-                                      : 'text-gray-200'
+                                    ? 'text-amber-400 fill-current'
+                                    : 'text-gray-200'
                                     }`}
                                 />
                               ))}
