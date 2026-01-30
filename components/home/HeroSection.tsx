@@ -13,7 +13,7 @@ interface HeroSectionProps {
     stats?: TStat[];
 }
 
-// Slide data - 4 Images + 4 Videos (8 total slides)
+// Slide data - Optimized to 3 slides for better performance
 const heroSlides: HeroSlide[] = [
     // ============= IMAGE SLIDES =============
     {
@@ -39,55 +39,11 @@ const heroSlides: HeroSlide[] = [
     {
         id: 3,
         type: 'image',
-        src: 'https://media.tamiladventuretrekkingclub.com/images/hero/hero-image2.webp',
+        src: 'https://media.tamiladventuretrekkingclub.com/images/hero/hero-image3.webp',
         title: 'Summit Success',
         subtitle: 'Stand on top of the world with our expert climbing expeditions',
         ctaLink: '/trekking',
         ctaText: 'View Treks',
-    }, {
-        id: 4,
-        type: 'video',
-        src: 'https://media.tamiladventuretrekkingclub.com/Videos/hero-video-2.mp4',
-        title: 'The Journey Begins',
-        subtitle: 'Every expedition starts with a single step towards the unknown',
-        ctaLink: '/tours',
-        ctaText: 'Join Expedition',
-    },
-
-    {
-        id: 5,
-        type: 'image',
-        src: 'https://media.tamiladventuretrekkingclub.com/images/hero/hero-image3.webp',
-        title: 'Reach New Heights',
-        subtitle: 'Transform your dreams into reality with our guided mountain expeditions',
-        ctaLink: '/mountains',
-        ctaText: 'Start Your Journey',
-    }, {
-        id: 6,
-        type: 'video',
-        src: 'https://media.tamiladventuretrekkingclub.com/Videos/hero-video-3.mp4',
-        title: 'Experience The Thrill',
-        subtitle: 'Feel the adrenaline of high-altitude adventures',
-        ctaLink: '/trekking',
-        ctaText: 'Start Trekking',
-    }, {
-        id: 7,
-        type: 'image',
-        src: 'https://media.tamiladventuretrekkingclub.com/images/hero/hero-image1.webp',
-        title: 'Serene Beauty',
-        subtitle: 'Discover pristine alpine lakes and untouched wilderness',
-        ctaLink: '/gallery',
-        ctaText: 'See Gallery',
-    },
-
-    {
-        id: 8,
-        type: 'video',
-        src: 'https://media.tamiladventuretrekkingclub.com/Videos/runnig-to-snow.webm',
-        title: 'Create Lasting Memories',
-        subtitle: 'Make memories that will last a lifetime in the Himalayas',
-        ctaLink: '/contact',
-        ctaText: 'Plan Your Trip',
     },
 ];
 
@@ -167,7 +123,7 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                                     alt={slide.title}
                                     fill
                                     sizes="100vw"
-                                    quality={85}
+                                    quality={75}
                                     className="object-cover"
                                     priority={index === 0}
                                     fetchPriority={index === 0 ? "high" : "auto"}
