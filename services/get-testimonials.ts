@@ -1,5 +1,6 @@
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, limit } from "firebase/firestore";
+import { withCache } from "@/lib/redis";
 
 export interface Testimonial {
   id: string;
@@ -46,50 +47,55 @@ const FALLBACK_TESTIMONIALS: Testimonial[] = [
 ];
 
 export async function getTestimonials(maxCount?: number): Promise<Testimonial[]> {
-  try {
-    if (!db) {
-      console.warn("Firestore not initialized, using fallback testimonials");
+  const cacheKey = `testimonials:recent:${maxCount || 'all'}`;
+  const TTL = 1800; // 30 minutes
+
+  return withCache(cacheKey, async () => {
+    try {
+      if (!db) {
+        console.warn("Firestore not initialized, using fallback testimonials");
+        return FALLBACK_TESTIMONIALS.slice(0, maxCount);
+      }
+
+      let q = query(
+        collection(db, "testimonials"),
+        where("status", "==", "approved")
+      );
+
+      if (maxCount) {
+        q = query(q, limit(maxCount));
+      }
+
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        console.log("No approved testimonials found, using fallback");
+        return FALLBACK_TESTIMONIALS.slice(0, maxCount);
+      }
+
+      const testimonials: Testimonial[] = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name || "Anonymous",
+          role: data.location || "Adventurer",
+          image: data.image || "/placeholder-user.jpg",
+          text: data.text || "",
+          rating: data.rating || 5,
+          date: data.createdAt 
+            ? new Date(data.createdAt.seconds * 1000).toLocaleDateString(undefined, { 
+                day: 'numeric', 
+                month: 'short' 
+              })
+            : "Recently",
+          mountain: data.mountain || "Mountain Expedition"
+        };
+      });
+
+      return testimonials;
+    } catch (error) {
+      console.error("Error fetching testimonials:", error);
       return FALLBACK_TESTIMONIALS.slice(0, maxCount);
     }
-
-    let q = query(
-      collection(db, "testimonials"),
-      where("status", "==", "approved")
-    );
-
-    if (maxCount) {
-      q = query(q, limit(maxCount));
-    }
-
-    const snapshot = await getDocs(q);
-
-    if (snapshot.empty) {
-      console.log("No approved testimonials found, using fallback");
-      return FALLBACK_TESTIMONIALS.slice(0, maxCount);
-    }
-
-    const testimonials: Testimonial[] = snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        name: data.name || "Anonymous",
-        role: data.location || "Adventurer",
-        image: data.image || "/placeholder-user.jpg",
-        text: data.text || "",
-        rating: data.rating || 5,
-        date: data.createdAt 
-          ? new Date(data.createdAt.seconds * 1000).toLocaleDateString(undefined, { 
-              day: 'numeric', 
-              month: 'short' 
-            })
-          : "Recently",
-        mountain: data.mountain || "Mountain Expedition"
-      };
-    });
-
-    return testimonials;
-  } catch (error) {
-    console.error("Error fetching testimonials:", error);
-    return FALLBACK_TESTIMONIALS.slice(0, maxCount);
-  }
+  }, TTL);
 }

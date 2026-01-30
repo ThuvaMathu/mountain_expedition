@@ -11,16 +11,19 @@ import { Navbar } from "@/components/layout/Navbar";
 import { buildMetadata } from "@/seo/utils";
 import { defaultViewport } from "@/seo/viewport";
 import { getContactDetails } from "@/services/get-contact";
-import { StickyBookingWrapper } from "@/components/home/social-trust/StickyBookingWrapper";
-import { AIChatWrapper } from "@/components/ai-bot/AIChatWrapper";
-import { FloatingSocialMediaWrapper } from "@/components/ui/FloatingSocialMediaWrapper";
+import { DeferredLayoutWrappers } from "@/components/layout/DeferredLayoutWrappers";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: 'swap', // Show fallback font immediately, swap when Inter loads
+  weight: ['400', '600', '700'], // Only load weights we actually use
+  preload: true,
+  variable: '--font-inter',
+});
 
 // Use NODE_ENV for production detection (set automatically by Next.js)
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-export const dynamic = "force-dynamic";
 export const viewport = defaultViewport;
 
 export const metadata: Metadata = {
@@ -62,21 +65,20 @@ export default async function RootLayout({
   const contactDetails = await getContactDetails();
   return (
     <html lang="en">
+      <head>
+        {/* Preconnect to CDN for faster resource loading */}
+        <link rel="preconnect" href="https://media.tamiladventuretrekkingclub.com" />
+        <link rel="dns-prefetch" href="https://media.tamiladventuretrekkingclub.com" />
+      </head>
       <body className={inter.className}>
         <AuthProvider>
           <LanguageProvider>
             <div className="relative min-h-screen bg-gray-50">
-              <Navbar
-              />
-              <FloatingSocialMediaWrapper contactDetails={contactDetails} />
-              <StickyBookingWrapper
-                whatsappNumber={contactDetails?.socialMedia?.whatsapp?.replace(/\D/g, "") || "919876543210"}
-                phoneNumber={contactDetails?.phone || "+919876543210"}
-                offerText="Limited: 15% Off Season Bookings"
-              />
+              <Navbar />
+              {/* Deferred loading of heavy components for better TTI */}
+              <DeferredLayoutWrappers contactDetails={contactDetails} />
               {children}
               <Footer />
-              <AIChatWrapper />
             </div>
             <Toaster />
           </LanguageProvider>

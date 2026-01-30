@@ -143,7 +143,7 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                                         playsInline
                                         autoPlay
                                         onEnded={handleVideoEnd}
-                                        preload="metadata"
+                                        preload={index === 0 ? "auto" : "metadata"} // Preload first video fully
                                         poster="https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"
                                     >
                                         {/* Use correct MIME type for MP4 - iOS Safari doesn't support WebM */}
@@ -155,9 +155,10 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                                         alt="Mountain expedition"
                                         fill
                                         sizes="100vw"
-                                        quality={75}
                                         className="object-cover -z-10"
-                                        priority={false}
+                                        priority={index === 0} // Prioritize first image for faster LCP
+                                        fetchPriority={index === 0 ? "high" : "auto"}
+                                        quality={85}
                                     />
                                 </>
                             ) : (
@@ -166,7 +167,7 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                                     alt={slide.title}
                                     fill
                                     sizes="100vw"
-                                    quality={75}
+                                    quality={85}
                                     className="object-cover"
                                     priority={index === 0}
                                     fetchPriority={index === 0 ? "high" : "auto"}

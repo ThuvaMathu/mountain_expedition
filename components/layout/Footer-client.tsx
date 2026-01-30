@@ -10,27 +10,26 @@ import { getContactDetails } from '@/services/get-contact';
 import AppLogo from '../ui/app-logo';
 
 const destinations = [
-  { name: 'Everest Base Camp', slug: 'everest-base-camp' },
-  { name: 'Annapurna Circuit', slug: 'annapurna-circuit' },
-  { name: 'Manaslu Trek', slug: 'manaslu-trek' },
-  { name: 'Langtang Valley', slug: 'langtang-valley' },
-  { name: 'Upper Mustang', slug: 'upper-mustang' },
+  { name: 'Trekking', slug: 'trekking' },
+  { name: 'Tours', slug: 'tours' },
+  { name: 'Mountains', slug: 'mountains' },
+  { name: 'Gallery', slug: 'gallery' },
 ];
 
 const exploreLinks = [
   { name: 'About Us', href: '/about' },
-  { name: "FAQ's", href: '/faq' },
-  { name: 'Services', href: '/services' },
-  { name: 'Tour Guide', href: '/tour-guide' },
-  { name: 'News & Articles', href: '/blog' },
+  { name: 'Trekking', href: '/trekking' },
+  { name: 'Tours', href: '/tours' },
+  { name: 'Mountains', href: '/mountains' },
+  { name: 'Blog', href: '/blog' },
 ];
 
-const contactLinks = [
-  { name: "Terms & Condition", href: '/terms' },
-  { name: 'Privacy Policy', href: '/privacy' },
+const quickLinks = [
   { name: 'Contact Us', href: '/contact' },
-  { name: 'Careers', href: '/careers' },
-  { name: 'Help', href: '/help' },
+  { name: 'Gallery', href: '/gallery' },
+  { name: 'Write a Review', href: '/review' },
+  { name: 'Success Stories', href: '/read-stories' },
+  { name: 'Policies', href: '/policy' },
 ];
 
 // Diverse Instagram gallery images
@@ -161,19 +160,19 @@ export default function FooterClient({
               </div>
             </motion.div>
 
-            {/* Destinations */}
+            {/* Quick Links */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <h4 className="text-xl font-bold mb-6 text-white">Destinations</h4>
+              <h4 className="text-xl font-bold mb-6 text-white">Quick Links</h4>
               <ul className="space-y-3">
                 {destinations.map((dest) => (
                   <li key={dest.slug}>
                     <Link
-                      href={`/destinations/${dest.slug}`}
+                      href={`/${dest.slug}`}
                       className="text-gray-200 hover:text-white transition-colors duration-300 hover:translate-x-1 inline-block"
                     >
                       {dest.name}
@@ -243,11 +242,11 @@ export default function FooterClient({
               {/* Quick Links */}
               {/* <div className="mt-6">
                 <ul className="space-y-2">
-                  {contactLinks.map((link) => (
+                  {quickLinks.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        className="text-sm text-gray-400 hover:text-teal-400 transition-colors duration-300"
+                        className="text-sm text-gray-300 hover:text-teal-400 transition-colors duration-300"
                       >
                         {link.name}
                       </Link>

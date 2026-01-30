@@ -44,9 +44,10 @@ export default function Instagram() {
                 src={image}
                 alt={`Gallery ${index + 1}`}
                 fill
-                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 16vw, 11vw"
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                loading="lazy"
                 quality={75}
-                className="object-cover group-hover:scale-110 transition-transform duration-300"
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
                 priority={index < 3}
               />
 

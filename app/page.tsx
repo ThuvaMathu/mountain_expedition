@@ -6,7 +6,8 @@ import HomePageV2 from "@/components/home/HomePageV2";
 
 export const metadata = generateHomeMetadata();
 
-export const dynamic = "force-dynamic"; // Ensure dynamic rendering for contact details
+// Enable ISR - Page will be statically generated at build time and revalidated every 5 minutes
+export const revalidate = 300; // 5 minutes
 
 export default async function HomePage() {
 

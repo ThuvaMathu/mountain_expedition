@@ -10,6 +10,7 @@ import {
   getDoc,
   Timestamp,
 } from "firebase/firestore";
+import { withCache } from "@/lib/redis";
 
 export interface SuccessStory {
   id: string;
@@ -67,29 +68,34 @@ const processStoryData = (id: string, data: any): SuccessStory => {
  * Falls back to static data if Firebase is unavailable
  */
 export async function getSuccessStories(count: number = 10): Promise<SuccessStory[]> {
-  if (!db) {
-    return getFallbackStories();
-  }
+  const cacheKey = `success-stories:limit:${count}`;
+  const TTL = 3600; // 1 hour
 
-  try {
-    const q = query(
-      collection(db, "experienceSubmissions"),
-      where("status", "==", "approved"),
-      orderBy("submittedAt", "desc"),
-      limit(count)
-    );
-
-    const snapshot = await getDocs(q);
-
-    if (snapshot.empty) {
+  return withCache(cacheKey, async () => {
+    if (!db) {
       return getFallbackStories();
     }
 
-    return snapshot.docs.map((doc) => processStoryData(doc.id, doc.data()));
-  } catch (error) {
-    console.error("Error fetching success stories:", error);
-    return getFallbackStories();
-  }
+    try {
+      const q = query(
+        collection(db, "experienceSubmissions"),
+        where("status", "==", "approved"),
+        orderBy("submittedAt", "desc"),
+        limit(count)
+      );
+
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        return getFallbackStories();
+      }
+
+      return snapshot.docs.map((doc) => processStoryData(doc.id, doc.data()));
+    } catch (error) {
+      console.error("Error fetching success stories:", error);
+      return getFallbackStories();
+    }
+  }, TTL);
 }
 
 /**
