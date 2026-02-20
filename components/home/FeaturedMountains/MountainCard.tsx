@@ -48,6 +48,17 @@ const getUrgencyBadge = (slots: number, createdAt?: any) => {
   return null;
 };
 
+// Location badge logic - India vs Outside India
+const getLocationBadge = (location: string) => {
+  const locationLower = location.toLowerCase();
+  const isIndia = locationLower.includes('india') && !locationLower.includes('outside india');
+
+  return {
+    text: isIndia ? 'India' : 'Outside India',
+    color: isIndia ? 'bg-green-600' : 'bg-blue-600'
+  };
+};
+
 export function MountainCard({ item, currency, onQuickView, index = 0 }: MountainCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const difficulty = getDifficultyLevel(item);
@@ -69,9 +80,8 @@ export function MountainCard({ item, currency, onQuickView, index = 0 }: Mountai
       style={{ originY: 0 }}
     >
       {/* Glow effect on hover */}
-      <div className={`absolute inset-0 rounded-2xl transition-opacity duration-300 pointer-events-none ${
-        isHovered ? "opacity-100" : "opacity-0"
-      }`}
+      <div className={`absolute inset-0 rounded-2xl transition-opacity duration-300 pointer-events-none ${isHovered ? "opacity-100" : "opacity-0"
+        }`}
         style={{
           boxShadow: isHovered ? "inset 0 0 0 2px rgba(13, 148, 136, 0.3)" : "none",
         }}
@@ -92,13 +102,12 @@ export function MountainCard({ item, currency, onQuickView, index = 0 }: Mountai
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: index * 0.1 + 0.2 }}
-          className={`absolute top-3 left-3 z-10 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold flex items-center gap-1 shadow-sm ${
-            urgencyBadge.variant === "urgent"
+          className={`absolute top-3 left-3 z-10 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold flex items-center gap-1 shadow-sm ${urgencyBadge.variant === "urgent"
               ? "bg-red-500 text-white"
               : urgencyBadge.variant === "warning"
-              ? "bg-orange-500 text-white"
-              : "bg-teal-500 text-white"
-          }`}
+                ? "bg-orange-500 text-white"
+                : "bg-teal-500 text-white"
+            }`}
         >
           {urgencyBadge.variant === "urgent" && <Zap className="w-3 h-3" />}
           {urgencyBadge.text}
@@ -120,6 +129,11 @@ export function MountainCard({ item, currency, onQuickView, index = 0 }: Mountai
           <TrendingUp className="h-3 w-3 mr-1" />
           {item.location.split(',').pop()?.trim().substring(0, 15) || "Adventure"}
         </div>
+
+        {/* Location Type Badge - India/Outside India */}
+        <div className={`absolute bottom-3 right-3 ${getLocationBadge(item.location).color} text-white px-2 py-1 rounded-md text-xs font-bold shadow-sm`}>
+          {getLocationBadge(item.location).text}
+        </div>
       </div>
 
       {/* Content */}
@@ -128,11 +142,13 @@ export function MountainCard({ item, currency, onQuickView, index = 0 }: Mountai
           {item.name}
         </h4>
 
-        {/* Difficulty Level Bar */}
+        {/* Difficulty Badge & Level Bar */}
         <div className="mb-3">
-          <div className="flex items-center justify-between text-[10px] text-gray-500 mb-1">
-            <span>Difficulty</span>
-            <span className={`font-semibold ${difficulty.color.replace("bg-", "text-")}`}>{difficulty.label}</span>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs text-gray-500">Difficulty</span>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-bold text-white ${difficulty.color}`}>
+              {difficulty.label}
+            </span>
           </div>
           <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
             <motion.div

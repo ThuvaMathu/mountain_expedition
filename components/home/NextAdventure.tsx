@@ -220,8 +220,22 @@ export function NextAdventure() {
 
   return (
     <section className="py-10 md:py-14 lg:py-16 bg-gradient-to-br from-teal-50 via-amber-50 to-white relative overflow-hidden">
+      {/* Video Background Overlay */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-white/80 z-10" />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-50"
+        >
+          <source src="https://media.tamiladventuretrekkingclub.com/Videos/logo-video.webm" type="video/webm" />
+        </video>
+      </div>
+
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-30 z-0">
         <div className="absolute top-0 left-0 w-96 h-96 bg-teal-400 rounded-full filter blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber-400 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
       </div>

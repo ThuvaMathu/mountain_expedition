@@ -7,6 +7,7 @@ const hideFooterRoutes = ["/admin"];
 export async function Footer() {
   const contactDetails = await getContactDetails();
 
+
   return (
     <FooterClient contactDetails={contactDetails} />
   );

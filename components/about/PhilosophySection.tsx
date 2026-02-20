@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, BookOpen, Quote } from "lucide-react";
+import { Heart, BookOpen, Quote, ExternalLink } from "lucide-react";
 import { SlideUp } from "@/components/ui/motion-wrapper";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function PhilosophySection() {
   return (
@@ -61,7 +63,7 @@ export function PhilosophySection() {
                 <p className="text-gray-700 text-sm mb-4">
                   A compelling narrative of the Everest expedition — challenges, triumphs, and lessons learned from scaling the world&apos;s highest peak.
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-4">
                   <span className="px-3 py-1 bg-white rounded-full text-xs font-medium text-amber-700 border border-amber-200">
                     First-hand Everest Journey
                   </span>
@@ -72,6 +74,14 @@ export function PhilosophySection() {
                     Lessons in Determination
                   </span>
                 </div>
+                {/* Buy on Amazon Button */}
+                <Link href="https://www.amazon.in/dp/9334236809" target="_blank" rel="noopener noreferrer">
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    Buy on Amazon
+                    <ExternalLink className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

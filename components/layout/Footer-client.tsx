@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { COMPANY_INFO } from '@/seo/config';
 import { getContactDetails } from '@/services/get-contact';
 import AppLogo from '../ui/app-logo';
+import { usePathname } from 'next/navigation';
 
 const destinations = [
   { name: 'Trekking', slug: 'trekking' },
@@ -58,6 +59,7 @@ export default function FooterClient({
   contactDetails,
 }: FooterClientProps) {
   const [email, setEmail] = useState('');
+  const pathname = usePathname();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +67,9 @@ export default function FooterClient({
     console.log('Subscribed:', email);
     setEmail('');
   };
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <footer className="relative pt-16 pb-8 text-white overflow-hidden">

@@ -101,19 +101,18 @@ export function HeroAboutSection() {
                     <div className="space-y-8 order-2 lg:order-2">
                         <SlideUp className="space-y-4">
                             <span className="inline-block text-teal-600 font-semibold tracking-wider uppercase text-sm">
-                                Your Guide
+                                Welcome to
                             </span>
-                            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                                Meet Your Guide
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight">
+                                Tamil Adventure Trekking Club
+                            </h1>
+                            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent leading-tight">
+                                Authentic Trekking Experiences across the world.
                             </h2>
-                            <h3 className="text-2xl md:text-3xl font-semibold text-teal-600">
-                                Muthamilselvi
-                            </h3>
                         </SlideUp>
 
-                        <SlideUp delay={0.2} className="text-lg text-gray-600 leading-relaxed max-w-xl">
-                            First Tamil woman to conquer Everest and complete the Seven Summits.
-                            Now she leads expeditions to help you achieve your mountain dreams.
+                        <SlideUp delay={0.2} className="text-lg md:text-xl text-gray-700 leading-relaxed max-w-xl font-medium">
+                            Led by <span className="font-bold text-teal-700">Muthamilselvi Narayanan</span> – Fastest Indian woman to complete the 7 highest peaks of the world.
                         </SlideUp>
 
                         {/* Achievement Cards */}

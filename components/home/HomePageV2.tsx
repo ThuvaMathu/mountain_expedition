@@ -2,7 +2,6 @@ import dynamicLoader from "next/dynamic";
 import { getStats } from "@/services/get-stats";
 import { getTestimonials } from "@/services/get-testimonials";
 import { getSuccessStories } from "@/services/get-success-stories";
-import HeroSection from "./HeroSection";
 import {
   SkeletonNextAdventure,
   SkeletonFeaturedMountains,
@@ -51,11 +50,10 @@ export default async function HomePageV2() {
 
   return (
     <main className="min-h-screen">
-
-      <HeroSection stats={stats} />
+      {/* Muthamilselvi Highlighted at Top */}
+      <HeroAboutSection />
 
       <div id="next-section">
-        <HeroAboutSection />
         {/* Next Adventure + Featured Mountains */}
         <NextAdventure />
         <FeaturedMountains />
@@ -66,7 +64,6 @@ export default async function HomePageV2() {
         {/* FAQ Section - Address Objections */}
         <FAQSection />
         <Instagram />
-
       </div>
     </main>
   );
