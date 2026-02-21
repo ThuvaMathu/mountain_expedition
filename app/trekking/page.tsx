@@ -7,7 +7,7 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/shared/PageHero";
 import { PackageCard } from "@/components/shared/PackageCard";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useCurrencyStore } from "@/stores/currency-store";
 import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 import { Globe2, MapPin, Mountain } from "lucide-react";
@@ -49,7 +49,6 @@ interface Mountain {
 }
 
 export default function TrekkingPage() {
-    const { t } = useLanguage();
     const { currency } = useCurrencyStore();
     const [mountains, setMountains] = useState<Mountain[]>([]);
     const [loading, setLoading] = useState(true);
@@ -167,7 +166,7 @@ export default function TrekkingPage() {
 
             {/* Hero Section */}
             <PageHero
-                title={t("explore_mountains")}
+                title="Explore Mountains"
                 subtitle="Challenge yourself on epic mountain expeditions. From the Himalayas to the Alps, conquer the world's most majestic peaks with expert guidance and unforgettable experiences."
                 image="https://media.tamiladventuretrekkingclub.com/images/posters/poster-adventure.webp"
             />

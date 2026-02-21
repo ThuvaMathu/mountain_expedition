@@ -12,7 +12,6 @@ import {
   UserPlus,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 
 interface UserSelectorProps {
@@ -23,7 +22,6 @@ export function UserSelector({ variant = "desktop" }: UserSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
-  const { t } = useLanguage();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -61,7 +59,7 @@ export function UserSelector({ variant = "desktop" }: UserSelectorProps) {
                 className="w-full justify-start"
               >
                 <User className="h-4 w-4 mr-2" />
-                {t("dashboard")}
+                Dashboard
               </Button>
             </Link>
             {user.isAdmin && (
@@ -83,7 +81,7 @@ export function UserSelector({ variant = "desktop" }: UserSelectorProps) {
               className="w-full justify-start"
             >
               <LogOut className="h-4 w-4 mr-2" />
-              {t("logout")}
+              Logout
             </Button>
           </div>
         ) : (
@@ -98,13 +96,13 @@ export function UserSelector({ variant = "desktop" }: UserSelectorProps) {
                 className="w-full justify-start"
               >
                 <LogIn className="h-4 w-4 mr-2" />
-                {t("login")}
+                Login
               </Button>
             </Link>
             <Link href="/auth/register">
               <Button size="sm" className="w-full">
                 <UserPlus className="h-4 w-4 mr-2" />
-                {t("register")}
+                Register
               </Button>
             </Link>
           </div>
@@ -120,13 +118,13 @@ export function UserSelector({ variant = "desktop" }: UserSelectorProps) {
         <Link href="/auth/login">
           <Button variant="ghost" size="sm">
             <LogIn className="h-4 w-4 mr-2" />
-            {t("login")}
+            Login
           </Button>
         </Link>
         <Link href="/auth/register">
           <Button size="sm">
             <UserPlus className="h-4 w-4 mr-2" />
-            {t("register")}
+            Register
           </Button>
         </Link>
       </div>
@@ -146,9 +144,8 @@ export function UserSelector({ variant = "desktop" }: UserSelectorProps) {
           {user.displayName || user.email?.split("@")[0] || "User"}
         </span>
         <ChevronDown
-          className={`h-3 w-3 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""
+            }`}
         />
       </Button>
 
@@ -168,7 +165,7 @@ export function UserSelector({ variant = "desktop" }: UserSelectorProps) {
                 className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-3 transition-colors text-gray-700"
               >
                 <User className="h-4 w-4" />
-                <span>{t("dashboard")}</span>
+                <span>Dashboard</span>
               </button>
             </Link>
 
@@ -191,7 +188,7 @@ export function UserSelector({ variant = "desktop" }: UserSelectorProps) {
               className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-3 transition-colors text-red-600"
             >
               <LogOut className="h-4 w-4" />
-              <span>{t("logout")}</span>
+              <span>Logout</span>
             </button>
           </div>
         </div>

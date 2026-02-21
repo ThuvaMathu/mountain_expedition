@@ -8,7 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { BookingCalendar } from "@/components/booking/BookingCalendar";
 import { Button } from "@/components/ui/button";
 import { ImageLoader } from "@/components/ui/image-loader";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import {
   MapPin,
   Calendar,

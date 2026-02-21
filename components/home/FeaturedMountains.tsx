@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { useCurrencyStore } from "@/stores/currency-store";
@@ -15,7 +14,6 @@ import { EmptyStateCard } from "./FeaturedMountains/EmptyStateCard";
 import { ArrowRight, Compass } from "lucide-react";
 
 export function FeaturedMountains() {
-  const { t } = useLanguage();
   const [mountains, setMountains] = useState<TMountainType[]>([]);
   const [quickViewItem, setQuickViewItem] = useState<TMountainType | null>(null);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);

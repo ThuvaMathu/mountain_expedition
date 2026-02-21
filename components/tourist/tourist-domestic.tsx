@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { TouristCard } from "@/components/tourist/tourist-card";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { MapPin, Heart, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
 import Link from "next/link";
 export default function DomesticTouristMain() {
-  const { t } = useLanguage();
+
   const [domesticPackages, setDomesticPackages] = useState<TMountainType[]>([]);
   const [filteredPackages, setFilteredPackages] = useState<TMountainType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");

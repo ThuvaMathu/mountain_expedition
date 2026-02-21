@@ -5,7 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MountainCard } from "@/components/mountains/MountainCard";
 import { MountainFilters } from "@/components/mountains/MountainFilters";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { useCurrencyStore } from "@/stores/currency-store";
 import { Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { generateMountainsMetadata } from "@/seo/metadata/mountains";
 import { organizationSchema } from "@/seo/schemas";
 //export const metadata = generateMountainsMetadata();
 export default function MountainsMain() {
-  const { t } = useLanguage();
+
   const { currency } = useCurrencyStore();
   const [mountains, setMountains] = useState<TMountainType[]>([]);
   const [filteredMountains, setFilteredMountains] = useState<TMountainType[]>(
@@ -54,17 +54,17 @@ export default function MountainsMain() {
   const isAvailable = (mountain: TMountainType) => {
     if (mountain.status === "disabled" || mountain.status === "outdated") return false;
     if (!mountain.availableDates || mountain.availableDates.length === 0) return false;
-    
+
     const hasActiveDates = mountain.availableDates.some(dateObj => {
       return new Date(dateObj.date) >= new Date();
     });
-    
+
     return hasActiveDates;
   };
 
   useEffect(() => {
     let filtered = mountains.filter(isAvailable); // Only filter available mountains
-    
+
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(
@@ -135,10 +135,10 @@ export default function MountainsMain() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {t("explore_mountains")}
+            Explore Mountains
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {t("mountains_page_description")}
+            Choose from our carefully curated selection of world-class mountain expeditions. From beginner-friendly peaks to expert-level challenges.
           </p>
         </div>
 
@@ -149,7 +149,7 @@ export default function MountainsMain() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <Input
                 type="text"
-                placeholder={t("search_mountains")}
+                placeholder="Search mountains..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -161,7 +161,7 @@ export default function MountainsMain() {
               className="flex items-center gap-2"
             >
               <Filter className="h-4 w-4" />
-              {t("filters")}
+              Filters
             </Button>
           </div>
 
@@ -175,10 +175,7 @@ export default function MountainsMain() {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-gray-600">
-            {t("showing_results", {
-              count: filteredMountains.length,
-              total: mountains.length,
-            })}
+            Showing {filteredMountains.length} of {mountains.length} mountains
           </p>
         </div>
 
@@ -191,7 +188,7 @@ export default function MountainsMain() {
 
         {filteredMountains.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">{t("no_mountains_found")}</p>
+            <p className="text-gray-500 text-lg">No mountains found matching your criteria</p>
             <Button
               variant="outline"
               onClick={() => {
@@ -204,7 +201,7 @@ export default function MountainsMain() {
               }}
               className="mt-4"
             >
-              {t("clear_filters")}
+              Clear Filters
             </Button>
           </div>
         )}

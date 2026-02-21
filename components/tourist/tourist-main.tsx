@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { TouristCard } from "@/components/tourist/tourist-card";
 import { TouristFilters } from "@/components/tourist/tourist-filters";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { Search, Filter, MapPin, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import { generateTouristMetadata } from "@/seo/metadata/tourist";
 import { organizationSchema } from "@/seo/schemas";
 export const metadata = generateTouristMetadata();
 export default function TouristPackagesMain() {
-  const { t } = useLanguage();
+
   const [touristPackages, setTouristPackages] = useState<TMountainType[]>([]);
   const [filteredPackages, setFilteredPackages] = useState<TMountainType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,11 +51,11 @@ export default function TouristPackagesMain() {
   const isAvailable = (pkg: TMountainType) => {
     if (pkg.status === "disabled" || pkg.status === "outdated") return false;
     if (!pkg.availableDates || pkg.availableDates.length === 0) return false;
-    
+
     const hasActiveDates = pkg.availableDates.some(dateObj => {
       return new Date(dateObj.date) >= new Date();
     });
-    
+
     return hasActiveDates;
   };
 

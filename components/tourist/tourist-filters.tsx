@@ -1,6 +1,6 @@
 "use client";
 
-import { useLanguage } from "@/contexts/LanguageContext";
+
 
 interface Filters {
   category: string;
@@ -16,7 +16,7 @@ interface TouristFiltersProps {
 }
 
 export function TouristFilters({ filters, setFilters }: TouristFiltersProps) {
-  const { t } = useLanguage();
+
 
   const handleFilterChange = (key: keyof Filters, value: string) => {
     setFilters({ ...filters, [key]: value });

@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { TouristCard } from "@/components/tourist/tourist-card";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import { Plane, Globe, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
 import Link from "next/link";
 export default function InternationalTouristMain() {
-  const { t } = useLanguage();
+
   const [internationalPackages, setInternationalPackages] = useState<
     TMountainType[]
   >([]);
