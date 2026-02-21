@@ -22,7 +22,7 @@ export function WhatsAppFloat({ phoneNumber, message }: WhatsAppFloatProps) {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9999] flex items-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full shadow-2xl hover:shadow-[#25D366]/40 transition-all duration-300 px-1 py-1 pr-3 group"
+            className="fixed bottom-12 right-4 sm:bottom-6 sm:right-6 z-[9999] flex items-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full shadow-2xl hover:shadow-[#25D366]/40 transition-all duration-300 px-1 py-1 pr-3 group"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5, type: "spring" }}

@@ -61,10 +61,10 @@ export function EnquiryForm({ packageData, packageType, contactDetails, stats, t
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
             {/* WhatsApp Float - Always show with fallback number */}
-            <WhatsAppFloat
+            {/* <WhatsAppFloat
                 phoneNumber={contactDetails?.socialMedia?.whatsapp || contactDetails?.phone}
                 message={`Hi! I'm interested in ${packageData.name}. Please provide more details.`}
-            />
+            /> */}
 
             <div className="container mx-auto px-4 max-w-6xl py-12">
 

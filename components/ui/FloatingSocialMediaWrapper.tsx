@@ -16,7 +16,7 @@ export function FloatingSocialMediaWrapper({ contactDetails }: FloatingSocialMed
         "/contact",
         "/trekking",
         "/tours",
-        "/enquire"
+        // "/enquire"
     ];
 
     // Exact match for home page
