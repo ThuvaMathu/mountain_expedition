@@ -55,6 +55,8 @@ export function HeroAboutSection() {
                                         fill
                                         sizes="(max-width: 768px) 80vw, 30vw"
                                         priority
+                                        placeholder="blur"
+                                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjYmFlNmZkIi8+PC9zdmc+"
                                         className="object-cover"
                                     />
                                 </motion.div>
@@ -69,6 +71,8 @@ export function HeroAboutSection() {
                                         fill
                                         sizes="(max-width: 768px) 80vw, 30vw"
                                         priority
+                                        placeholder="blur"
+                                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZTJlOGYwIi8+PC9zdmc+"
                                         className="object-cover"
                                     />
                                 </motion.div>
@@ -88,6 +92,8 @@ export function HeroAboutSection() {
                                         fill
                                         sizes="(max-width: 768px) 100vw, 50vw"
                                         priority
+                                        placeholder="blur"
+                                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjY2NmYmYxIi8+PC9zdmc+"
                                         className="object-cover"
                                     />
                                 </div>

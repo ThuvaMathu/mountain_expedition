@@ -114,6 +114,8 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                                         className="object-cover -z-10"
                                         priority={index === 0} // Prioritize first image for faster LCP
                                         fetchPriority={index === 0 ? "high" : "auto"}
+                                        placeholder="blur"
+                                        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMzM0MTU1Ii8+PC9zdmc+"
                                         quality={85}
                                     />
                                 </>
@@ -127,6 +129,8 @@ export default function HeroSection({ stats = [] }: HeroSectionProps) {
                                     className="object-cover"
                                     priority={index === 0}
                                     fetchPriority={index === 0 ? "high" : "auto"}
+                                    placeholder="blur"
+                                    blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMzM0MTU1Ii8+PC9zdmc+"
                                 />
                             )}
 
