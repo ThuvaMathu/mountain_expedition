@@ -38,11 +38,11 @@ export function DeferredLayoutWrappers({ contactDetails }: DeferredLayoutWrapper
         <>
             <FloatingSocialMediaWrapper contactDetails={contactDetails} />
             <StickyBookingWrapper
-                whatsappNumber={contactDetails?.socialMedia?.whatsapp?.replace(/\D/g, "") || "919876543210"}
-                phoneNumber={contactDetails?.phone || "+919876543210"}
-                offerText="Limited: 15% Off Season Bookings"
+                whatsappNumber={contactDetails?.socialMedia?.whatsapp?.replace(/\D/g, "")}
+                phoneNumber={contactDetails?.phone}
+            //offerText="Limited: 15% Off Season Bookings"
             />
-            <AIChatWrapper />
+            {/* <AIChatWrapper /> */}
         </>
     );
 }

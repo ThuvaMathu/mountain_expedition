@@ -53,7 +53,6 @@ export const organizationSchema = {
   sameAs: [
     COMPANY_INFO.social.facebook,
     COMPANY_INFO.social.instagram,
-    COMPANY_INFO.social.twitter,
     COMPANY_INFO.social.youtube,
     COMPANY_INFO.social.linkedin,
   ],

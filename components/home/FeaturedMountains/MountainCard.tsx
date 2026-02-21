@@ -48,14 +48,13 @@ const getUrgencyBadge = (slots: number, createdAt?: any) => {
   return null;
 };
 
-// Location badge logic - India vs Outside India
-const getLocationBadge = (location: string) => {
-  const locationLower = location.toLowerCase();
-  const isIndia = locationLower.includes('india') && !locationLower.includes('outside india');
+// Category badge logic - Domestic vs International
+const getCategoryBadge = (category?: string) => {
+  const isDomestic = category === 'domestic';
 
   return {
-    text: isIndia ? 'India' : 'Outside India',
-    color: isIndia ? 'bg-green-600' : 'bg-blue-600'
+    text: isDomestic ? 'Domestic' : 'International',
+    color: isDomestic ? 'bg-green-600' : 'bg-blue-600'
   };
 };
 
@@ -103,10 +102,10 @@ export function MountainCard({ item, currency, onQuickView, index = 0 }: Mountai
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: index * 0.1 + 0.2 }}
           className={`absolute top-3 left-3 z-10 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold flex items-center gap-1 shadow-sm ${urgencyBadge.variant === "urgent"
-              ? "bg-red-500 text-white"
-              : urgencyBadge.variant === "warning"
-                ? "bg-orange-500 text-white"
-                : "bg-teal-500 text-white"
+            ? "bg-red-500 text-white"
+            : urgencyBadge.variant === "warning"
+              ? "bg-orange-500 text-white"
+              : "bg-teal-500 text-white"
             }`}
         >
           {urgencyBadge.variant === "urgent" && <Zap className="w-3 h-3" />}
@@ -130,9 +129,9 @@ export function MountainCard({ item, currency, onQuickView, index = 0 }: Mountai
           {item.location.split(',').pop()?.trim().substring(0, 15) || "Adventure"}
         </div>
 
-        {/* Location Type Badge - India/Outside India */}
-        <div className={`absolute bottom-3 right-3 ${getLocationBadge(item.location).color} text-white px-2 py-1 rounded-md text-xs font-bold shadow-sm`}>
-          {getLocationBadge(item.location).text}
+        {/* Category Badge - Domestic/International */}
+        <div className={`absolute bottom-3 right-3 ${getCategoryBadge(item.category).color} text-white px-2 py-1 rounded-md text-xs font-bold shadow-sm`}>
+          {getCategoryBadge(item.category).text}
         </div>
       </div>
 

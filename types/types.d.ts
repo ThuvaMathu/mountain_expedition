@@ -235,7 +235,7 @@ type TContactDetails = {
   faqs: FAQ[];
   socialMedia?: {
     facebook: string;
-    twitter: string;
+    twitter?: string;
     instagram: string;
     youtube: string;
     whatsapp?: string;

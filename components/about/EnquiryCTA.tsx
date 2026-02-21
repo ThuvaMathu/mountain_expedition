@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Mail, Phone, MessageCircle, ArrowRight, Mountain } from "lucide-react";
 import { SlideUp } from "@/components/ui/motion-wrapper";
+import { useContactDetails } from "@/hooks/useContactDetails";
 
 export function EnquiryCTA() {
+  const { contact } = useContactDetails();
   return (
     <section className="bg-gradient-to-b from-gray-50 to-white py-10 md:py-14 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -32,14 +34,14 @@ export function EnquiryCTA() {
 
                 {/* Contact Info */}
                 <div className="flex flex-wrap gap-4 md:gap-6 text-xs md:text-sm">
-                  <div className="flex items-center gap-1.5 md:gap-2">
+                  <a href={`mailto:${contact.email}`} className="flex items-center gap-1.5 md:gap-2 hover:text-white transition-colors">
                     <Mail className="w-4 h-4 md:w-5 md:h-5 text-teal-200" />
-                    <span>hello@tamiladventure.com</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 md:gap-2">
+                    <span>{contact.email}</span>
+                  </a>
+                  <a href={`tel:${contact.phone}`} className="flex items-center gap-1.5 md:gap-2 hover:text-white transition-colors">
                     <Phone className="w-4 h-4 md:w-5 md:h-5 text-teal-200" />
-                    <span>+91 98765 43210</span>
-                  </div>
+                    <span>{contact.phone}</span>
+                  </a>
                 </div>
               </div>
 

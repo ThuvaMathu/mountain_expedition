@@ -5,6 +5,7 @@ import { Heart, BookOpen, Quote, ExternalLink } from "lucide-react";
 import { SlideUp } from "@/components/ui/motion-wrapper";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 export function PhilosophySection() {
   return (
@@ -33,21 +34,21 @@ export function PhilosophySection() {
         <SlideUp>
           <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-6 md:p-8 border border-amber-100">
             <div className="grid md:grid-cols-2 gap-8 items-center">
-              {/* Book Cover - Compact */}
-              <div className="flex justify-center order-2 md:order-1">
+              {/* Book Cover - Full Spread Image */}
+              <div className="flex justify-center order-2 md:order-1 w-full">
                 <motion.div
-                  whileHover={{ rotateY: 10, scale: 1.05 }}
+                  whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
-                  className="relative w-40 h-52 md:w-44 md:h-56 rounded-lg shadow-2xl bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center p-4"
-                  style={{ transformStyle: "preserve-3d" }}
+                  className="relative w-full max-w-sm md:max-w-md aspect-[2/1]"
                 >
-                  <div className="absolute inset-0 border-4 border-white/20 rounded-lg" />
-                  <div className="text-center text-white">
-                    <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-80" />
-                    <h4 className="font-bold text-sm mb-1">இமயமலையைத் தொட்ட சாதனை பயணம்</h4>
-                    <p className="text-xs opacity-80">Imayamathai Thotta sathanai Payanam</p>
-                  </div>
-                  <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-amber-700 to-amber-600 rounded-l-lg" />
+                  <Image
+                    src="/book-cover.jpg"
+                    alt="Imayathai Thotta Sadhanai Payanam Book Cover"
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
+                  />
                 </motion.div>
               </div>
 
@@ -57,11 +58,14 @@ export function PhilosophySection() {
                   <BookOpen className="w-3 h-3" />
                   Published Book
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">
-                  &quot;Imayamathai Thotta sathanai Payanam&quot;
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 leading-tight">
+                  &quot;Imayathai Thotta Sadhanai Payanam&quot;
                 </h3>
-                <p className="text-gray-700 text-sm mb-4">
-                  A compelling narrative of the Everest expedition — challenges, triumphs, and lessons learned from scaling the world&apos;s highest peak.
+                <p className="font-semibold text-gray-800 text-sm mb-2">
+                  இமயத்தைத் தொட்ட சாதனைப் பயணம்
+                </p>
+                <p className="text-gray-700 text-sm mb-4 leading-relaxed">
+                  Autobiography of the first Tamil woman to scale Mount Everest, documenting her life journey and expedition experience.
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   <span className="px-3 py-1 bg-white rounded-full text-xs font-medium text-amber-700 border border-amber-200">

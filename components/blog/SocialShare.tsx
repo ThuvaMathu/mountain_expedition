@@ -1,6 +1,6 @@
 "use client";
 
-import { Facebook, Twitter, Linkedin, Link as LinkIcon, Mail } from "lucide-react";
+import { Facebook, Linkedin, Link as LinkIcon, Mail } from "lucide-react";
 import { useState } from "react";
 
 interface SocialShareProps {
@@ -19,7 +19,6 @@ export function SocialShare({ url, title, description }: SocialShareProps) {
 
     const shareLinks = {
         facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-        twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
         linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
         email: `mailto:?subject=${encodedTitle}&body=${encodedDesc}%0A%0A${encodedUrl}`,
     };
@@ -48,14 +47,6 @@ export function SocialShare({ url, title, description }: SocialShareProps) {
                 >
                     <Facebook className="h-5 w-5" />
                     <span className="font-medium">Facebook</span>
-                </button>
-
-                <button
-                    onClick={() => handleShare('twitter')}
-                    className="flex items-center gap-3 px-4 py-3 bg-sky-500 hover:bg-sky-600 text-white rounded-lg transition-colors"
-                >
-                    <Twitter className="h-5 w-5" />
-                    <span className="font-medium">Twitter</span>
                 </button>
 
                 <button

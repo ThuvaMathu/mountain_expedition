@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "@/components/ui/toast";
 import { ToastContainer, toast } from "react-toastify";
 import { Footer } from "@/components/layout/Footer";
@@ -72,16 +71,14 @@ export default async function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthProvider>
-          <LanguageProvider>
-            <div className="relative min-h-screen bg-gray-50">
-              <Navbar />
-              {/* Deferred loading of heavy components for better TTI */}
-              <DeferredLayoutWrappers contactDetails={contactDetails} />
-              {children}
-              <Footer />
-            </div>
-            <Toaster />
-          </LanguageProvider>
+          <div className="relative min-h-screen bg-gray-50">
+            <Navbar />
+            {/* Deferred loading of heavy components for better TTI */}
+            <DeferredLayoutWrappers contactDetails={contactDetails} />
+            {children}
+            <Footer />
+          </div>
+          <Toaster />
         </AuthProvider>
         <ToastContainer
           position="top-right"

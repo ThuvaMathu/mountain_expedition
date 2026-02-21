@@ -231,7 +231,6 @@ ${COMPANY_INFO.contact.email}
             <div style="margin-bottom: 15px;">
               <a href="${COMPANY_INFO.social.facebook}" style="color: #0d9488; text-decoration: none; margin: 0 10px;">Facebook</a>
               <a href="${COMPANY_INFO.social.instagram}" style="color: #0d9488; text-decoration: none; margin: 0 10px;">Instagram</a>
-              <a href="${COMPANY_INFO.social.twitter}" style="color: #0d9488; text-decoration: none; margin: 0 10px;">Twitter</a>
             </div>
             <p style="color: #9ca3af; font-size: 12px; margin: 0;">
               ${COMPANY_INFO.legalName} - ${COMPANY_INFO.tagline}

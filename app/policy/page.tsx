@@ -1,6 +1,8 @@
 import React from 'react';
+import { getContactDetails } from '@/services/get-contact';
 
-export default function PolicyPage() {
+export default async function PolicyPage() {
+  const contactDetails = await getContactDetails();
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8">
@@ -166,14 +168,14 @@ export default function PolicyPage() {
           <div className="text-gray-700 space-y-2">
             <p>
               <strong>Phone:</strong>{' '}
-              <a href="tel:+919003140943" className="text-blue-600 hover:underline">
-                +91 90031 40943
+              <a href={`tel:${contactDetails.phone}`} className="text-blue-600 hover:underline">
+                {contactDetails.phone}
               </a>
             </p>
             <p>
               <strong>Email:</strong>{' '}
-              <a href="mailto:contact@tamiladventuretrekkingclub.com" className="text-blue-600 hover:underline">
-                contact@tamiladventuretrekkingclub.com
+              <a href={`mailto:${contactDetails.email}`} className="text-blue-600 hover:underline">
+                {contactDetails.email}
               </a>
             </p>
           </div>

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 
 interface FloatingSocialMediaProps {
@@ -49,16 +49,11 @@ export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps
             color: 'hover:bg-blue-600'
         },
         {
-            name: 'Twitter',
-            icon: Twitter,
-            url: contactDetails.socialMedia?.twitter,
-            color: 'hover:bg-sky-500'
-        },
-        {
             name: 'Instagram',
             icon: Instagram,
             url: contactDetails.socialMedia?.instagram,
-            color: 'hover:bg-pink-600'
+            color: 'hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-pink-500 hover:to-purple-500',
+            isInstagram: true
         },
         {
             name: 'Youtube',
@@ -70,13 +65,13 @@ export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps
 
     if (socialLinks.length === 0) return null;
 
-    // Dynamic classes based on scroll position
+    // Dynamic classes based on scroll position - High contrast for hero section
     const bgClass = isDark
-        ? 'bg-white/10 border-white/20'
+        ? 'bg-white/95 border-gray-200 shadow-lg'
         : 'bg-teal-600/90 border-teal-500/30 shadow-lg';
-    const textClass = isDark ? 'text-white' : 'text-white';
+    const textClass = isDark ? 'text-gray-800' : 'text-white';
     const lineClass = isDark
-        ? 'bg-gradient-to-b from-white/40 to-transparent'
+        ? 'bg-gradient-to-b from-gray-400/60 to-transparent'
         : 'bg-gradient-to-b from-teal-600/60 to-transparent';
 
     return (
@@ -96,12 +91,18 @@ export function FloatingSocialMedia({ contactDetails }: FloatingSocialMediaProps
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.4, delay: 1 + index * 0.1 }}
+                            className="relative"
                         >
+                            {/* Instagram Glowing Pulse Ring */}
+                            {social.isInstagram && (
+                                <div className="absolute inset-0 rounded-full bg-pink-500/40 animate-ping" style={{ animationDuration: '3s' }} />
+                            )}
+
                             <Link
                                 href={social.url!}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`group w-11 h-11 md:w-10 md:h-10 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg ${bgClass} ${textClass} ${social.color}`}
+                                className={`relative group w-11 h-11 md:w-10 md:h-10 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:text-white ${bgClass} ${textClass} ${social.color}`}
                                 aria-label={social.name}
                             >
                                 <Icon className="w-4 h-4" />

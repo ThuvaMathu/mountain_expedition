@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 import { faqs, faqCategories } from "@/lib/constants/faqs";
+import { useContactDetails } from "@/hooks/useContactDetails";
 
 const categories = faqCategories;
 
@@ -16,6 +17,9 @@ export function FAQSection() {
     triggerOnce: true,
     threshold: 0.1,
   });
+
+  const { contact } = useContactDetails();
+  const whatsappNumber = contact.socialMedia?.whatsapp?.replace(/\D/g, '') || contact.phone?.replace(/\D/g, '');
 
   const [activeCategory, setActiveCategory] = useState("All");
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
@@ -215,13 +219,13 @@ export function FAQSection() {
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
               <a
-                href="tel:+919876543210"
+                href={`tel:${contact.phone}`}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:from-teal-600 hover:to-cyan-600 hover:scale-105 sm:py-3.5"
               >
                 Call Us Now
               </a>
               <a
-                href="https://wa.me/919876543210"
+                href={`https://wa.me/${whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:py-3.5"

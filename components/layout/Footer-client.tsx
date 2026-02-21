@@ -3,10 +3,9 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Phone, Mail, MapPin, Facebook, Twitter, Linkedin, Instagram, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Linkedin, Instagram, Send } from 'lucide-react';
 import { useState } from 'react';
 import { COMPANY_INFO } from '@/seo/config';
-import { getContactDetails } from '@/services/get-contact';
 import AppLogo from '../ui/app-logo';
 import { usePathname } from 'next/navigation';
 
@@ -46,12 +45,11 @@ const instagramImages = [
   'https://media.tamiladventuretrekkingclub.com/images/gallery/img-50.webp',
 ];
 
-const socialLinks = [
-  { name: 'facebook', icon: Facebook, url: 'https://www.facebook.com' },
-  { name: 'twitter', icon: Twitter, url: 'https://www.twitter.com' },
-  { name: 'linkedin', icon: Linkedin, url: 'https://www.linkedin.com' },
-  { name: 'instagram', icon: Instagram, url: 'https://www.instagram.com' },
-];
+const socialIconMap: Record<string, typeof Facebook> = {
+  facebook: Facebook,
+  linkedin: Linkedin,
+  instagram: Instagram,
+};
 type FooterClientProps = {
   contactDetails: TContactDetails;
 };
@@ -89,7 +87,7 @@ export default function FooterClient({
       {/* Content */}
       <div className="relative z-10">
         {/* Newsletter Section */}
-        <div className="container mx-auto px-4 mb-16">
+        {/* <div className="container mx-auto px-4 mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -127,7 +125,7 @@ export default function FooterClient({
               </form>
             </div>
           </motion.div>
-        </div>
+        </div> */}
 
         <div className="container mx-auto px-4">
           {/* Main Footer Content */}
@@ -142,26 +140,28 @@ export default function FooterClient({
             >
 
               <Link href="/" className="inline-block mb-6">
-                <AppLogo textColor="text-white" size="medium" />
+                <AppLogo textColor="text-white" size="large" />
               </Link>
               <p className="text-gray-200 mb-6 leading-relaxed">
                 Your trusted partner for unforgettable mountain adventures and trekking experiences across the Himalayas.
               </p>
               <div className="flex gap-3">
-                {socialLinks.map((social) => {
-                  const IconComponent = social.icon;
-                  return (
-                    <a
-                      key={social.name}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-teal-500 transition-all duration-300 hover:scale-110"
-                    >
-                      <IconComponent className="w-5 h-5" />
-                    </a>
-                  );
-                })}
+                {contactDetails.socialMedia && Object.entries(contactDetails.socialMedia)
+                  .filter(([key]) => socialIconMap[key])
+                  .map(([key, url]) => {
+                    const IconComponent = socialIconMap[key];
+                    return (
+                      <a
+                        key={key}
+                        href={url as string}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center hover:bg-teal-500 transition-all duration-300 hover:scale-110"
+                      >
+                        <IconComponent className="w-5 h-5" />
+                      </a>
+                    );
+                  })}
               </div>
             </motion.div>
 
@@ -221,7 +221,7 @@ export default function FooterClient({
                 <li className="flex items-start gap-3">
                   <Phone className="w-5 h-5 text-teal-400 shrink-0 mt-1" />
                   <a
-                    href="tel:+911234567898"
+                    href={`tel:${contactDetails.phone}`}
                     className="text-gray-200 hover:text-white transition-colors duration-300"
                   >
                     {contactDetails.phone}
@@ -230,7 +230,7 @@ export default function FooterClient({
                 <li className="flex items-start gap-3">
                   <Mail className="w-5 h-5 text-teal-400 shrink-0 mt-1" />
                   <a
-                    href="mailto:info@example.com"
+                    href={`mailto:${contactDetails.email}`}
                     className="text-gray-200 hover:text-white transition-colors duration-300"
                   >
                     {contactDetails.email}

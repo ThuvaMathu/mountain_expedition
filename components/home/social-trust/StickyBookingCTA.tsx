@@ -13,9 +13,9 @@ interface StickyBookingCTAProps {
 }
 
 export function StickyBookingCTA({
-  whatsappNumber = "919876543210",
-  phoneNumber = "+919876543210",
-  offerText = "Limited: 15% Off Season Bookings",
+  whatsappNumber = "",
+  phoneNumber = "",
+  offerText = "",
   showTriggerOffset = 400,
 }: StickyBookingCTAProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -81,7 +81,7 @@ export function StickyBookingCTA({
             className="fixed bottom-0 left-0 right-0 z-50 border-t border-teal-100 bg-white/95 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] backdrop-blur-md md:shadow-2xl"
           >
             {/* Offer Banner - Show above CTA on mobile, integrated on desktop */}
-            {offerText && !isMinimized && (
+            {offerText && offerText !== "" && !isMinimized && (
               <div className="bg-gradient-to-r from-teal-600 to-cyan-600 py-1.5 px-3 text-center">
                 <p className="text-xs font-medium text-white sm:text-sm">
                   <span className="mr-1 inline-block animate-pulse">🔥</span>

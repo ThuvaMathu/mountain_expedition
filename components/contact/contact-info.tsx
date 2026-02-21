@@ -7,7 +7,6 @@ import {
   MessageCircle,
   Globe,
   Facebook,
-  Twitter,
   Instagram,
   Youtube,
 } from "lucide-react";
@@ -85,14 +84,6 @@ export function ContactInfo({ contactDetails }: ContactInfoProps) {
             className="text-gray-400 hover:text-teal-400 transition-colors"
           >
             <Facebook className="h-6 w-6" />
-          </Link>
-          <Link
-            href={COMPANY_INFO.social.twitter}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-teal-400 transition-colors"
-          >
-            <Twitter className="h-6 w-6" />
           </Link>
           <Link
             href={COMPANY_INFO.social.instagram}

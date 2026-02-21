@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { Save, Plus, Trash2, Clock, Phone, HelpCircle, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Save, Plus, Trash2, Clock, Phone, HelpCircle, Facebook, Instagram, Youtube } from "lucide-react";
 
 type OfficeHours = {
   day: string;
@@ -26,7 +26,6 @@ type ContactConfig = {
   faqs: FAQ[];
   socialMedia: {
     facebook: string;
-    twitter: string;
     instagram: string;
     youtube: string;
   };
@@ -71,7 +70,6 @@ export function ContactsManagement() {
     faqs: defaultFAQs,
     socialMedia: {
       facebook: "",
-      twitter: "",
       instagram: "",
       youtube: "",
     },
@@ -94,7 +92,6 @@ export function ContactsManagement() {
         faqs: data.faqs || defaultFAQs,
         socialMedia: data.socialMedia || {
           facebook: "",
-          twitter: "",
           instagram: "",
           youtube: "",
         },
@@ -253,23 +250,6 @@ export function ContactsManagement() {
                 })
               }
               placeholder="https://facebook.com/yourpage"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-              <Twitter className="h-4 w-4 text-sky-500 mr-2" />
-              Twitter
-            </label>
-            <Input
-              type="url"
-              value={form.socialMedia.twitter}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  socialMedia: { ...form.socialMedia, twitter: e.target.value },
-                })
-              }
-              placeholder="https://twitter.com/yourhandle"
             />
           </div>
           <div>
@@ -438,8 +418,8 @@ export function ContactsManagement() {
           {notice && (
             <div
               className={`text-sm px-3 py-1 rounded ${notice.includes("Failed")
-                  ? "text-red-700 bg-red-50"
-                  : "text-green-700 bg-green-50"
+                ? "text-red-700 bg-red-50"
+                : "text-green-700 bg-green-50"
                 }`}
             >
               {notice}

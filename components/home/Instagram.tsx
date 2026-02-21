@@ -5,11 +5,14 @@ import Image from 'next/image';
 import { Instagram as InstagramIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useContactDetails } from '@/hooks/useContactDetails';
 
 // Static images from /images/gallery directory
 const STATIC_GALLERY_IMAGES = Array.from({ length: 9 }, (_, i) => `https://media.tamiladventuretrekkingclub.com/images/gallery/img-${i + 1}.webp`);
 
 export default function Instagram() {
+  const { contact } = useContactDetails();
+
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-gray-900 via-teal-900 to-gray-900 relative overflow-hidden">
       {/* Decorative elements for depth */}
@@ -32,7 +35,7 @@ export default function Instagram() {
             Join 10,000+ adventure enthusiasts following Muthamilselvi's journey across the seven summits
           </p>
           {/* Prominent Instagram CTA */}
-          <Link href="https://www.instagram.com/muthamilselvi_mountaineer" target="_blank" rel="noopener noreferrer">
+          <Link href={contact?.socialMedia?.instagram || "https://www.instagram.com"} target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-bold text-lg px-8 py-6 rounded-full shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105">
               <InstagramIcon className="w-6 h-6 mr-3" />
               Follow on Instagram
@@ -45,7 +48,7 @@ export default function Instagram() {
           {STATIC_GALLERY_IMAGES.map((image, index) => (
             <motion.a
               key={index}
-              href="https://www.instagram.com"
+              href={contact?.socialMedia?.instagram || "https://www.instagram.com"}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, scale: 0.8 }}

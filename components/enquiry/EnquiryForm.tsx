@@ -62,7 +62,7 @@ export function EnquiryForm({ packageData, packageType, contactDetails, stats, t
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
             {/* WhatsApp Float - Always show with fallback number */}
             <WhatsAppFloat
-                phoneNumber={contactDetails?.socialMedia?.whatsapp || contactDetails?.phone || "+919003140943"}
+                phoneNumber={contactDetails?.socialMedia?.whatsapp || contactDetails?.phone}
                 message={`Hi! I'm interested in ${packageData.name}. Please provide more details.`}
             />
 
