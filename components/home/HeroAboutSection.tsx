@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Mountain, Award, Target } from "lucide-react";
 import { SlideUp } from "../ui/motion-wrapper";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const achievements = [
     {
@@ -48,10 +49,13 @@ export function HeroAboutSection() {
                                     transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
                                     className="absolute inset-0 rounded-3xl rotate-12 translate-x-28 overflow-hidden shadow-xl border-4 border-white/80 scale-90 translate-y-12"
                                 >
-                                    <img
-                                        src="/images/muthamilselvi/img-1.png"
-                                        alt="Training"
-                                        className="w-full h-full object-cover"
+                                    <Image
+                                        src="https://media.tamiladventuretrekkingclub.com/images/about-hero/with-flag.webp"
+                                        alt="Muthamilselvi Training with Flag"
+                                        fill
+                                        sizes="(max-width: 768px) 80vw, 30vw"
+                                        priority
+                                        className="object-cover"
                                     />
                                 </motion.div>
                                 <motion.div
@@ -59,10 +63,13 @@ export function HeroAboutSection() {
                                     transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
                                     className="absolute inset-0 rounded-3xl -rotate-12 -translate-x-28 overflow-hidden shadow-xl border-4 border-white/80 scale-90 -translate-y-12"
                                 >
-                                    <img
-                                        src="/images/muthamilselvi/img-2.png"
-                                        alt="Training"
-                                        className="w-full h-full object-cover"
+                                    <Image
+                                        src="https://media.tamiladventuretrekkingclub.com/images/about-hero/with-axe.webp"
+                                        alt="Muthamilselvi Training with Axe"
+                                        fill
+                                        sizes="(max-width: 768px) 80vw, 30vw"
+                                        priority
+                                        className="object-cover"
                                     />
                                 </motion.div>
 
@@ -75,10 +82,13 @@ export function HeroAboutSection() {
 
                                 {/* Main Image (front, larger) */}
                                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-[3/4] z-10">
-                                    <img
-                                        src="/images/muthamilselvi/img-4.png"
+                                    <Image
+                                        src="https://media.tamiladventuretrekkingclub.com/images/about-hero/main-img.png"
                                         alt="Muthamilselvi"
-                                        className="w-full h-full object-cover"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                        priority
+                                        className="object-cover"
                                     />
                                 </div>
 

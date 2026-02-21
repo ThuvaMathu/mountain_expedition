@@ -1,5 +1,10 @@
 import { Redis } from '@upstash/redis';
 
+// Detect Next.js build phase to skip Redis calls during static generation.
+// Upstash Redis uses `cache: 'no-store'` internally, which triggers
+// DYNAMIC_SERVER_USAGE errors and prevents static page generation.
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+
 // Initialize Upstash Redis client
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -13,6 +18,9 @@ const DEBUG = process.env.REDIS_DEBUG === 'true';
  * Get data from cache
  */
 export async function getCache<T>(key: string): Promise<T | null> {
+  // Skip Redis during build to prevent DYNAMIC_SERVER_USAGE errors
+  if (isBuildPhase) return null;
+
   try {
     const cached = await redis.get(key);
     
@@ -38,6 +46,9 @@ export async function setCache<T>(
   value: T,
   ttlSeconds: number
 ): Promise<void> {
+  // Skip Redis during build
+  if (isBuildPhase) return;
+
   try {
     await redis.set(key, value, { ex: ttlSeconds });
     

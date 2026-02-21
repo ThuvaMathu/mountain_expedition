@@ -15,9 +15,7 @@ import {
 const NextAdventure = dynamicLoader(() => import("./NextAdventure").then(mod => mod.NextAdventure), {
   loading: () => <SkeletonNextAdventure />
 });
-const HeroAboutSection = dynamicLoader(() => import("./HeroAboutSection").then(mod => mod.HeroAboutSection), {
-  loading: () => <SkeletonSection />
-});
+import { HeroAboutSection } from "./HeroAboutSection";
 const FeaturedMountains = dynamicLoader(() => import("./FeaturedMountains").then(mod => mod.FeaturedMountains), {
   loading: () => <SkeletonFeaturedMountains />
 });
