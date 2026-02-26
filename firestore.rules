@@ -12,10 +12,9 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      // Add your admin user IDs here
-      // For now, we'll check if user email ends with your domain
       return isAuthenticated() &&
-             request.auth.token.email.matches('.*@tamiladventuretrekkingclub.com$');
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
 
     // Mountains collection - public read, admin write
