@@ -149,7 +149,7 @@ export function CreateBookingModal({
     const filteredOptions = options.filter(o => o.type === productType);
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
                     <h2 className="text-xl font-bold text-gray-900">Create New Booking ({productType})</h2>
